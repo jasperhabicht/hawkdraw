@@ -12,6 +12,10 @@
 %
 % BOF
 
+\msg_new:nnn { qdraw } { node-unknown } {
+    Node ~ frame ~ `#1` ~ unknown.
+}
+
 \bool_new:N \l__qdraw_node_vbox_bool
 \coffin_new:N \l_qdraw_node_coffin
 \coffin_new:N \l_qdraw_node_frame_coffin
@@ -171,12 +175,15 @@
             \draw_begin:
                 \keys_set:nn { qdraw / path } {#1}
                 \qdraw_set_path_options:
-                \use:c { qdraw_node_frame_ \l_qdraw_node_frame_str :NVVVV }
+                \cs_if_exist_use:cTF { qdraw_node_frame_ \l_qdraw_node_frame_str :NVVVV } {
                     \l_qdraw_node_coffin
                     \l__qdraw_node_padding_left_dim
                     \l__qdraw_node_padding_right_dim
                     \l__qdraw_node_padding_top_dim
                     \l__qdraw_node_padding_bottom_dim
+                } {
+                    \msg_warning:nnV { qdraw } { node-unknown } \l_qdraw_node_frame_str
+                }
                 \clist_remove_duplicates:N \l_qdraw_path_use_clist
                 \draw_path_use_clear:e { \clist_use:N \l_qdraw_path_use_clist }
             \draw_end:

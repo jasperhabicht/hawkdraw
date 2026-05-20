@@ -495,11 +495,11 @@
         \l__qdraw_point_a_fp
     }
     \fp_if_nan:nT { \g_qdraw_path_first_slope_fp } {
-        \fp_gset:Nn \g_qdraw_path_first_slope_fp { 
+        \fp_gset:Nn \g_qdraw_path_first_slope_fp {
             \qdraw_calculate_slope:VV \l__qdraw_point_a_fp \g_qdraw_path_last_point_fp
         }
     }
-    \fp_gset:Nn \g_qdraw_path_last_slope_fp { 
+    \fp_gset:Nn \g_qdraw_path_last_slope_fp {
         \qdraw_calculate_slope:VV \g_qdraw_path_last_point_fp \l__qdraw_point_a_fp
     }
     \fp_gset_eq:NN \g_qdraw_path_last_point_fp \l__qdraw_point_a_fp
@@ -517,17 +517,17 @@
         )
     }
     \draw_path_lineto:n {
-        \l__qdraw_point_b_fp 
+        \l__qdraw_point_b_fp
     }
     \draw_path_lineto:n {
         \l__qdraw_point_a_fp
     }
     \fp_if_nan:nT { \g_qdraw_path_first_slope_fp } {
-        \fp_gset:Nn \g_qdraw_path_first_slope_fp { 
+        \fp_gset:Nn \g_qdraw_path_first_slope_fp {
             \qdraw_calculate_slope:VV \l__qdraw_point_b_fp \g_qdraw_path_last_point_fp
         }
     }
-    \fp_gset:Nn \g_qdraw_path_last_slope_fp { 
+    \fp_gset:Nn \g_qdraw_path_last_slope_fp {
         \qdraw_calculate_slope:VV \l__qdraw_point_b_fp \l__qdraw_point_a_fp
     }
     \fp_gset_eq:NN \g_qdraw_path_last_point_fp \l__qdraw_point_a_fp
@@ -546,17 +546,17 @@
         )
     }
     \draw_path_lineto:n {
-        \l__qdraw_point_b_fp 
+        \l__qdraw_point_b_fp
     }
     \draw_path_lineto:n {
         \l__qdraw_point_a_fp
     }
     \fp_if_nan:nT { \g_qdraw_path_first_slope_fp } {
-        \fp_gset:Nn \g_qdraw_path_first_slope_fp { 
+        \fp_gset:Nn \g_qdraw_path_first_slope_fp {
             \qdraw_calculate_slope:VV \l__qdraw_point_b_fp \g_qdraw_path_last_point_fp
         }
     }
-    \fp_gset:Nn \g_qdraw_path_last_slope_fp { 
+    \fp_gset:Nn \g_qdraw_path_last_slope_fp {
         \qdraw_calculate_slope:VV \l__qdraw_point_b_fp \l__qdraw_point_a_fp
     }
     \fp_gset_eq:NN \g_qdraw_path_last_point_fp \l__qdraw_point_a_fp
@@ -588,11 +588,11 @@
         \l__qdraw_point_b_fp
     }
     \fp_if_nan:nT { \g_qdraw_path_first_slope_fp } {
-        \fp_gset:Nn \g_qdraw_path_first_slope_fp { 
+        \fp_gset:Nn \g_qdraw_path_first_slope_fp {
             \qdraw_calculate_slope:VV \l__qdraw_point_a_fp \g_qdraw_path_last_point_fp
         }
     }
-    \fp_gset:Nn \g_qdraw_path_last_slope_fp { 
+    \fp_gset:Nn \g_qdraw_path_last_slope_fp {
         \qdraw_calculate_slope:VV \l__qdraw_point_a_fp \l__qdraw_point_b_fp
     }
     \fp_gset_eq:NN \g_qdraw_path_last_point_fp \l__qdraw_point_b_fp
@@ -611,11 +611,11 @@
         \l__qdraw_point_c_fp
     }
     \fp_if_nan:nT { \g_qdraw_path_first_slope_fp } {
-        \fp_gset:Nn \g_qdraw_path_first_slope_fp { 
+        \fp_gset:Nn \g_qdraw_path_first_slope_fp {
             \qdraw_calculate_slope:VV \l__qdraw_point_a_fp \g_qdraw_path_last_point_fp
         }
     }
-    \fp_gset:Nn \g_qdraw_path_last_slope_fp { 
+    \fp_gset:Nn \g_qdraw_path_last_slope_fp {
         \qdraw_calculate_slope:VV \l__qdraw_point_b_fp \l__qdraw_point_c_fp
     }
     \fp_gset_eq:NN \g_qdraw_path_last_point_fp \l__qdraw_point_c_fp
@@ -735,7 +735,7 @@
     }
     \bool_if:NTF \l_qdraw_path_arc_axes_bool {
         \fp_if_nan:nT { \g_qdraw_path_first_slope_fp } {
-            \fp_gset:Nn \g_qdraw_path_first_slope_fp { 
+            \fp_gset:Nn \g_qdraw_path_first_slope_fp {
                 atand(
                     \qdraw_fp_tuple_use_ii:V \l_qdraw_path_arc_vector_b_fp *
                     cosd( \l_qdraw_path_arc_angle_start_fp ) -
@@ -749,7 +749,7 @@
                 ) + 90
             }
         }
-        \fp_gset:Nn \g_qdraw_path_last_slope_fp { 
+        \fp_gset:Nn \g_qdraw_path_last_slope_fp {
             atand(
                 \qdraw_fp_tuple_use_ii:V \l_qdraw_path_arc_vector_b_fp *
                 cosd( \l_qdraw_path_arc_angle_end_fp ) -
@@ -764,7 +764,7 @@
         }
     } {
         \fp_if_nan:nT { \g_qdraw_path_first_slope_fp } {
-            \fp_gset:Nn \g_qdraw_path_first_slope_fp { 
+            \fp_gset:Nn \g_qdraw_path_first_slope_fp {
                 atand(
                     \l_qdraw_path_arc_radius_b_dim * (
                     - cosd( \l_qdraw_path_arc_angle_start_fp )
@@ -776,7 +776,7 @@
                 ) - 90
             }
         }
-        \fp_gset:Nn \g_qdraw_path_last_slope_fp { 
+        \fp_gset:Nn \g_qdraw_path_last_slope_fp {
             atand(
                 \l_qdraw_path_arc_radius_b_dim * (
                     - cosd( \l_qdraw_path_arc_angle_end_fp )
@@ -812,13 +812,13 @@
                 \qdraw_fp_tuple_use_i:V \l__qdraw_point_a_fp +
                 \l_qdraw_path_arc_radius_a_dim * (
                     cosd( \l_qdraw_path_arc_angle_end_fp ) -
-                    cosd( \l_qdraw_path_arc_angle_start_fp )   
+                    cosd( \l_qdraw_path_arc_angle_start_fp )
                 )
             ,
                 \qdraw_fp_tuple_use_ii:V \l__qdraw_point_a_fp +
                 \l_qdraw_path_arc_radius_b_dim * (
                     sind( \l_qdraw_path_arc_angle_end_fp ) -
-                    sind( \l_qdraw_path_arc_angle_start_fp )   
+                    sind( \l_qdraw_path_arc_angle_start_fp )
                 )
             )
         }

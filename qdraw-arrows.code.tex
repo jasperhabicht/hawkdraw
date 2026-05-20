@@ -12,6 +12,10 @@
 %
 % BOF
 
+\msg_new:nnn { qdraw } { arrow-unknown } {
+    Arrow ~ tip ~ `#1` ~ unknown.
+}
+
 \clist_new:N \l_qdraw_arrow_start_keys_clist
 \clist_new:N \l_qdraw_arrow_end_keys_clist
 
@@ -54,7 +58,9 @@
         \clist_clear:N \l_qdraw_path_use_clist
         \keys_set:nn { qdraw / path } {#4}
         \qdraw_set_path_options:
-        \use:c { qdraw_arrow_ #1 : }
+        \cs_if_exist_use:cF { qdraw_arrow_ #1 : } {
+            \msg_warning:nnn { qdraw } { arrow-unknown } {#1}
+        }
         \draw_path_use_clear:e { \clist_use:N \l_qdraw_path_use_clist }
     \draw_scope_end:
 }
@@ -92,8 +98,8 @@
 
 \cs_new_protected:Npn \qdraw_arrow_simple: {
     \draw_path_moveto:n { -3 , -3 }
-    \draw_path_curveto:nn { -0.75 , -0.75 } { 0 , 0 }
-    \draw_path_curveto:nn { 0.75 , -0.75 } { 3 , -3 }
+    \draw_path_curveto:nn { -0.5 , -1.25 } { 0 , 0 }
+    \draw_path_curveto:nn { 0.5 , -1.25 } { 3 , -3 }
 }
 
 \cs_new_protected:Npn \qdraw_arrow_straight: {
