@@ -765,37 +765,64 @@
     } {
         \fp_if_nan:nT { \g_qdraw_path_first_slope_fp } {
             \fp_gset:Nn \g_qdraw_path_first_slope_fp { 
-                \l_qdraw_path_arc_angle_start_fp - 180
+                atand(
+                    \l_qdraw_path_arc_radius_b_dim * (
+                    - cosd( \l_qdraw_path_arc_angle_start_fp )
+                    )
+                ,
+                    \l_qdraw_path_arc_radius_a_dim * (
+                        sind( \l_qdraw_path_arc_angle_start_fp )
+                    )
+                ) - 90
             }
         }
         \fp_gset:Nn \g_qdraw_path_last_slope_fp { 
-            \l_qdraw_path_arc_angle_end_fp
+            atand(
+                \l_qdraw_path_arc_radius_b_dim * (
+                    - cosd( \l_qdraw_path_arc_angle_end_fp )
+                )
+            ,
+                \l_qdraw_path_arc_radius_a_dim * (
+                    sind( \l_qdraw_path_arc_angle_end_fp )
+                )
+            ) + 90
         }
-    }        
-    % iffalse
-    % \fp_set_eq:NN \l__qdraw_point_a_fp \g_qdraw_path_last_point_fp
-    % \bool_if:NTF \l_qdraw_path_arc_axes_bool {
-    %     % ?
-    % } {
-    %     % not precise
-    %     \fp_gset:Nn \g_qdraw_path_last_point_fp {
-    %         (
-    %             \qdraw_fp_tuple_use_i:V \l__qdraw_point_a_fp +
-    %             \l_qdraw_path_arc_radius_a_dim * (
-    %                 cosd( \l_qdraw_path_arc_angle_end_fp ) - cosd( \l_qdraw_path_arc_angle_start_fp )
-    %             )
-    %         ,
-    %             \qdraw_fp_tuple_use_ii:V \l__qdraw_point_a_fp +
-    %             \l_qdraw_path_arc_radius_b_dim * (
-    %                 cosd ( \l_qdraw_path_arc_angle_end_fp ) - cosd( \l_qdraw_path_arc_angle_start_fp )
-    %             )
-    %         )
-    %     }
-    % }
-    % fi
-    % better not use internal variables here, but we need to update the last point
-    % points are transformed too much if arc axes are used
-    \fp_gset:Nn \g_qdraw_path_last_point_fp { ( \g__draw_path_lastx_dim , \g__draw_path_lasty_dim ) }
+    }
+    \fp_set_eq:NN \l__qdraw_point_a_fp \g_qdraw_path_last_point_fp
+    \bool_if:NTF \l_qdraw_path_arc_axes_bool {
+        \group_begin:
+            \draw_transform_triangle:nnn { \l__qdraw_point_a_fp } {
+                \l_qdraw_path_arc_vector_a_fp
+            } {
+                \l_qdraw_path_arc_vector_b_fp
+            }
+            \fp_gset:Nn \g_qdraw_path_last_point_fp {
+                \draw_point_transform:n {
+                    cosd( \l_qdraw_path_arc_angle_end_fp ) -
+                    cosd( \l_qdraw_path_arc_angle_start_fp )
+                ,
+                    sind( \l_qdraw_path_arc_angle_end_fp ) -
+                    sind( \l_qdraw_path_arc_angle_start_fp )
+                }
+            }
+        \group_end:
+    } {
+        \fp_gset:Nn \g_qdraw_path_last_point_fp {
+            (
+                \qdraw_fp_tuple_use_i:V \l__qdraw_point_a_fp +
+                \l_qdraw_path_arc_radius_a_dim * (
+                    cosd( \l_qdraw_path_arc_angle_end_fp ) -
+                    cosd( \l_qdraw_path_arc_angle_start_fp )   
+                )
+            ,
+                \qdraw_fp_tuple_use_ii:V \l__qdraw_point_a_fp +
+                \l_qdraw_path_arc_radius_b_dim * (
+                    sind( \l_qdraw_path_arc_angle_end_fp ) -
+                    sind( \l_qdraw_path_arc_angle_start_fp )   
+                )
+            )
+        }
+    }
     \tl_trim_spaces_apply:nN {#3} \__qdraw_continue_path:n
 }
 
