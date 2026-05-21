@@ -1,0 +1,265 @@
+% File: hawkdraw-nodes.code.tex
+% Copyright 2026 Jasper Habicht (mail(at)jasperhabicht.de).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License version 1.3c,
+% available at http://www.latex-project.org/lppl/.
+%
+% This file is part of the `hawkdraw' package (The Work in LPPL)
+% and all files in that bundle must be distributed together.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% BOF
+
+\msg_new:nnn { hawkdraw } { node-unknown } {
+    Node ~ frame ~ `#1` ~ unknown.
+}
+
+\bool_new:N \l__hawkdraw_node_vbox_bool
+\coffin_new:N \l_hawkdraw_node_coffin
+\coffin_new:N \l_hawkdraw_node_frame_coffin
+
+\fp_new:N \l_hawkdraw_node_at_fp
+\tl_new:N \l_hawkdraw_node_name_tl
+\clist_new:N \l_hawkdraw_node_anchor_clist
+\dim_new:N \l_hawkdraw_node_width_dim
+\clist_new:N \l_hawkdraw_node_padding_clist
+\dim_new:N \l_hawkdraw_node_padding_left_dim
+\dim_new:N \l_hawkdraw_node_padding_right_dim
+\dim_new:N \l_hawkdraw_node_padding_top_dim
+\dim_new:N \l_hawkdraw_node_padding_bottom_dim
+\str_new:N \l_hawkdraw_node_text_color_str
+\str_new:N \l_hawkdraw_node_frame_str
+
+\cs_generate_variant:Nn \draw_coffin_use:Nnnn { NeeV }
+\cs_generate_variant:Nn \coffin_attach:NnnNnnnn { NnnNnnVV }
+
+\keys_define:nn { hawkdraw / path / node } {
+    at                      .fp_set:N       = \l_hawkdraw_node_at_fp ,
+    name                    .tl_set:N       = \l_hawkdraw_node_name_tl ,
+    anchor                  .clist_set:N    = \l_hawkdraw_node_anchor_clist ,
+    anchor                  .initial:n      = { hc , vc } ,
+    width                   .code:n         = {
+        \bool_set_true:N \l__hawkdraw_node_vbox_bool
+        \dim_set:Nn \l_hawkdraw_node_width_dim {#1}
+    } ,
+    padding                 .clist_set:N    = \l_hawkdraw_node_padding_clist ,
+    padding                 .initial:n      = { 5pt } ,
+    text ~ color            .str_set:N      = \l_hawkdraw_node_text_color_str ,
+    text ~ color            .initial:n      = { . } ,
+    frame                   .str_set:N      = \l_hawkdraw_node_frame_str ,
+    frame                   .initial:n      = { rectangle } ,
+}
+
+\cs_new_protected:cpn { __hawkdraw_process_path_ n :w } node #1#2 \s__hawkdraw_stop {
+    \cs_if_exist_use:cTF {
+        __hawkdraw_process_path_node_ \tl_head:n {#1} :w
+    } {
+        #1#2 \s__hawkdraw_stop
+    } {
+        \hawkdraw_put_node:nn { } {#1}
+        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_continue_path:n
+    }
+}
+
+\cs_new_protected:cpn { __hawkdraw_process_path_node_ [ :w } [ #1 ] #2#3 \s__hawkdraw_stop {
+    \hawkdraw_put_node:nn {#1} {#2}
+    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_continue_path:n
+}
+
+\cs_new_protected:Npn \hawkdraw_put_node:nn #1#2 {
+    \draw_scope_begin:
+        \fp_set_eq:NN \l_hawkdraw_node_at_fp \g_hawkdraw_path_last_point_fp
+        \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
+        \keys_set_known:nnN { hawkdraw / path / node } {#1}
+            \l__hawkdraw_keys_unprocessed_clist
+        \tl_if_blank:nF \l_hawkdraw_node_name_tl {
+            \prop_gput:cVV { g__hawkdraw_points_ \int_use:N \g_hawkdraw_id_int _prop }
+                \l_hawkdraw_node_name_tl
+                \l_hawkdraw_node_at_fp
+        }
+        \bool_if:NTF \l__hawkdraw_node_vbox_bool {
+            \vcoffin_set:Nnn \l_hawkdraw_node_coffin {
+                \l_hawkdraw_node_width_dim
+            } {
+                \color_select:V \l_hawkdraw_node_text_color_str
+                \normalfont #2
+            }
+        } {
+            \hcoffin_set:Nn \l_hawkdraw_node_coffin {
+                \color_select:V \l_hawkdraw_node_text_color_str
+                \normalfont #2
+            }
+        }
+        \__hawkdraw_set_node_padding:
+        \__hawkdraw_set_node_frame:V \l__hawkdraw_keys_unprocessed_clist
+        \coffin_attach:NnnNnnnn
+            \l_hawkdraw_node_frame_coffin { hc } { vc }
+            \l_hawkdraw_node_coffin { hc } { vc }
+            { 0.5 \l_hawkdraw_node_padding_left_dim - 0.5 \l_hawkdraw_node_padding_right_dim }
+            { 0.5 \l_hawkdraw_node_padding_bottom_dim - 0.5 \l_hawkdraw_node_padding_top_dim }
+        \exp_args:Ne
+        \draw_coffin_use:NeeV \l_hawkdraw_node_frame_coffin {
+            \clist_item:Nn \l_hawkdraw_node_anchor_clist { 1 }
+        } {
+            \clist_item:Nn \l_hawkdraw_node_anchor_clist { 2 }
+        } \l_hawkdraw_node_at_fp
+    \draw_scope_end:
+}
+
+\cs_new_protected:Npn \__hawkdraw_set_node_padding: {
+    \int_case:nn { \clist_count:N \l_hawkdraw_node_padding_clist } {
+        { 1 } {
+            \dim_set:Nn \l_hawkdraw_node_padding_left_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_right_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_top_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_bottom_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
+            }
+        }
+        { 2 } {
+            \dim_set:Nn \l_hawkdraw_node_padding_left_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 2 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_right_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 2 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_top_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_bottom_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
+            }
+        }
+        { 3 } {
+            \dim_set:Nn \l_hawkdraw_node_padding_left_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 2 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_right_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 2 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_top_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_bottom_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 3 }
+            }
+        }
+        { 4 } {
+            \dim_set:Nn \l_hawkdraw_node_padding_left_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 4 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_right_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 2 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_top_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
+            }
+            \dim_set:Nn \l_hawkdraw_node_padding_bottom_dim {
+                \clist_item:Nn \l_hawkdraw_node_padding_clist { 3 }
+            }
+        }
+    }
+}
+
+\cs_new_protected:Npn \__hawkdraw_set_node_frame:n #1 {
+    \hcoffin_set:Nn \l_hawkdraw_node_frame_coffin {
+        \draw_suspend_begin:
+            \draw_begin:
+                \keys_set:nn { hawkdraw / path } {#1}
+                \hawkdraw_set_path_options:
+                \cs_if_exist_use:cTF { hawkdraw_node_frame_ \l_hawkdraw_node_frame_str :NVVVV } {
+                    \l_hawkdraw_node_coffin
+                    \l_hawkdraw_node_padding_left_dim
+                    \l_hawkdraw_node_padding_right_dim
+                    \l_hawkdraw_node_padding_top_dim
+                    \l_hawkdraw_node_padding_bottom_dim
+                } {
+                    \msg_warning:nnV { hawkdraw } { node-unknown } \l_hawkdraw_node_frame_str
+                }
+                \clist_remove_duplicates:N \l_hawkdraw_path_use_clist
+                \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }
+            \draw_end:
+        \draw_suspend_end:
+    }
+}
+\cs_generate_variant:Nn \__hawkdraw_set_node_frame:n { V }
+
+\dim_new:N \hawkdraw_node_natural_width_dim
+\dim_new:N \hawkdraw_node_natural_height_dim
+
+\cs_new_protected:Npn \hawkdraw_node_create_frame:nn #1#2 {
+    \cs_new_protected:cpn { hawkdraw_node_frame_ #1 :Nnnnn } ##1##2##3##4##5 {
+        \dim_set:Nn \hawkdraw_node_natural_width_dim {
+            \coffin_wd:N ##1 + ##2 + ##3
+        }
+        \dim_set:Nn \hawkdraw_node_natural_height_dim {
+            \coffin_ht_plus_dp:N ##1 + ##4 + ##5
+        }    
+        #2
+    }
+    \cs_generate_variant:cn { hawkdraw_node_frame_ #1 :Nnnnn } { NVVVV }
+}
+
+% ===
+
+\hawkdraw_node_create_frame:nn { none } { }
+
+\hawkdraw_node_create_frame:nn { rectangle } {
+    \draw_path_rectangle:nn {
+        (
+            -0.5 * \hawkdraw_node_natural_width_dim
+        ,
+            -0.5 * \hawkdraw_node_natural_width_dim
+        )
+    } {
+        (
+            \hawkdraw_node_natural_width_dim
+        ,
+            \hawkdraw_node_natural_height_dim
+        )
+    }
+}
+
+\hawkdraw_node_create_frame:nn { ellipse } {
+    \draw_path_ellipse:nnn { 0pt , 0pt } {
+        ( 0.5 * \hawkdraw_node_natural_width_dim , 0pt )
+    } {
+        ( 0pt , 0.5 * \hawkdraw_node_natural_height_dim )
+    }
+}
+
+\hawkdraw_node_create_frame:nn { circle } {
+    \draw_path_circle:nn { 0pt , 0pt } {
+        max(
+            0.5 * \hawkdraw_node_natural_width_dim
+        ,
+            0.5 * \hawkdraw_node_natural_height_dim
+        )
+    }
+}
+
+\hawkdraw_node_create_frame:nn { diamond } {
+    \draw_path_moveto:n {
+        ( 0pt , \hawkdraw_node_natural_height_dim )
+    }
+    \draw_path_lineto:n {
+        ( \hawkdraw_node_natural_width_dim , 0pt )
+    }
+    \draw_path_lineto:n {
+        ( 0pt , -1 * \hawkdraw_node_natural_height_dim )
+    }
+    \draw_path_lineto:n {
+        ( -1 * \hawkdraw_node_natural_width_dim , 0pt )
+    }
+    \draw_path_close:
+}
+
+% EOF

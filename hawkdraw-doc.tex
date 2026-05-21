@@ -1,18 +1,18 @@
-% File: qdraw-doc.tex
+% File: hawkdraw-doc.tex
 % Copyright 2026 Jasper Habicht (mail(at)jasperhabicht.de).
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License version 1.3c,
 % available at http://www.latex-project.org/lppl/.
 %
-% This file is part of the `qdraw' package (The Work in LPPL)
+% This file is part of the `hawkdraw' package (The Work in LPPL)
 % and all files in that bundle must be distributed together.
 %
 % This work has the LPPL maintenance status `maintained'.
 %
 \documentclass[a4paper]{article}
-\def\qdrawfileversion{0.0.5}
-\def\qdrawfiledate{18 May 2026}
+\def\hawkdrawfileversion{0.0.5}
+\def\hawkdrawfiledate{18 May 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -24,7 +24,7 @@
 \DeclareSIUnit{\point}{pt}
 \urlstyle{same}
 
-\usepackage{qdraw}
+\usepackage{hawkdraw}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -49,7 +49,7 @@
 \makeatother
 
 \tcbuselibrary{skins,listings}
-\lstdefinestyle{qdrawdocmacro}{
+\lstdefinestyle{hawkdrawdocmacro}{
   basicstyle=\small\ttfamily,
   literate=*{<}{{{\color{black!50}\guilsinglleft}}}1
     {>}{{{\color{black!50}\guilsinglright}}}1,
@@ -58,14 +58,14 @@
   moredelim=[is][\bfseries\itshape]{?}{?},
   moredelim=[is][\color{black!50}]{!}{!},
 }
-\lstdefinestyle{qdrawdocmacroalt}{
+\lstdefinestyle{hawkdrawdocmacroalt}{
   basicstyle=\small\ttfamily,
   literate=*{<}{{{\color{black!50}\guilsinglleft}}}1
     {>}{{{\color{black!50}\guilsinglright}}}1,
   keywords={},
   moredelim=[is][\bfseries]{!}{!},
 }
-\lstdefinestyle{qdrawdoccodeexample}{
+\lstdefinestyle{hawkdrawdoccodeexample}{
   basicstyle=\small\ttfamily,
   keywords={},
 }
@@ -73,45 +73,45 @@
 \hypersetup{colorlinks}
 
 \ExplSyntaxOn
-\int_new:N \l_qdraw_doc_change_int
+\int_new:N \l_hawkdraw_doc_change_int
 \NewDocumentCommand{\changes}{ m m m }{
-  \int_incr:N \l_qdraw_doc_change_int
-  \prop_new:c { l_qdraw_doc_change_
-    \int_to_roman:n { \l_qdraw_doc_change_int } _prop }
-  \prop_put:cnn { l_qdraw_doc_change_
-    \int_to_roman:n { \l_qdraw_doc_change_int } _prop } { version } {#1}
-  \prop_put:cnn { l_qdraw_doc_change_
-    \int_to_roman:n { \l_qdraw_doc_change_int } _prop } { date } {#2}
-  \prop_put:cnn { l_qdraw_doc_change_
-    \int_to_roman:n { \l_qdraw_doc_change_int } _prop } { changes } {#3}
+  \int_incr:N \l_hawkdraw_doc_change_int
+  \prop_new:c { l_hawkdraw_doc_change_
+    \int_to_roman:n { \l_hawkdraw_doc_change_int } _prop }
+  \prop_put:cnn { l_hawkdraw_doc_change_
+    \int_to_roman:n { \l_hawkdraw_doc_change_int } _prop } { version } {#1}
+  \prop_put:cnn { l_hawkdraw_doc_change_
+    \int_to_roman:n { \l_hawkdraw_doc_change_int } _prop } { date } {#2}
+  \prop_put:cnn { l_hawkdraw_doc_change_
+    \int_to_roman:n { \l_hawkdraw_doc_change_int } _prop } { changes } {#3}
 }
 \NewDocumentCommand{\printchanges}{ }{
   \section{Changes}
   \begin{description}
     \setlength\itemsep{0pt}
-    \int_step_inline:nn { \l_qdraw_doc_change_int } {
+    \int_step_inline:nn { \l_hawkdraw_doc_change_int } {
       \item[
-        \prop_item:cn { l_qdraw_doc_change_
+        \prop_item:cn { l_hawkdraw_doc_change_
         \int_to_roman:n { ##1 } _prop } { version } ~
         \normalfont{ (
-          \prop_item:cn { l_qdraw_doc_change_
+          \prop_item:cn { l_hawkdraw_doc_change_
           \int_to_roman:n { ##1 } _prop } { date }
         ) }
       ]
-      \prop_item:cn { l_qdraw_doc_change_
+      \prop_item:cn { l_hawkdraw_doc_change_
       \int_to_roman:n { ##1 } _prop } { changes }
     }
   \end{description}
 }
 
-\tl_new:N \l_qdraw_doc_doctitle_tl
+\tl_new:N \l_hawkdraw_doc_doctitle_tl
 \NewExpandableDocumentCommand{\makedoctitle}{ o m o m m o m }{
   \hypersetup{
     pdfauthor={#5},
     pdftitle={\IfValueTF{#1}{#1}{#2}},
     pdfsubject={\IfValueTF{#3}{#3}{#4}}
   }
-  \tl_set:Nn \l_qdraw_doc_doctitle_tl {
+  \tl_set:Nn \l_hawkdraw_doc_doctitle_tl {
     \group_begin:
       \tcbset{
         title ~ style ~ hook/.style={
@@ -133,7 +133,7 @@
 }
 
 \NewExpandableDocumentCommand{\printdoctitle}{ }{
-  \tl_use:N \l_qdraw_doc_doctitle_tl
+  \tl_use:N \l_hawkdraw_doc_doctitle_tl
 }
 \ExplSyntaxOff
 
@@ -169,7 +169,7 @@
 
 \NewTCBListing{macrodef}{ s o O{} }{
   listing only,
-  listing style={qdrawdocmacro},
+  listing style={hawkdrawdocmacro},
   grow to left by=2cm,
   boxrule=0pt,
   after={\par\smallskip\noindent},
@@ -187,20 +187,20 @@
 
 \NewTCBListing{codeexample}{ }{
   listing only,
-  listing style={qdrawdoccodeexample},
+  listing style={hawkdrawdoccodeexample},
   after={\par\smallskip\noindent}
 }
 
 \NewTCBListing{codeexamplecolumns}{ }{
   text side listing,
   lefthand width=2.5cm,
-  listing style={qdrawdoccodeexample},
+  listing style={hawkdrawdoccodeexample},
   after={\par\smallskip\noindent}
 }
 
 \NewTCBListing{macrodeprecated}{ s }{
   listing only,
-  listing style={qdrawdocmacro},
+  listing style={hawkdrawdocmacro},
   boxrule=0pt,
   width={0.5\linewidth-2.5pt},
   box align=top,
@@ -220,7 +220,7 @@
 
 \NewTCBListing{macroreplacement}{ }{
   listing only,
-  listing style={qdrawdocmacro},
+  listing style={hawkdrawdocmacro},
   boxrule=0pt,
   width={0.5\linewidth-2.5pt},
   box align=top,
@@ -262,14 +262,14 @@
   #2
 }{\vphantom{/g}\IfBooleanT{#1}{\textbackslash}#3}
 
-\usepackage{qdraw}
+\usepackage{hawkdraw}
 
 \makedoctitle
-  [The qdraw package]
-  {The \titlemacro{qdraw} package}
+  [The hawkdraw package]
+  {The \titlemacro{hawkdraw} package}
   {A LaTeX package to generate vector graphic output based on the l3draw package and related LaTeX3 modules using a simple syntax}
   {Jasper Habicht}[E-mail: \href{mailto:mail@jasperhabicht.de}{mail@jasperhabicht.de}. I am grateful to Joseph Wright, Max Chernoff and Clea F. Rees who helped me improving the code.]
-  {Version \qdrawfileversion, released on \qdrawfiledate}
+  {Version \hawkdrawfileversion, released on \hawkdrawfiledate}
 
 \changes{v0.0.5}{2026/05/18}{First public alpha release.}
 
@@ -282,11 +282,11 @@
 
 The package intends to define a set of user-level commands that can be used for drawing simple graphics based on the \macro{l3draw} package and related LaTeX3 modules. It does not aim to become a substitute for the Ti\emph{k}Z package or to offer a similar scope of application.
 
-The package is currently still in an experimental stage. The code may be subject to fundamental and frequent changes. The author is grateful for reporting any bugs via GitHub at \url{https://github.com/jasperhabicht/qdraw/issues}. A site for asking questions about the package and for suggestions for improvement is available at \url{https://github.com/jasperhabicht/qdraw/discussions}.
+The package is currently still in an experimental stage. The code may be subject to fundamental and frequent changes. The author is grateful for reporting any bugs via GitHub at \url{https://github.com/jasperhabicht/hawkdraw/issues}. A site for asking questions about the package and for suggestions for improvement is available at \url{https://github.com/jasperhabicht/hawkdraw/discussions}.
 
 \section{Loading the package}
 
-To install the package, copy the package file \macro{qdraw.sty} into the working directory or into the \macro{texmf} directory. After the package has been installed, the \macro{qdraw} package is loaded by calling \macro{\usepackage{qdraw}} in the preamble of the document.
+To install the package, copy the package file \macro{hawkdraw.sty} into the working directory or into the \macro{texmf} directory. After the package has been installed, the \macro{hawkdraw} package is loaded by calling \macro{\usepackage{hawkdraw}} in the preamble of the document.
 
 The package can be used with PDFLaTeX, LuaLaTeX or XeLaTeX. The package does not load any dependencies, but it needs a LaTeX kernel of 1 June 2022 or newer. It is recommended to use the package with an up-to-date TeX distribution.
 
@@ -294,9 +294,9 @@ Note that the underlying code of the \macro{l3draw} package is experimental as w
 
 \section{Main user environment}
 
-The package has only very few main user commands. Among these, the \macro{qdraw} environment is the most important as it is used to define a drawing and most other commands are only defined inside this environment.
+The package has only very few main user commands. Among these, the \macro{hawkdraw} environment is the most important as it is used to define a drawing and most other commands are only defined inside this environment.
 
-Similar to Ti\emph{k}Z, the \macro{qdraw} package makes use of key-value pairs to set options for commands. Some options are available for almost all commands, other have very specific uses. In the descriptions of the options, this manual states which data type the relevant option assumes. The following data types exist:
+Similar to Ti\emph{k}Z, the \macro{hawkdraw} package makes use of key-value pairs to set options for commands. Some options are available for almost all commands, other have very specific uses. In the descriptions of the options, this manual states which data type the relevant option assumes. The following data types exist:
 
 \begin{longtable}{ @{} p{2.5cm} p{\dimexpr\textwidth-\tabcolsep-2.5cm} @{} }
   \toprule
@@ -308,16 +308,17 @@ Similar to Ti\emph{k}Z, the \macro{qdraw} package makes use of key-value pairs t
   \macro{tuple} & A tuple consists of two floating-point numbers without or with unit that are separated by a comma. A tuple may be enclosed by parenthesis. \\
   \macro{dimension} & A dimension or length is a typical TeX length consisting of a floating point number and a length unit. \\
   \macro{clist} & A comma-separated list is a list of strings that are separated by commas. Such a list can cosnist of no or only one item as well. If the relevant list can only have a maximum number of items, this is stated in the description of the relevant key. \\
-  \macro{color} & This means a color definition as specified by the \macro{l3color} module. Note that colors defined by the \macro{xcolor} package have no effect when using the \macro{qdraw} package. \\
+  \macro{options} & A key-value list consists of comma separated entities of keys that may be followed by an equals sign and a value. A value can be another key-value list. \\ 
+  \macro{color} & This means a color definition as specified by the \macro{l3color} module. Note that colors defined by the \macro{xcolor} package have no effect when using the \macro{hawkdraw} package. \\
   \emph{none} & Some keys do not accept any data type as they are only executing some function. \\
   \bottomrule
 \end{longtable}
 
 \begin{macrodef}
-\\\begin{|qdraw|}[<options>]
-\end{|qdraw|}
+\\\begin{|hawkdraw|}[<options>]
+\end{|hawkdraw|}
 \end{macrodef}
-The \macro{qdraw} environment is the main environment for drawing. It defines most other commands described in the following sections. The following options can be set for the \macro{qdraw} environment:
+The \macro{hawkdraw} environment is the main environment for drawing. It defines most other commands described in the following sections. The following options can be set for the \macro{hawkdraw} environment:
 
 \begin{macrodef}
 !instance/!|baseline|={<dimension>}
@@ -336,10 +337,10 @@ The option \macro{overlay} sets the environment to have a zero-sized bounding bo
 
 \begin{codeexamplecolumns}
 foo
-\begin{qdraw}[overlay, baseline={0.5ex}]
+\begin{hawkdraw}[overlay, baseline={0.5ex}]
   \stroke[stroke color={blue}]
     (0cm,0cm) circle[radius={0.5cm}] ;
-\end{qdraw}
+\end{hawkdraw}
 bar
 \end{codeexamplecolumns}
 
@@ -349,16 +350,16 @@ bar
 \\\begin{|scope|}[<options>]
 \end{|scope|}
 \end{macrodef}
-The \macro{scope} environment is only available inside the \macro{qdraw} environment. It can be used to create scopes for the localization of path states, style settings and clipping regions. 
+The \macro{scope} environment is only available inside the \macro{hawkdraw} environment. It can be used to create scopes for the localization of path states, style settings and clipping regions. 
 
 \begin{codeexamplecolumns}
-\begin{qdraw}[fill color={blue}]
+\begin{hawkdraw}[fill color={blue}]
   \fill (0cm,0cm) circle[radius={5pt}] ;
   \begin{scope}[fill color={black}]
     \fill (1cm,0cm) circle[radius={5pt}] ;
   \end{scope}
   \fill (2cm,0cm) circle[radius={5pt}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -367,13 +368,13 @@ The \macro{scope} environment is only available inside the \macro{qdraw} environ
 The option \macro{layer} sets the scope to be placed on the relevant layer. The layer must be defined beforehand using the \macro{layers} option.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}[layers={background,main}]
+\begin{hawkdraw}[layers={background,main}]
   \fill[fill color={blue}]
     (0cm,0cm) circle[radius={0.5cm}] ;
   \begin{scope}[layer={background}]
     \fill (0.5cm,0cm) circle[radius={0.5cm}] ;
   \end{scope}
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \section{Path syntax}
@@ -383,12 +384,12 @@ The option \macro{layer} sets the scope to be placed on the relevant layer. The 
 \begin{macrodef}
 |\path| <path operations> ;
 \end{macrodef}
-The command \macro{\path} is used to to draw a path inside the \macro{qdraw} environment. The path is defined by a sequence of points and path construction operations. Each \macro{\path} command must end with a semicolon. The following operations can be used to construct the path:
+The command \macro{\path} is used to to draw a path inside the \macro{hawkdraw} environment. The path is defined by a sequence of points and path construction operations. Each \macro{\path} command must end with a semicolon. The following operations can be used to construct the path:
 
 \begin{macrodef}
 |[|<options>|]|
 \end{macrodef}
-Options can be for the path using square brackets. The options are the same as for \macro{\qdrawset}. Options can be set multiple times for the same path after any point on the path. Some options (such as color options or transformations) will apply to the entire path and the last specified value will be used.
+Options can be for the path using square brackets. The options are the same as for \macro{\hawkdrawset}. Options can be set multiple times for the same path after any point on the path. Some options (such as color options or transformations) will apply to the entire path and the last specified value will be used.
 
 \subsection{Points on the path}
 
@@ -397,29 +398,29 @@ Generally, the package makes use of the \macro{l3fp} module of the LaTeX kernel.
 It is advisable to enclose the two expressions of the tuple in curly braces in cases where complicated calculations should be executed in order to create a group to ensure proper evaluation and avoiding conflicts with parsing the coordinates, especially when using a syntax for polar points as described below.
 
 \begin{macrodef}
-|(|<a>|,|<b>|)|
+|(|<float>|,|<float>|)|
 \end{macrodef}
-Points on the path can be defined using x and y parts. The first item in the tuple is the x-coordinate, and the second item is the y-coordinate.
+Points on the path can be defined using x and y parts as floating-point numbers. The first item in the tuple is the x-coordinate, and the second item is the y-coordinate.
 
-Points are per default defined as tuples representing the x- and y-coordinate. If floating-point numbers without unit are used, points are assumed per default. If other units are use, these are converted into points internally. The below alternative representations of points are as well calculated into the default tuple representation:
+Points are per default defined as tuples representing the x- and y-coordinate. If floating-point numbers without unit are used, points are assumed per default. If other units are used, these are converted into points internally. The below alternative representations of points are as well calculated into the default tuple representation:
 
 \begin{macrodef}
-|(|<a>|>|<b>|)|
-|(|<a>|,|<b>|>|<c>|)|
+|(|<float>|>|<float|)|
+|(|<float|,|<float>|>|<float>|)|
 \end{macrodef}
-Points on the path can also be defined using radius and angle parts. The first item in the tuple is the radius and the second item is the angle. The first item can contain a comma to define two radii.
+Points on the path can also be defined using radius and angle parts as floating-point numbers. The first item in the tuple is the radius and the second item is the angle. The first item can contain a comma to define two radii.
 
 
 \begin{macrodef}
-|(|<a>|:|<b>|)|
-|(|<a>|:|<b>|,|<c>|)|
+|(|<float>|:|<float>|)|
+|(|<float>|:|<float>|,|<float>|)|
 \end{macrodef}
-Points on the path can also be defined using radius and angle parts in reversed order. The first item in the tuple is the angle, and the second item is the radius. The seocnd item can contain a comma to define two radii.
+Points on the path can also be defined using radius and angle parts as floating-point numbers in reversed order. The first item in the tuple is the angle, and the second item is the radius. The seocnd item can contain a comma to define two radii.
 
 \begin{macrodef}[macro:point]
-|(|<name>|)|
+|(|<string>|)|
 \end{macrodef}
-Points on the path can finally be referenced using names. Points on the path can be named by either using the \macro{point} or the \macro{node} operation with the given name set via the \macro{nname} option (see \hyperlink{operation:point}{below}).
+Points on the path can finally be referenced using names as strings. Points on the path can be named by either using the \macro{point} or the \macro{node} operation with the given name set via the \macro{nname} option (see \hyperlink{operation:point}{below}).
 
 \subsection{Path operations}
 
@@ -429,30 +430,30 @@ Points on the path can finally be referenced using names. Points on the path can
 Using \macro{--} a line to the next point is drawn.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     -- (2cm,1cm) ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
-\begin{macrodef}[][listing style={qdrawdocmacroalt}]
+\begin{macrodef}[][listing style={hawkdrawdocmacroalt}]
 !|-! (<point>)
 !-|! (<point>)
 \end{macrodef}
 Using \macro{|-} a vertical, then horizontal line to the next point is drawn. Using \macro{-|} a vertical, then horizontal line to the next point is drawn.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     |- (2cm,1cm) ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     -| (2cm,1cm) ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -462,19 +463,19 @@ Using \macro{|-} a vertical, then horizontal line to the next point is drawn. Us
 The above syntax draws a curve to the next point with a single control point or with two control points.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     .. (1cm,1cm) 
     .. (2cm,1cm);
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     .. (0cm,0.5cm) & (1cm,1cm)
     .. (2cm,1cm);
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -483,11 +484,11 @@ The above syntax draws a curve to the next point with a single control point or 
 Using \macro{!} the path is closed by drawing a line from the last point to the first point.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     -- (2cm,1cm) 
     -- (0cm,1cm) ! ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \bigskip 
@@ -505,10 +506,10 @@ Using the \macro{circle} operation, a circle is drawn with the current point as 
 The radius is specified as a dimension with the \macro{radius} option.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     circle[radius={1cm}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -525,23 +526,23 @@ Using the \macro{ellipse} operation, an ellipse is drawn with the current point 
 The vectors of the ellipse are specified as tuples of dimensions with the \macro{vector a} and \macro{vector b} options. ALternatively, the options \macro{radius a} and \macro{radius b} can be used to define the radii in the x- and y-dimension.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     ellipse[
       radius a={0.5cm},
       radius b={1cm}
     ] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     ellipse[
       vector a={(0.5cm,1cm)},
       vector b={(0.75cm,0cm)}
     ] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -561,18 +562,18 @@ Using the \macro{arc} operation, an arc is drawn with the current point as origi
 The vectors of the arc are specified as tuples of dimensions with the \macro{vector a} and \macro{vector b} options. ALternatively, the options \macro{radius a} and \macro{radius b} can be used to define the radii in the x- and y-dimension. The angles are specified as dimensions with the \macro{start angle} and \macro{end angle} options. Instead of the \macro{angle end} option, the option \macro{angle delta} can be used.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     arc[
       radius={1cm},
       angle start={45},
       angle end={135}
     ] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     arc[
       radius a={0.5cm},
@@ -580,11 +581,11 @@ The vectors of the arc are specified as tuples of dimensions with the \macro{vec
       angle start={45},
       angle delta={90}
     ] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     arc[
       vector a={(0.5cm,1cm)},
@@ -592,7 +593,7 @@ The vectors of the arc are specified as tuples of dimensions with the \macro{vec
       angle start={45},
       angle end={135}
     ] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -607,10 +608,10 @@ Using the \macro{rectangle} operation, an rectangle with the current point as or
 The other corner of the rectangle is specified as a point (a tuple) with the \macro{corner} option. If the boolean option \macro{relative} is set, the corner point is interpreted as relative to the current point instead of absolute.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     rectangle[corner={(2cm,1cm)}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -626,17 +627,17 @@ Using the \macro{grid} operation, a grid with the current point as origin corner
 The step is specified as a comma-separated list of at most two dimensions with the \macro{step} option. The first item in the tuple is the step in the x-direction, and the second item is the step in the y-direction. If only one dimension is given, it is used for both directions. The other corner is specified as a point (a tuple) with the \macro{corner} option. 
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     grid[step={10pt}, corner={(2cm,1cm)}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     grid[step={5pt,10pt}, corner={(2cm,1cm)}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \subsection{Points and nodes}
@@ -655,10 +656,10 @@ The position of the point can be adjusted with the \macro{at} option which accep
 The command \macro{\point} is a shortcut for \macro{\path (0pt, 0pt) point}
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path (0,0) point[name={A}, at={(2cm,0.5cm)}] ;
   \path[stroke] (0cm,0cm) -- (A) -- (0cm,1cm) ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -674,16 +675,16 @@ Using the \macro{node} operation, a node at the current position is defined and 
 The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. The node can be named by setting the \macro{name} option.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \node {foo} ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke (0cm,0cm) -- (1cm,0.5cm)
     node[anchor={t,l}, stroke] {foo} ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -692,10 +693,10 @@ The position of the node can be adjusted with the \macro{at} option which accept
 The width of the node can be set with the \macro{width} option.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke (0cm,0cm) -- (1cm,0.5cm)
     node[stroke, width={1cm}] {foo} ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -704,7 +705,7 @@ The width of the node can be set with the \macro{width} option.
 Using the \macro{padding} option, the padding between the border of the node and the contents is set. The value is a comma-separated list of one to four dimensions. If four dimensions are given, they apply to the top, left, bottom and right side of the node respectively. If three dimensions are given, the first apples to the top, the second to the left and right side, the third to the bottom. If two dimensions are given, the first applies to the top and bottom and the second to the left and right sides. If only one dimension is given, it is appled to all four sides.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \node[
     stroke,
     at={(0cm,2cm)},
@@ -725,7 +726,7 @@ Using the \macro{padding} option, the padding between the border of the node and
     at={(1.5cm,0cm)},
     padding={5pt,10pt,15pt,0pt}
   ] {foo} ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -740,14 +741,14 @@ Using the \macro{text color} option, the color of the node contents is set. The 
 Using the \macro{frame} command, the frame surrounding the node text can be selected. The frame \macro{rectangle} is set per default. All options that are available for paths are also available for node frames.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke (0cm,0cm) -- (1cm,0.5cm)
     node[
       fill, fill color={yellow},
       text color={blue},
       frame={ellipse}
     ] {foo} ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 The command \macro{\node} is a shortcut for \macro{\path (0pt,0pt) node}
@@ -755,10 +756,10 @@ The command \macro{\node} is a shortcut for \macro{\path (0pt,0pt) node}
 The following node frames are available, the frame \macro{none} is special as it removes the bounding box from the node altogether:
 
 \NewDocumentCommand{\nodeframe}{ O{0.5ex} m }{%
-  \begin{qdraw}[baseline={#1}]
+  \begin{hawkdraw}[baseline={#1}]
     \path (-0.5cm,-0.25cm) rectangle[corner={(1cm,0.5cm)}] ;
     \node[frame={#2}, stroke] {foo} ;
-  \end{qdraw}%
+  \end{hawkdraw}%
 }
 
 \begin{longtable}{ @{} p{2.5cm} p{\dimexpr\textwidth-2\tabcolsep-2.5cm} @{} }
@@ -789,12 +790,12 @@ The \macro{map} operation is used to map over a comma-separated list of items or
 The option \macro{list} sets the command to map over a comma-separated list of items. Each item in the list is passed as an argument to the code.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \fill
     map[list={30,150,270}] {
       (#1:0.75cm) circle[radius={5pt}]
     } ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 The option \macro{start} sets the start of the range for mapping over a range of numbers as a floating-point number. The default start is \num{1}. The option \macro{end} sets the end of the range for mapping over a range of numbers as a floating-point number. The default end is \num{1}. The option \macro{step} sets the step for the range for mapping over a range of numbers as a floating-point number. The default step is \num{1}.
@@ -802,19 +803,19 @@ The option \macro{start} sets the start of the range for mapping over a range of
 The command \macro{\map} is a shortcut for \macro{\path (0pt,0pt) map}
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \map[start={30}, step={120}, end={270}] { [fill]
     (#1:0.75cm) circle[radius={5pt}]
   } ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \section{Main path options}
 
 \begin{macrodef}
-|\qdrawset|{<options>}
+|\hawkdrawset|{<options>}
 \end{macrodef}
-The command \macro{\qdrawset} is used to set options for paths. It can be used inside or outside of \macro{qdraw} environments.
+The command \macro{\hawkdrawset} is used to set options for paths. It can be used inside or outside of \macro{hawkdraw} environments.
 
 The following options can be set for the path:
 
@@ -834,12 +835,12 @@ The command \macro{\fill} is a shortcut for \macro{\path [fill]}
 The command \macro{\clip} is a shortcut for \macro{\path [clip]}
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \path[stroke, clip] (0cm,0cm)
     rectangle[corner={(2cm,1cm)}] ;
   \fill (1cm,0.5cm)
     circle[radius={0.6cm}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -851,13 +852,13 @@ The command \macro{\clip} is a shortcut for \macro{\path [clip]}
 The options \macro{stroke color} and \macro{fill color} set the stroke color and the fill color for the path. The default stroke color and fill color is the current (text) color.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}[line width={5pt}]
+\begin{hawkdraw}[line width={5pt}]
   \path[
     fill, fill color={yellow},
     stroke, stroke color={blue}
   ] (0cm,0cm) 
     rectangle[corner={(2cm,1cm)}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 The options \macro{stroke opacity} and \macro{fill opacity} set the stroke opacity and the fill opacity for the path. The floating-point number should be in the range of \num{0} and \num{1}. The default stroke opacity and fill opacity is \num{1} (fully opaque). Note that \macro{\DocumentMetadata{}} needs to be set in order to activate support for PDF transparency.
@@ -870,17 +871,17 @@ The options \macro{stroke opacity} and \macro{fill opacity} set the stroke opaci
 Sets the line width for the path. The default line width is \qty{0.4}{\point}.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke
     (0cm,0cm) -- (2cm,1cm);
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke[line width={5pt}]
     (0cm,0cm) -- (2cm,1cm) ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -891,10 +892,10 @@ Sets the line width for the path. The default line width is \qty{0.4}{\point}.
 The option \macro{line cap} sets the line cap for the path. The possible values are \macro{butt}, \macro{round}, and \macro{rectangle}. The default line cap is \macro{butt}.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}[line width={5pt}]
+\begin{hawkdraw}[line width={5pt}]
   \stroke[line cap={round}]
     (0cm,0cm) -- (2cm,1cm) ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 The option \macro{line join} sets the line join for the path. The possible values are \macro{miter}, \macro{round}, and \macro{bevel}. The default line join is \macro{miter}.
@@ -902,11 +903,11 @@ The option \macro{line join} sets the line join for the path. The possible value
 The option \macro{miter limit} sets the miter limit for the path. The default miter limit is \num{10}.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}[line width={5pt}]
+\begin{hawkdraw}[line width={5pt}]
   \stroke[line join={bevel}]
     (0cm,0cm) -- (2cm,0.5cm)
     -- (0cm,1cm) ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -918,12 +919,12 @@ The option \macro{dash pattern} sets the dash pattern for the path as a comma-se
 The option \macro{dash phase} sets the dash phase for the path as a dimension. The default dash phase is \qty{0}{\point}.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke[
     dash pattern={10pt,5pt},
     dash phase={2.5pt}
   ] (0cm,0cm) -- (2cm,1cm) ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \subsection{Rounded corners and full rule}
@@ -934,10 +935,10 @@ The option \macro{dash phase} sets the dash phase for the path as a dimension. T
 The option \macro{corner arc} the corner arc for the path as a comma-separated list of at most two dimensions. The first applies to the corner formed by the path leading into the corner, and the second applies to the corner formed by the path leading out of the corner. If only one dimension is given, it applies to both corners. The default corner arc is \qty{0}{\point} (sharp corners).
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke[corner arc={5pt}] (0cm,0cm)
     rectangle[corner={(2cm,1cm)}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
@@ -946,12 +947,12 @@ The option \macro{corner arc} the corner arc for the path as a comma-separated l
 The option \macro{fill rule} sets the fill rule for the path. The possible values are \macro{non-zero} and \macro{even-odd}. The default fill rule is \macro{non-zero}. Note that this option is not influenced by scoping.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}[fill rule={even-odd}]
+\begin{hawkdraw}[fill rule={even-odd}]
   \fill (0cm,0cm)
     rectangle[corner={(2cm,1cm)}]
     (1cm,0.5cm)
     circle[radius={0.4cm}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \subsection{Transformations}
@@ -965,39 +966,39 @@ The option \macro{fill rule} sets the fill rule for the path. The possible value
 The option \macro{shift} sets the shift for the path as a tuple of dimensions. The first item in the tuple is the shift in the x-direction, and the second item is the shift in the y-direction. The default shift is (\qty{0}{\point}, \qty{0}{\point}).
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke[stroke color={blue}]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
   \stroke[shift={(5pt,10pt)}] 
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 The option \macro{rotate} sets the rotation for the path as a floating-point number representing the angle of rotation. The default rotation is \qty{0}{\degree}.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke[scale={0.25,0.5}]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 The option \macro{scale} sets the scale for the path as a comma-separated list of at most two floating-point numbers. The first item in the tuple is the scale in the x-direction, and the second item is the scale in the y-direction. If only one number is given, it is used for both directions. The default scale is (\num{1}, \num{1}).
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke[rotate={20}]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 The option \macro{slant} sets the slant for the path as a comma-separated list of at most two floating-point numbers. The first item in the tuple is the slant in the x-direction, and the second item is the slant in the y-direction. If only one number is given, it is used for both directions. The default slant is (\num{0}, \num{0}).
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke[slant={0.25,0.5}]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \section{Setting styles and colors}
@@ -1011,7 +1012,7 @@ To simplify styling, custom keys can be defined via the keys \macro{style set} a
 The key \macro{style set} defines custom keys and sets their values. The key \macro{style add} appends the relevant key-value list to the existing custom key as defined by \macro{style set}. Note that it is not checked whether a custom key already exists and its definition will be overwritten without a warning.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}[
+\begin{hawkdraw}[
   style set={
     mystyle={
       stroke, stroke color={blue},
@@ -1021,23 +1022,23 @@ The key \macro{style set} defines custom keys and sets their values. The key \ma
 ]
   \path[mystyle]
     (0cm,0cm) -- (2cm,1cm) ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
-|\qdrawsetcolor|{<color>}{<model>}{<value>}
+|\hawkdrawsetcolor|{<color>}{<model>}{<value>}
 \end{macrodef}
-The command \macro{\qdrawsetcolor} is used to define colors using the \macro{l3color} module. It is recommended to define custom colors in the preamble of the document. If the model is set to \macro{named}, the command expects as value a color expression.
+The command \macro{\hawkdrawsetcolor} is used to define colors using the \macro{l3color} module. It is recommended to define custom colors in the preamble of the document. If the model is set to \macro{named}, the command expects as value a color expression.
 
 \begin{codeexamplecolumns}
-\qdrawsetcolor{colorA}{rgb}{0.1,0.5,0.8}
-\qdrawsetcolor{colorB}{named}{yellow!90!red}
-\begin{qdraw}[line width={5pt}]
+\hawkdrawsetcolor{colorA}{rgb}{0.1,0.5,0.8}
+\hawkdrawsetcolor{colorB}{named}{yellow!90!red}
+\begin{hawkdraw}[line width={5pt}]
   \path[
     stroke, stroke color={colorA},
     fill, fill color={colorB}
   ] (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \subsection{Arrow tips}
@@ -1049,36 +1050,39 @@ The command \macro{\qdrawsetcolor} is used to define colors using the \macro{l3c
 The options \macro{arrow start} and \macro{arrow end} set an arrow tip to the start and the end of the current path respectively. Both keys take as value a string representing the name of the relevant arrow tip. The \macro{default} arrow tip is selected per default. Arrow tips are not attached to single points or closed paths.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke[arrow start, arrow end]
     (0cm,0cm) -- (2cm,1cm) ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}
-!path/!|arrow style|={<options>}
-!path/!|arrow start style|={<options>}
-!path/!|arrow end style|={<options>}
+!path/!|arrow style set|={<options>}
+!path/!|arrow style add|={<options>}
+!path/!|arrow start style set|={<options>}
+!path/!|arrow start style add|={<options>}
+!path/!|arrow end style set|={<options>}
+!path/!|arrow end style add|={<options>}
 \end{macrodef}
-Arrow tips can be styled using the options \macro{arrow start style} and \macro{arrow end style}. The option \macro{arrow style} sets the same style for start and end arrow tips. All options that are available for paths are also available for arrow tips.
+Arrow tips can be styled using the options \macro{arrow start style set} and \macro{arrow end style set}. The option \macro{arrow style set} sets the same style for start and end arrow tips. The options \macro{arrow start style add}, \macro{arrow end style add} and \macro{arrow style add} append the relevant styles to the existing styles. All options that are available for paths are also available for arrow tips.
 
 \begin{codeexamplecolumns}
-\begin{qdraw}
+\begin{hawkdraw}
   \stroke[
     arrow end, 
-    arrow style={fill, fill color=blue}
+    arrow style set={fill, fill color=blue}
   ]
     (0cm,0cm) -- (2cm,1cm) ;
-\end{qdraw}
+\end{hawkdraw}
 \end{codeexamplecolumns}
 
-The following arrow tips are available, of these the last three, \macro{simple}, \macro{straight} and \macro{bar}, should be set together with the option \macro{arrow style={stroke}}:
+The following arrow tips are available, of these the last three, \macro{simple}, \macro{straight} and \macro{bar}, should be set together with the option \macro{arrow style set={stroke}}:
 
 \NewDocumentCommand{\arrowtip}{ O{fill} m }{%
-  \begin{qdraw}[baseline={0.5ex}]
-    \stroke[arrow end={#2}, arrow style={#1}]
+  \begin{hawkdraw}[baseline={0.5ex}]
+    \stroke[arrow end={#2}, arrow style set={#1}]
       (0cm,0cm) -- (1cm,0cm) ;
-  \end{qdraw}%
+  \end{hawkdraw}%
 }
 
 \begin{longtable}{ @{} p{2.5cm} p{\dimexpr\textwidth-2\tabcolsep-2.5cm} @{} }
