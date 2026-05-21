@@ -1,6 +1,6 @@
 # The `hawkdraw` package
 
-This LaTeX package allows the user to use a syntax similar to Ti*k*Z to generate vector graphic output based on the `l3draw` package and related LaTeX3 modules such as `l3fp` which provides very accurate calculations. The syntax is meant to be simple but also coherent with the aum of allowing the user to quickly draw graphics. The package name relates to the quickness of hawks and the preciseness of their eyesight.
+This LaTeX package allows the user to use a syntax similar to Ti*k*Z to generate vector graphic output based on the `l3draw` package and related LaTeX3 modules such as `l3fp` which provides very precise calculations. The syntax is meant to be simple and flexible but also coherent with the aum of allowing the user to quickly draw graphics. The package name relates to the quickness and agility of hawks and the preciseness of their eyesight.
 
 The package intends to define a set of user-level commands that can be used for drawing simple graphics. It does not aim to become a substitute for the Ti*k*Z package or to offer a similar scope of application.
 
