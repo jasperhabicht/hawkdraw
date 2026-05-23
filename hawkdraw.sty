@@ -70,7 +70,7 @@
     }
 }
 \IfExplAtLeastTF { 2026-12-31 } {
-    \cs_set_eq:NN \draw_layer_new:n \prg_do_nothing:
+    \cs_set_eq:NN \draw_layer_new:n \use_none:n
 } { }
 % ===
 
@@ -121,11 +121,6 @@
 \clist_new:N \l_hawkdraw_path_dash_pattern_clist
 \dim_new:N \l_hawkdraw_path_dash_phase_dim
 
-\fp_new:N \l_hawkdraw_path_shift_fp
-\fp_new:N \l_hawkdraw_path_rotate_fp
-\clist_new:N \l_hawkdraw_path_scale_clist
-\clist_new:N \l_hawkdraw_path_slant_clist
-
 \fp_new:N \g_hawkdraw_path_first_point_fp
 \fp_new:N \g_hawkdraw_path_last_point_fp
 \fp_new:N \g_hawkdraw_path_first_slope_fp
@@ -147,13 +142,6 @@
 \cs_generate_variant:Nn \draw_set_dash_pattern:nn { VV }
 \cs_generate_variant:Nn \draw_path_corner_arc:nn { ee }
 \cs_generate_variant:Nn \draw_path_use_clear:n { e }
-\cs_generate_variant:Nn \draw_transform_shift:n { V }
-\cs_generate_variant:Nn \draw_transform_rotate:n { V }
-\cs_generate_variant:Nn \draw_transform_scale:n { e }
-\cs_generate_variant:Nn \draw_transform_xscale:n { e }
-\cs_generate_variant:Nn \draw_transform_yscale:n { e }
-\cs_generate_variant:Nn \draw_transform_xslant:n { e }
-\cs_generate_variant:Nn \draw_transform_yslant:n { e }
 \cs_generate_variant:Nn \draw_layer_begin:n { V }
 
 \exp_args_generate:n { NNNe }
@@ -250,14 +238,36 @@
         \str_set:Nn \l_hawkdraw_path_fill_rule_str { nonzero }
     } ,
     fill ~ rule             .initial:n      = { non-zero } ,
-    shift                   .fp_set:N       = \l_hawkdraw_path_shift_fp ,
-    shift                   .initial:n      = { ( 0pt , 0pt ) } ,
-    rotate                  .fp_set:N       = \l_hawkdraw_path_rotate_fp ,
-    rotate                  .initial:n      = { 0 } ,
-    scale                   .clist_set:N    = \l_hawkdraw_path_scale_clist ,
-    scale                   .initial:n      = { 1 , 1 } ,
-    slant                   .clist_set:N    = \l_hawkdraw_path_slant_clist ,
-    slant                   .initial:n      = { 0 , 0 } ,
+    shift                   .code:n         = {
+        \draw_transform_shift:n {#1}
+    } ,
+    rotate                  .code:n         = {
+        \draw_transform_rotate:n {#1}
+    } ,
+    scale                   .code:n         = {
+        \int_compare:nNnTF { \clist_count:n {#1} } > { 1 } {
+            \draw_transform_xscale:n {
+                \clist_item:nn {#1} { 1 }
+            }
+            \draw_transform_yscale:n {
+                \clist_item:nn {#1} { 2 }
+            }
+        } {
+            \draw_transform_scale:n {#1}
+        }
+    } ,
+    slant                   .code:n         = {
+        \int_compare:nNnTF { \clist_count:n {#1} } > { 1 } {
+            \draw_transform_xslant:n {
+                \clist_item:nn {#1} { 1 }
+            }
+            \draw_transform_yslant:n {
+                \clist_item:nn {#1} { 2 }
+            }
+        } {
+            \draw_transform_slant:n {#1}
+        }
+    } ,
 }
 
 \cs_new:Npn \__hawkdraw_fp_tuple_use_i:w ( #1 , #2 ) {#1}
@@ -303,35 +313,35 @@
     \use:c { draw_set_ \l_hawkdraw_path_fill_rule_str _rule: }
     \draw_set_dash_pattern:VV \l_hawkdraw_path_dash_pattern_clist
         \l_hawkdraw_path_dash_phase_dim
-    \draw_transform_shift:V \l_hawkdraw_path_shift_fp
-    \draw_transform_rotate:V \l_hawkdraw_path_rotate_fp
-    \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_scale_clist } > { 1 } {
-        \draw_transform_xscale:e {
-            \clist_item:Nn \l_hawkdraw_path_scale_clist { 1 }
-        }
-        \draw_transform_yscale:e {
-            \clist_item:Nn \l_hawkdraw_path_scale_clist { 2 }
-        }
-    } {
-        \draw_transform_scale:e {
-            \clist_item:Nn \l_hawkdraw_path_scale_clist { 1 }
-        }
-    }
-    \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_slant_clist } > { 1 } {
-        \draw_transform_xslant:e {
-            \clist_item:Nn \l_hawkdraw_path_slant_clist { 1 }
-        }
-        \draw_transform_yslant:e {
-            \clist_item:Nn \l_hawkdraw_path_slant_clist { 2 }
-        }
-    } {
-        \draw_transform_xslant:e {
-            \clist_item:Nn \l_hawkdraw_path_slant_clist { 1 }
-        }
-        \draw_transform_yslant:e {
-            \clist_item:Nn \l_hawkdraw_path_slant_clist { 1 }
-        }
-    }
+%    \draw_transform_shift:V \l_hawkdraw_path_shift_fp
+%    \draw_transform_rotate:V \l_hawkdraw_path_rotate_fp
+%    \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_scale_clist } > { 1 } {
+%        \draw_transform_xscale:e {
+%            \clist_item:Nn \l_hawkdraw_path_scale_clist { 1 }
+%        }
+%        \draw_transform_yscale:e {
+%            \clist_item:Nn \l_hawkdraw_path_scale_clist { 2 }
+%        }
+%    } {
+%        \draw_transform_scale:e {
+%            \clist_item:Nn \l_hawkdraw_path_scale_clist { 1 }
+%        }
+%    }
+%    \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_slant_clist } > { 1 } {
+%        \draw_transform_xslant:e {
+%            \clist_item:Nn \l_hawkdraw_path_slant_clist { 1 }
+%        }
+%        \draw_transform_yslant:e {
+%            \clist_item:Nn \l_hawkdraw_path_slant_clist { 2 }
+%        }
+%    } {
+%        \draw_transform_xslant:e {
+%            \clist_item:Nn \l_hawkdraw_path_slant_clist { 1 }
+%        }
+%        \draw_transform_yslant:e {
+%            \clist_item:Nn \l_hawkdraw_path_slant_clist { 1 }
+%        }
+%    }
 }
 
 % ===
@@ -1020,12 +1030,12 @@
             }
         \draw_scope_end:
     }
-    \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
     \fp_set:Nn \l_draw_instance_baseline_fp { nan }
-    \keys_set_known:nnN { hawkdraw / instance } {#1}
-        \l__hawkdraw_keys_unprocessed_clist
-    \keys_set:nV { hawkdraw / path } \l__hawkdraw_keys_unprocessed_clist
     \draw_begin:
+        \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
+        \keys_set_known:nnN { hawkdraw / instance } {#1}
+            \l__hawkdraw_keys_unprocessed_clist
+        \keys_set:nV { hawkdraw / path } \l__hawkdraw_keys_unprocessed_clist
         \fp_if_nan:nF { \l_draw_instance_baseline_fp } {
             \draw_set_baseline:n {
                 \fp_to_dim:n { \l_draw_instance_baseline_fp }
