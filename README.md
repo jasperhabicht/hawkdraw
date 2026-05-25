@@ -1,3 +1,7 @@
+![Version 0.0.6](https://img.shields.io/badge/version-0.0.6-blue)
+
+![Victor, the drawing hawk](https://github.com/jasperhabicht/jsonparse/assets/6378801/ddfddc70-bf5f-4121-ba45-4b9128875d85)
+
 # The `hawkdraw` package
 
 The \macro{hawkdraw} package allows the user to use a simple syntax similar to Ti*k*Z to generate vector graphic output based on `l3draw` and related LaTeX3 modules such as `l3fp` which provides very precise calculations. The syntax is meant to be simple and flexible but also coherent and logical with the aim of allowing the user to quickly draw graphics. The package name relates to the quickness and agility of hawks and the preciseness of their eyesight.
@@ -9,4 +13,7 @@ The package intends to define a set of user-level commands that can be used for 
 
 ---
 
-This package including all files is subject to the LPPL 1.3c license. Copyright 2026 Jasper Habicht (mail(at)jasperhabicht.de).
+This package including all files is subject to the LPPL 1.3c license.
+Copyright 2026 Jasper Habicht (mail(at)jasperhabicht.de).
+
+Victor, the drawing hawk: Copyright 2026 Hannah Klöber.

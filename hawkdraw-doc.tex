@@ -268,13 +268,16 @@
   [The hawkdraw package]
   {The \titlemacro{hawkdraw} package}
   {A LaTeX package to generate vector graphic output based on the l3draw package and related LaTeX3 modules using a simple syntax}
-  {Jasper Habicht}[E-mail: \href{mailto:mail@jasperhabicht.de}{mail@jasperhabicht.de}. I am grateful to Joseph Wright, Max Chernoff and Clea F. Rees who helped me improving the code.]
+  {Jasper Habicht}[E-mail: \href{mailto:mail@jasperhabicht.de}{mail@jasperhabicht.de}. I am grateful to Joseph Wright, Max Chernoff and Clea F. Rees who helped me improving the code. Victor, the drawing hawk: \textcopyright{} 2026 Hannah Klöber.]
   {Version \hawkdrawfileversion, released on \hawkdrawfiledate}
 
 \changes{v0.0.5}{2026/05/18}{First public alpha release.}
 \changes{v0.0.6}{2026/05/20}{Splitting up code into modules.}
 
 \begin{document}
+\vspace*{-1cm}
+\noindent\hspace*{-3.5mm}\includegraphics[width=5cm]{victor/victor.pdf}
+
 \printdoctitle
 
 \bigskip
@@ -1081,9 +1084,9 @@ Arrow tips can be styled using the options \macro{arrow start style set} and \ma
 
 The following arrow tips are available, of these the last three, \macro{simple}, \macro{straight} and \macro{bar}, should be set together with the option \macro{arrow style set={stroke}}:
 
-\NewDocumentCommand{\arrowtip}{ O{fill} m }{%
+\NewDocumentCommand{\arrowtip}{ m }{%
   \begin{hawkdraw}[baseline={0.5ex}]
-    \stroke[arrow end={#2}, arrow style set={#1}]
+    \stroke[arrow end={#1}, stroke color=red, fill color=cyan]
       (0cm,0cm) -- (1cm,0cm) ;
   \end{hawkdraw}%
 }
@@ -1097,10 +1100,9 @@ The following arrow tips are available, of these the last three, \macro{simple},
   \arrowtip{stealth} & \macro{stealth} \\
   \arrowtip{triangle} & \macro{triangle} \\
   \arrowtip{circle} & \macro{circle} \\
-  \midrule
-  \arrowtip[stroke]{simple} & \macro{simple} \\
-  \arrowtip[stroke]{straight} & \macro{straight} \\
-  \arrowtip[stroke]{bar} & \macro{bar} \\
+  \arrowtip{simple} & \macro{simple} \\
+  \arrowtip{straight} & \macro{straight} \\
+  \arrowtip{bar} & \macro{bar} \\
   \bottomrule
 \end{longtable}
 

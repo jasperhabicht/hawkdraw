@@ -16,4 +16,83 @@
     Pattern ~ `#1` ~ unknown.
 }
 
+\box_new:N \l_hawkdraw_pattern_box
+
+\keys_define:nn { hawkdraw / path } {
+    fill ~ pattern          .code:n         = {
+        \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
+            \hawkdraw_fill_pattern:n {#1}
+        }
+    } ,
+    pattern ~ style ~ set   .clist_set:N    = \l_hawkdraw_pattern_keys_clist ,
+    patterb ~ style ~ add   .code:n         = {
+        \clist_put_right:Nn \l_hawkdraw_pattern_keys_clist {#1}
+    } ,
+}
+
+\cs_new_protected:Npn \hawkdraw_fill_pattern:n #1 {
+    \pdfxform_if_exist:nF {
+        hawkdraw_pattern_
+            \str_mdfive_hash:n {
+                #1
+                \clist_use:N \l_hawkdraw_pattern_keys_clist
+            }
+    } {
+        \hawkdraw_pattern_create:nV {#1} \l_hawkdraw_pattern_keys_clist
+    }
+    \hbox_set:Nn \l_hawkdraw_pattern_box {
+        \pdfxform_use:n {
+            rpgicons_map_pattern_
+                \str_mdfive_hash:n {
+                    #1
+                    \clist_use:N \l_hawkdraw_pattern_keys_clist
+                }
+        }
+    }
+    \int_step:nnn {
+        \fp_to_int:n { floor( \g_draw_bb_xmin_dim ) }
+    } {
+        \fp_to_int:n { ceil( \g_draw_bb_xmax_dim ) }
+    } {
+        \int_step:nnn {
+            \fp_to_int:n { floor( \g_draw_bb_ymin_dim ) }
+        } {
+            \fp_to_int:n { ceil( \g_draw_bb_ymax_dim ) }
+        } {
+            \draw_box_use:Nn \l_hawkdraw_pattern_box {
+                ##1
+                ,
+                ####1
+            }
+        }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_pattern_create:nn #1#2 {
+    \pdfxform_new:nnn { hawkdraw_pattern_ \str_mdfive_hash:n { #1 #2 } } { } {
+        \draw_begin:
+            \clist_clear:N \l_hawkdraw_path_use_clist
+            \keys_set:ne { hawkdraw / path } {
+                \prop_item:Nn \g_hawkdraw_pattern_default_keys_prop {#1}
+            }
+            \keys_set:nn { hawkdraw / path } {#2}
+            \hawkdraw_set_path_options:
+            \draw_path_rectangle:nn { 0 , 0 } { 1 , 1 }
+            \draw_path_use_clear:n { clip }
+            \use:c { hawkdraw_pattern_ #1 : }
+        \draw_end:
+    }
+}
+\cs_generate_variant:Nn \hawkdraw_pattern_create:nn { nV }
+
+% ===
+
+\cs_new_protected:Npn \hawkdraw_pattern_lines: {
+    \int_step_inline:nnn { 0 } { 9 } {
+        \draw_path_moveto:n { 0 , ##1 * 0.1 }
+        \draw_path_lineto:n { 1 , ##1 * 0.1 }
+    }
+    \draw_path_use_clear:n { stroke }
+}
+
 %EOF
