@@ -10,7 +10,7 @@
 %
 % This work has the LPPL maintenance status `maintained'.
 %
-\ProvidesExplPackage {hawkdraw} {2026-05-20} {0.0.6}
+\ProvidesExplPackage {hawkdraw} {2026-05-25} {0.0.7}
     {An experimental package for drawing vector graphics with the l3draw package and a TikZ-like syntax.}
 
 \msg_new:nnn { hawkdraw } { old-kernel } {
@@ -89,7 +89,7 @@
     }
 }
 
-\hawkdraw_modules_load:n { nodes , arrows }
+\hawkdraw_modules_load:n { nodes , arrows , patterns }
 
 % ===
 
@@ -100,6 +100,7 @@
 \bool_new:N \l_hawkdraw_instance_overlay_bool
 \fp_new:N \l_draw_instance_baseline_fp
 
+\tl_new:N \g_hawkdraw_path_current_tl
 \tl_new:N \l_hawkdraw_path_preactions_tl
 \tl_new:N \l_hawkdraw_path_postactions_tl
 
@@ -313,35 +314,6 @@
     \use:c { draw_set_ \l_hawkdraw_path_fill_rule_str _rule: }
     \draw_set_dash_pattern:VV \l_hawkdraw_path_dash_pattern_clist
         \l_hawkdraw_path_dash_phase_dim
-%    \draw_transform_shift:V \l_hawkdraw_path_shift_fp
-%    \draw_transform_rotate:V \l_hawkdraw_path_rotate_fp
-%    \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_scale_clist } > { 1 } {
-%        \draw_transform_xscale:e {
-%            \clist_item:Nn \l_hawkdraw_path_scale_clist { 1 }
-%        }
-%        \draw_transform_yscale:e {
-%            \clist_item:Nn \l_hawkdraw_path_scale_clist { 2 }
-%        }
-%    } {
-%        \draw_transform_scale:e {
-%            \clist_item:Nn \l_hawkdraw_path_scale_clist { 1 }
-%        }
-%    }
-%    \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_slant_clist } > { 1 } {
-%        \draw_transform_xslant:e {
-%            \clist_item:Nn \l_hawkdraw_path_slant_clist { 1 }
-%        }
-%        \draw_transform_yslant:e {
-%            \clist_item:Nn \l_hawkdraw_path_slant_clist { 2 }
-%        }
-%    } {
-%        \draw_transform_xslant:e {
-%            \clist_item:Nn \l_hawkdraw_path_slant_clist { 1 }
-%        }
-%        \draw_transform_yslant:e {
-%            \clist_item:Nn \l_hawkdraw_path_slant_clist { 1 }
-%        }
-%    }
 }
 
 % ===
@@ -436,6 +408,7 @@
 
 \cs_new_protected:Npn \hawkdraw_path:w #1 ; {
     \draw_scope_begin:
+        \tl_gset:Nn \g_hawkdraw_path_current_tl {#1}
         \tl_use:N \l_hawkdraw_path_preactions_tl
         \tl_trim_spaces_apply:nN {#1} \__hawkdraw_process_path:e
         \clist_remove_duplicates:N \l_hawkdraw_path_use_clist
@@ -443,13 +416,18 @@
         \tl_use:N \l_hawkdraw_path_postactions_tl
     \draw_scope_end:
     \bool_if:NT \g__hawkdraw_path_use_clip_bool {
-        \bool_set_true:N \l__hawkdraw_path_clip_bool
-        \tl_trim_spaces_apply:nN {#1} \__hawkdraw_process_path:e
-        \draw_path_use_clear:n { clip }
-        \bool_set_false:N \l__hawkdraw_path_clip_bool
-        \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
+        \__hawkdraw_process_path_clip:V \g_hawkdraw_path_current_tl
     }
 }
+
+\cs_new_protected:Npn \__hawkdraw_process_path_clip:n #1 {
+    \bool_set_true:N \l__hawkdraw_path_clip_bool
+    \tl_trim_spaces_apply:nN {#1} \__hawkdraw_process_path:e
+    \draw_path_use_clear:n { clip }
+    \bool_set_false:N \l__hawkdraw_path_clip_bool
+    \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
+}
+\cs_generate_variant:Nn \__hawkdraw_process_path_clip:n { V }
 
 \cs_new_protected:Npn \__hawkdraw_process_path:n #1 {
     \cs_if_exist_use:cT {

@@ -11,20 +11,20 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 \documentclass[a4paper]{article}
-\def\hawkdrawfileversion{0.0.6}
-\def\hawkdrawfiledate{20 May 2026}
+\def\hawkdrawfileversion{0.0.7}
+\def\hawkdrawfiledate{25 May 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
 \usepackage{AlegreyaSans}
 \usepackage{FiraMono}
 
+\usepackage{hawkdraw}
+
 \usepackage{geometry, longtable, booktabs, siunitx, tcolorbox, hyperref}
 \geometry{margin=25mm, left=45mm}
 \DeclareSIUnit{\point}{pt}
 \urlstyle{same}
-
-\usepackage{hawkdraw}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -273,6 +273,7 @@
 
 \changes{v0.0.5}{2026/05/18}{First public alpha release.}
 \changes{v0.0.6}{2026/05/20}{Splitting up code into modules.}
+\changes{v0.0.7}{2026/05/25}{Adding patterns.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -626,8 +627,8 @@ The other corner of the rectangle is specified as a point (a tuple) with the \ma
 Using the \macro{grid} operation, a grid with the current point as origin corner is drawn.
 
 \begin{macrodef}
-!path/gridf/!|step|={<tuple>}
-!path/gridf/!|corner|={<tuple>}
+!path/grid/!|step|={<tuple>}
+!path/grid/!|corner|={<tuple>}
 \end{macrodef}
 
 The step is specified as a comma-separated list of at most two dimensions with the \macro{step} option. The first item in the tuple is the step in the x-direction, and the second item is the step in the y-direction. If only one dimension is given, it is used for both directions. The other corner is specified as a point (a tuple) with the \macro{corner} option. 
@@ -1084,9 +1085,9 @@ Arrow tips can be styled using the options \macro{arrow start style set} and \ma
 
 The following arrow tips are available, of these the last three, \macro{simple}, \macro{straight} and \macro{bar}, should be set together with the option \macro{arrow style set={stroke}}:
 
-\NewDocumentCommand{\arrowtip}{ m }{%
+\NewDocumentCommand{\arrowexample}{ m }{%
   \begin{hawkdraw}[baseline={0.5ex}]
-    \stroke[arrow end={#1}, stroke color=red, fill color=cyan]
+    \stroke[arrow end={#1}]
       (0cm,0cm) -- (1cm,0cm) ;
   \end{hawkdraw}%
 }
@@ -1095,16 +1096,78 @@ The following arrow tips are available, of these the last three, \macro{simple},
   \toprule
   \textbf{Arrow tip} & \textbf{Name} \\
   \midrule
-  \arrowtip{none} & \macro{none} \\
-  \arrowtip{default} & \macro{default} \\
-  \arrowtip{stealth} & \macro{stealth} \\
-  \arrowtip{triangle} & \macro{triangle} \\
-  \arrowtip{circle} & \macro{circle} \\
-  \arrowtip{simple} & \macro{simple} \\
-  \arrowtip{straight} & \macro{straight} \\
-  \arrowtip{bar} & \macro{bar} \\
+  \arrowexample{none} & \macro{none} \\
+  \arrowexample{default} & \macro{default} \\
+  \arrowexample{stealth} & \macro{stealth} \\
+  \arrowexample{triangle} & \macro{triangle} \\
+  \arrowexample{circle} & \macro{circle} \\
+  \arrowexample{simple} & \macro{simple} \\
+  \arrowexample{straight} & \macro{straight} \\
+  \arrowexample{bar} & \macro{bar} \\
   \bottomrule
 \end{longtable}
+
+\subsection{Patterns}
+
+\begin{macrodef}
+!path/!|fill pattern|={<string>}
+\end{macrodef}
+The option \macro{fill pattern} sets a fill pattern for the current path. The key takes as value a string representing the name of the relevant pattern.
+
+\begin{macrodef}
+!path/!|pattern style set|={<options>}
+!path/!|pattern style add|={<options>}
+\end{macrodef}
+Patterns can be styled using the options \macro{pattern style set} and \macro{pattern style add}. The option \macro{pattern style set} sets the style for the pattern of the current path. The options \macro{pattern style add} appends the relevant styles to the existing styles. All options that are available for paths are also available for patterns.
+
+\begin{macrodef}
+!path/!|pattern x|={<dimension>}
+!path/!|pattern y|={<dimension>}
+\end{macrodef}
+The options \macro{pattern x} and \macro{pattern y} set the dimensions of the pattern in the x and y directions, respectively. The default dimensions of a pattern in both directions are both \qty{10}{\point}.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \path[
+    fill pattern={dots},
+    pattern style set={fill color=blue}
+  ]
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+The following patterns are available:
+
+\NewDocumentCommand{\patternexample}{ m }{%
+  \begin{hawkdraw}[baseline={0.5ex}]
+    \path[fill pattern={#1}]
+      (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  \end{hawkdraw}%
+}
+
+\begin{longtable}{ @{} p{2.5cm} p{\dimexpr\textwidth-2\tabcolsep-2.5cm} @{} }
+  \toprule
+  \textbf{Pattern} & \textbf{Name} \\
+  \midrule
+  \patternexample{lines} & \macro{lines} \\
+  \patternexample{hatch} & \macro{hatch} \\
+  \patternexample{dots} & \macro{dots} \\
+  \bottomrule
+\end{longtable}
+
+\section{User commands}
+
+\begin{macrodef}
+|\firstpoint|
+|\lastpoint|
+\end{macrodef}
+The commands \macro{\firstpoint} and \macro{\lastpoint} can be used to access the first and last point of the current path, respectively.
+
+\begin{macrodef}
+|\firstslope|
+|\lastslope|
+\end{macrodef}
+The commands \macro{\firstslope} and \macro{\lastslope} can be used to access the slope at the first and last point of the current path, respectively. The slope is represented as the angle with respect to the positive x-axis.
 
 % =====
 
