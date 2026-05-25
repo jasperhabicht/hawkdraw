@@ -1,6 +1,6 @@
 ![Version 0.0.6](https://img.shields.io/badge/version-0.0.6-blue)
 
-![Victor, the drawing hawk](https://github.com/jasperhabicht/jsonparse/assets/6378801/ddfddc70-bf5f-4121-ba45-4b9128875d85)
+![Victor, the drawing hawk](https://github.com/user-attachments/assets/b7ff9e83-565f-4a4c-9fc7-038b1b4bb0eb)
 
 # The `hawkdraw` package
 
