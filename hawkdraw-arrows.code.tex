@@ -26,9 +26,9 @@
     arrow ~ start           .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
             \fp_if_nan:nF { \g_hawkdraw_path_first_slope_fp } {
-                \hawkdraw_put_arrow:nVVV {#1}
+                \hawkdraw_put_arrow:nVnV {#1}
                     \g_hawkdraw_path_first_point_fp
-                    \g_hawkdraw_path_first_slope_fp
+                    { \g_hawkdraw_path_first_slope_fp - 90 }
                     \l_hawkdraw_arrow_start_keys_clist
             }
         }
@@ -37,9 +37,9 @@
     arrow ~ end             .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
             \fp_if_nan:nF { \g_hawkdraw_path_last_slope_fp } {
-                \hawkdraw_put_arrow:nVVV {#1}
+                \hawkdraw_put_arrow:nVnV {#1}
                     \g_hawkdraw_path_last_point_fp
-                    \g_hawkdraw_path_last_slope_fp
+                    { \g_hawkdraw_path_last_slope_fp + 90 }
                     \l_hawkdraw_arrow_end_keys_clist
             }
         }
@@ -83,7 +83,7 @@
         \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }
     \draw_scope_end:
 }
-\cs_generate_variant:Nn \hawkdraw_put_arrow:nnnn { nVVV , VVVV }
+\cs_generate_variant:Nn \hawkdraw_put_arrow:nnnn { nVVV , nVnV }
 
 \cs_new_protected:Npn \hawkdraw_arrow_create:nnn #1#2#3 {
     \prop_gput:Nnn \g_hawkdraw_arrow_default_keys_prop {#1} {#2}
