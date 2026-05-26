@@ -316,7 +316,7 @@ Similar to Ti\emph{k}Z, the \macro{hawkdraw} package makes use of key-value pair
   \macro{tuple} & A tuple consists of two floating-point numbers without or with unit that are separated by a comma. A tuple may be enclosed by parenthesis. \\
   \macro{dimension} & A dimension or length is a typical TeX length consisting of a floating point number and a length unit. \\
   \macro{clist} & A comma-separated list is a list of strings that are separated by commas. Such a list can cosnist of no or only one item as well. If the relevant list can only have a maximum number of items, this is stated in the description of the relevant key. \\
-  \macro{options} & A key-value list consists of comma separated entities of keys that may be followed by an equals sign and a value. A value can be another key-value list. \\ 
+  \macro{options} & A key-value list consists of comma separated entities of keys that may be followed by an equals sign and a value. A value can be another key-value list. \\
   \macro{color} & This means a color definition as specified by the \macro{l3color} module. Note that colors defined by the \macro{xcolor} package have no effect when using the \macro{hawkdraw} package. \\
   \emph{none} & Some keys do not accept any data type as they are only executing some function. \\
   \bottomrule
@@ -358,7 +358,7 @@ bar
 \\\begin{|scope|}[<options>]
 \end{|scope|}
 \end{macrodef}
-The \macro{scope} environment is only available inside the \macro{hawkdraw} environment. It can be used to create scopes for the localization of path states, style settings and clipping regions. 
+The \macro{scope} environment is only available inside the \macro{hawkdraw} environment. It can be used to create scopes for the localization of path states, style settings and clipping regions.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[fill color={blue}]
@@ -473,8 +473,8 @@ The above syntax draws a curve to the next point with a single control point or 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \path[stroke] (0cm,0cm)
-    .. (1cm,1cm) 
-    .. (2cm,1cm);
+    .. (1cm,1cm)
+    .. (2cm,1cm) ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -482,7 +482,7 @@ The above syntax draws a curve to the next point with a single control point or 
 \begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     .. (0cm,0.5cm) & (1cm,1cm)
-    .. (2cm,1cm);
+    .. (2cm,1cm) ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -494,12 +494,12 @@ Using \macro{!} the path is closed by drawing a line from the last point to the 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \path[stroke] (0cm,0cm)
-    -- (2cm,1cm) 
+    -- (2cm,1cm)
     -- (0cm,1cm) ! ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-\bigskip 
+\bigskip
 
 The following path operations require at least one option to be set:
 
@@ -632,7 +632,7 @@ Using the \macro{grid} operation, a grid with the current point as origin corner
 !path/grid/!|corner|={<tuple>}
 \end{macrodef}
 
-The step is specified as a comma-separated list of at most two dimensions with the \macro{step} option. The first item in the tuple is the step in the x-direction, and the second item is the step in the y-direction. If only one dimension is given, it is used for both directions. The other corner is specified as a point (a tuple) with the \macro{corner} option. 
+The step is specified as a comma-separated list of at most two dimensions with the \macro{step} option. The first item in the tuple is the step in the x-direction, and the second item is the step in the y-direction. If only one dimension is given, it is used for both directions. The other corner is specified as a point (a tuple) with the \macro{corner} option.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -659,7 +659,7 @@ Using the \macro{point} operation, a point at the current position is defined an
 !path/point/!|at|={<tuple>}
 !path/point/!|name|={<string>}
 \end{macrodef}
-The position of the point can be adjusted with the \macro{at} option which accepts a point (a tuple). The point can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}). 
+The position of the point can be adjusted with the \macro{at} option which accepts a point (a tuple). The point can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}).
 
 The command \macro{\point} is a shortcut for \macro{\path (0pt, 0pt) point}
 
@@ -677,7 +677,7 @@ The position of a point can also be adjusted using the \macro{at path part} opti
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm) 
+  \path[stroke] (0cm,0cm)
     -- (2cm,1cm)
     point[name={A}, at path part={0}]
     point[name={B}, at path part={0.5}]
@@ -690,7 +690,7 @@ The position of a point can also be adjusted using the \macro{at path part} opti
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm) 
+  \path[stroke] (0cm,0cm)
     -| (2cm,1cm)
     point[name={A}, at path part={0}]
     point[name={B}, at path part={0.5}]
@@ -959,7 +959,7 @@ The options \macro{stroke color} and \macro{fill color} set the stroke color and
   \path[
     fill, fill color={yellow},
     stroke, stroke color={blue}
-  ] (0cm,0cm) 
+  ] (0cm,0cm)
     rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -969,7 +969,7 @@ The options \macro{stroke color} and \macro{fill color} set the stroke color and
   \path[
     fill, fill opacity={0.25},
     stroke, stroke opacity={0.5}
-  ] (0cm,0cm) 
+  ] (0cm,0cm)
     rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -1082,7 +1082,7 @@ The option \macro{shift} sets the shift for the path as a tuple of dimensions. T
 \begin{hawkdraw}
   \stroke[stroke color={blue}]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
-  \stroke[shift={(5pt,10pt)}] 
+  \stroke[shift={(5pt,10pt)}]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -1182,7 +1182,7 @@ Arrow tips can be styled using the options \macro{arrow start style set} and \ma
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \stroke[
-    arrow end, 
+    arrow end,
     arrow style set={fill, fill color=blue}
   ]
     (0cm,0cm) -- (2cm,1cm) ;

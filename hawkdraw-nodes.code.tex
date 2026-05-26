@@ -74,16 +74,18 @@
     \draw_scope_begin:
         \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_last_point_fp
         \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_last_slope_fp
-        \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
         \fp_set:Nn \l_hawkdraw_point_at_path_part_fp { nan }
+        \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
         \keys_set_known:nnN { hawkdraw / path / point } {#1}
             \l__hawkdraw_keys_unprocessed_clist
         \fp_if_nan:nF { \l_hawkdraw_point_at_path_part_fp } {
             \fp_set:Nn \l_hawkdraw_point_at_fp {
-                \cs_if_exist_use:cT {
+                \cs_if_exist_use:cTF {
                     __hawkdraw_point_part_ \l__hawkdraw_path_type_str :V
                 } {
                     \l_hawkdraw_point_at_path_part_fp
+                } {
+                    0pt , 0pt
                 }
             }
             \fp_set:Nn \l_hawkdraw_point_slope_fp {
@@ -96,16 +98,18 @@
                 }
             }
         }
-        \prop_if_exist:cT {
-            g__hawkdraw_point_ \l_hawkdraw_point_at_name_tl _prop
-        } {
-            \fp_set:Nn \l_hawkdraw_point_slope_fp {
-                \prop_item:cn {
-                    g__hawkdraw_point_ \l_hawkdraw_point_at_name_tl _prop
-                } { slope }
+        \tl_if_blank:VF \l_hawkdraw_point_at_name_tl {
+            \prop_if_exist:cT {
+                g__hawkdraw_point_ \l_hawkdraw_point_at_name_tl _prop
+            } {
+                \fp_set:Nn \l_hawkdraw_point_slope_fp {
+                    \prop_item:cn {
+                        g__hawkdraw_point_ \l_hawkdraw_point_at_name_tl _prop
+                    } { slope }
+                }
             }
         }
-        \tl_if_blank:nF \l_hawkdraw_point_name_tl {
+        \tl_if_blank:VF \l_hawkdraw_point_name_tl {
             \prop_if_exist:cF {
                 g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
             } {
@@ -247,7 +251,7 @@
         }
         \dim_set:Nn \hawkdraw_node_natural_height_dim {
             \coffin_ht_plus_dp:N ##1 + ##4 + ##5
-        }    
+        }
         #2
     }
     \cs_generate_variant:cn { hawkdraw_node_frame_ #1 :Nnnnn } { NVVVV }
