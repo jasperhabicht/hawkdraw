@@ -22,8 +22,6 @@
 \coffin_new:N \l_hawkdraw_node_coffin
 \coffin_new:N \l_hawkdraw_node_frame_coffin
 
-\fp_new:N \l_hawkdraw_node_at_fp
-\tl_new:N \l_hawkdraw_node_name_tl
 \clist_new:N \l_hawkdraw_node_anchor_clist
 \dim_new:N \l_hawkdraw_node_width_dim
 \clist_new:N \l_hawkdraw_node_padding_clist
@@ -34,12 +32,11 @@
 \str_new:N \l_hawkdraw_node_text_color_str
 \str_new:N \l_hawkdraw_node_frame_str
 
+\cs_generate_variant:Nn \keys_set_known:nnN { nV }
 \cs_generate_variant:Nn \draw_coffin_use:Nnnn { NeeV }
 \cs_generate_variant:Nn \coffin_attach:NnnNnnnn { NnnNnnVV }
 
 \keys_define:nn { hawkdraw / path / node } {
-    at                      .fp_set:N       = \l_hawkdraw_node_at_fp ,
-    name                    .tl_set:N       = \l_hawkdraw_node_name_tl ,
     anchor                  .clist_set:N    = \l_hawkdraw_node_anchor_clist ,
     anchor                  .initial:n      = { hc , vc } ,
     width                   .code:n         = {
@@ -72,14 +69,27 @@
 
 \cs_new_protected:Npn \hawkdraw_put_node:nn #1#2 {
     \draw_scope_begin:
-        \fp_set_eq:NN \l_hawkdraw_node_at_fp \g_hawkdraw_path_last_point_fp
+        \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_last_point_fp
         \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
-        \keys_set_known:nnN { hawkdraw / path / node } {#1}
+        \fp_set:Nn \l_hawkdraw_point_at_path_part_fp { nan }
+        \keys_set_known:nnN { hawkdraw / path / point } {#1}
             \l__hawkdraw_keys_unprocessed_clist
-        \tl_if_blank:nF \l_hawkdraw_node_name_tl {
+        \fp_if_nan:nF { \l_hawkdraw_point_at_path_part_fp } {
+            \fp_set:Nn \l_hawkdraw_point_at_fp {
+                \cs_if_exist_use:cT {
+                    __hawkdraw_point_part_ \l__hawkdraw_path_type_str :V
+                } {
+                    \l_hawkdraw_point_at_path_part_fp
+                }
+            }
+        }
+        \keys_set_known:nVN { hawkdraw / path / node }
+            \l__hawkdraw_keys_unprocessed_clist
+            \l__hawkdraw_keys_unprocessed_clist
+        \tl_if_blank:nF \l_hawkdraw_point_name_tl {
             \prop_gput:cVV { g__hawkdraw_points_ \int_use:N \g_hawkdraw_id_int _prop }
-                \l_hawkdraw_node_name_tl
-                \l_hawkdraw_node_at_fp
+                \l_hawkdraw_point_name_tl
+                \l_hawkdraw_point_at_fp
         }
         \bool_if:NTF \l__hawkdraw_node_vbox_bool {
             \vcoffin_set:Nnn \l_hawkdraw_node_coffin {
@@ -106,7 +116,7 @@
             \clist_item:Nn \l_hawkdraw_node_anchor_clist { 1 }
         } {
             \clist_item:Nn \l_hawkdraw_node_anchor_clist { 2 }
-        } \l_hawkdraw_node_at_fp
+        } \l_hawkdraw_point_at_fp
     \draw_scope_end:
 }
 
