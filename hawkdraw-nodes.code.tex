@@ -74,16 +74,16 @@
     \draw_scope_begin:
         \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_last_point_fp
         \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_last_slope_fp
-        \fp_set:Nn \l_hawkdraw_point_at_path_part_fp { nan }
+        \fp_set:Nn \l_hawkdraw_point_at_part_fp { nan }
         \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
         \keys_set_known:nnN { hawkdraw / path / point } {#1}
             \l__hawkdraw_keys_unprocessed_clist
-        \fp_if_nan:nF { \l_hawkdraw_point_at_path_part_fp } {
+        \fp_if_nan:nF { \l_hawkdraw_point_at_part_fp } {
             \fp_set:Nn \l_hawkdraw_point_at_fp {
                 \cs_if_exist_use:cTF {
                     __hawkdraw_point_part_ \l__hawkdraw_path_type_str :V
                 } {
-                    \l_hawkdraw_point_at_path_part_fp
+                    \l_hawkdraw_point_at_part_fp
                 } {
                     0pt , 0pt
                 }
@@ -92,7 +92,7 @@
                 \cs_if_exist_use:cTF {
                     __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_str :V
                 } {
-                    \l_hawkdraw_point_at_path_part_fp
+                    \l_hawkdraw_point_at_part_fp
                 } {
                     0
                 }

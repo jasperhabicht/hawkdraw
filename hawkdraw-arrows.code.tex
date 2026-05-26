@@ -101,11 +101,11 @@
         \hawkdraw_arrow_put:nnnn {#3}
             {
                 \use:c { __hawkdraw_point_part_ \l__hawkdraw_path_type_str :V }
-                    \l_hawkdraw_tip_at_path_part_fp
+                    \l_hawkdraw_tip_at_part_fp
             }
             {
                 \use:c { __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_str :V }
-                    \l_hawkdraw_tip_at_path_part_fp 
+                    \l_hawkdraw_tip_at_part_fp 
                 \bool_if:NTF \l_hawkdraw_tip_flipped_bool {
                     + 90
                 } {
@@ -124,17 +124,17 @@
         #1#2 \s__hawkdraw_stop
     } {
         \hawkdraw_arrow_put_single:nVn { }
-            \l_hawkdraw_tip_at_path_part_fp {#1}
+            \l_hawkdraw_tip_at_part_fp {#1}
         \tl_trim_spaces_apply:nN {#2} \__hawkdraw_continue_path:n
     }
 }
 
-\fp_new:N \l_hawkdraw_tip_at_path_part_fp
+\fp_new:N \l_hawkdraw_tip_at_part_fp
 \bool_new:N \l_hawkdraw_tip_flipped_bool
 
 \keys_define:nn { hawkdraw / path / tip } {
-    at ~ path ~ part        .fp_set:N       = \l_hawkdraw_tip_at_path_part_fp ,
-    at ~ path ~ part        .initial:n      = { 1 } ,
+    at ~ part               .fp_set:N       = \l_hawkdraw_tip_at_part_fp ,
+    at ~ part               .initial:n      = { 1 } ,
     flipped                 .bool_set:N     = \l_hawkdraw_tip_flipped_bool ,
     flipped                 .default:n      = { true } ,
 }
@@ -144,7 +144,7 @@
     \keys_set_known:nnN { hawkdraw / path / tip } {#1}
         \l__hawkdraw_keys_unprocessed_clist
     \hawkdraw_arrow_put_single:eVn { \clist_use:N \l__hawkdraw_keys_unprocessed_clist }
-        \l_hawkdraw_tip_at_path_part_fp {#2}
+        \l_hawkdraw_tip_at_part_fp {#2}
     \tl_trim_spaces_apply:nN {#3} \__hawkdraw_continue_path:n
 }
 

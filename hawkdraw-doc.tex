@@ -274,7 +274,7 @@
 
 \changes{v0.0.5}{2026/05/18}{First public alpha release.}
 \changes{v0.0.6}{2026/05/20}{Splitting up code into modules.}
-\changes{v0.0.7}{2026/05/25}{Adding patterns; adding \titlemacro{at path part} option.}
+\changes{v0.0.7}{2026/05/25}{Adding patterns; adding \titlemacro{at part} option.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -670,18 +670,18 @@ The command \macro{\point} is a shortcut for \macro{\path (0pt, 0pt) point}
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-\begin{macrodef}[key:atpathpart]
-!path/point/!|at path part|={<float>}
+\begin{macrodef}[key:atpart]
+!path/point/!|at part|={<float>}
 \end{macrodef}
-The position of a point can also be adjusted using the \macro{at path part} option which accespts a floating-point number that defines the position on the last path segment with \num{0} being the previous and \num{1} being the current point.
+The position of a point can also be adjusted using the \macro{at part} option which accespts a floating-point number that defines the position on the last path segment with \num{0} being the previous and \num{1} being the current point.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     -- (2cm,1cm)
-    point[name={A}, at path part={0}]
-    point[name={B}, at path part={0.5}]
-    point[name={C}, at path part={0.9}] ;
+    point[name={A}, at part={0}]
+    point[name={B}, at part={0.5}]
+    point[name={C}, at part={0.9}] ;
   \fill[fill color=red] (A) circle[radius=2pt] ;
   \fill[fill color=blue] (B) circle[radius=2pt] ;
   \fill[fill color=green] (C) circle[radius=2pt] ;
@@ -692,9 +692,9 @@ The position of a point can also be adjusted using the \macro{at path part} opti
 \begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     -| (2cm,1cm)
-    point[name={A}, at path part={0}]
-    point[name={B}, at path part={0.5}]
-    point[name={C}, at path part={0.9}] ;
+    point[name={A}, at part={0}]
+    point[name={B}, at part={0.5}]
+    point[name={C}, at part={0.9}] ;
   \fill[fill color=red] (A) circle[radius=2pt] ;
   \fill[fill color=blue] (B) circle[radius=2pt] ;
   \fill[fill color=green] (C) circle[radius=2pt] ;
@@ -706,9 +706,9 @@ The position of a point can also be adjusted using the \macro{at path part} opti
   \path[stroke] (0cm,0cm)
     .. (1cm,1cm)
     .. (2cm,1cm)
-    point[name={A}, at path part={0}]
-    point[name={B}, at path part={0.5}]
-    point[name={C}, at path part={0.9}] ;
+    point[name={A}, at part={0}]
+    point[name={B}, at part={0.5}]
+    point[name={C}, at part={0.9}] ;
   \fill[fill color=red] (A) circle[radius=2pt] ;
   \fill[fill color=blue] (B) circle[radius=2pt] ;
   \fill[fill color=green] (C) circle[radius=2pt] ;
@@ -720,9 +720,9 @@ The position of a point can also be adjusted using the \macro{at path part} opti
   \path[stroke] (0cm,0cm)
     .. (0cm,0.5cm) & (1cm,1cm)
     .. (2cm,1cm)
-    point[name={A}, at path part={0}]
-    point[name={B}, at path part={0.5}]
-    point[name={C}, at path part={0.9}] ;
+    point[name={A}, at part={0}]
+    point[name={B}, at part={0.5}]
+    point[name={C}, at part={0.9}] ;
   \fill[fill color=red] (A) circle[radius=2pt] ;
   \fill[fill color=blue] (B) circle[radius=2pt] ;
   \fill[fill color=green] (C) circle[radius=2pt] ;
@@ -737,9 +737,9 @@ The position of a point can also be adjusted using the \macro{at path part} opti
       angle start={45},
       angle end={135}
     ]
-    point[name={A}, at path part={0}]
-    point[name={B}, at path part={0.5}]
-    point[name={C}, at path part={0.9}] ;
+    point[name={A}, at part={0}]
+    point[name={B}, at part={0.5}]
+    point[name={C}, at part={0.9}] ;
   \fill[fill color=red] (A) circle[radius=2pt] ;
   \fill[fill color=blue] (B) circle[radius=2pt] ;
   \fill[fill color=green] (C) circle[radius=2pt] ;
@@ -755,9 +755,9 @@ The position of a point can also be adjusted using the \macro{at path part} opti
       angle start={45},
       angle end={135}
     ]
-    point[name={A}, at path part={0}]
-    point[name={B}, at path part={0.5}]
-    point[name={C}, at path part={0.9}] ;
+    point[name={A}, at part={0}]
+    point[name={B}, at part={0.5}]
+    point[name={C}, at part={0.9}] ;
   \fill[fill color=red] (A) circle[radius=2pt] ;
   \fill[fill color=blue] (B) circle[radius=2pt] ;
   \fill[fill color=green] (C) circle[radius=2pt] ;
@@ -772,10 +772,10 @@ Using the \macro{node} operation, a node at the current position is defined and 
 \begin{macrodef}
 !path/node/!|at|={<tuple>}
 !path/node/!|name|={<string>}
-!path/node/!|at path part|={<float>}
+!path/node/!|at part|={<float>}
 !path/node/!|anchor|={<clist>}
 \end{macrodef}
-The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at path part} option which accespts a floating-point number (see \hyperlink{key:atpathpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. The node can be named by setting the \macro{name} option.
+The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpathpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. The node can be named by setting the \macro{name} option.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -1219,14 +1219,14 @@ The following arrow tips are available, of these the last three, \macro{simple},
 Using the \macro{tip} operation, an arrow head is drawn at the current point on the path. 
 
 \begin{macrodef}
-!path/tip/!|at path part|={<float>}
+!path/tip/!|at part|={<float>}
 \end{macrodef}
-The position of the arrow head can be adjusted with the \macro{at path part} option which accespts a floating-point number (see \hyperlink{key:atpathpart}{above}).
+The position of the arrow head can be adjusted with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpathpart}{above}).
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \stroke (0cm,0cm) -- (2cm,1cm)
-    tip[at path part={0.25}] {straight} ;
+    tip[at part={0.25}] {straight} ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1238,7 +1238,7 @@ If the boolean option \macro{flipped} is set, the arrow head is rotated to the o
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \stroke (0cm,0cm) -- (2cm,1cm)
-    tip[at path part={0.25}, flipped] {straight} ;
+    tip[at part={0.25}, flipped] {straight} ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 

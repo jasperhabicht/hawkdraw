@@ -382,7 +382,7 @@
 \fp_new:N \l_hawkdraw_point_at_fp
 \tl_new:N \l_hawkdraw_point_at_name_tl
 \tl_new:N \l_hawkdraw_point_name_tl
-\fp_new:N \l_hawkdraw_point_at_path_part_fp
+\fp_new:N \l_hawkdraw_point_at_part_fp
 \fp_new:N \l_hawkdraw_point_slope_fp
 
 \keys_define:nn { hawkdraw / path / point } {
@@ -391,21 +391,21 @@
         \tl_set:Nn \l_hawkdraw_point_at_name_tl {#1}
     } ,
     name                    .tl_set:N       = \l_hawkdraw_point_name_tl ,
-    at ~ path ~ part        .fp_set:N       = \l_hawkdraw_point_at_path_part_fp ,
+    at ~ path ~ part        .fp_set:N       = \l_hawkdraw_point_at_part_fp ,
 }
 
 \cs_new_protected:cpn { __hawkdraw_process_path_ p :w } point #1 [ #2 ] #3 \s__hawkdraw_stop {
     \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_last_point_fp
     \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_last_slope_fp
-    \fp_set:Nn \l_hawkdraw_point_at_path_part_fp { nan }
+    \fp_set:Nn \l_hawkdraw_point_at_part_fp { nan }
     \tl_clear:N \l_hawkdraw_point_at_name_tl
     \keys_set:nn { hawkdraw / path / point } {#2}
-    \fp_if_nan:nF { \l_hawkdraw_point_at_path_part_fp } {
+    \fp_if_nan:nF { \l_hawkdraw_point_at_part_fp } {
         \fp_set:Nn \l_hawkdraw_point_at_fp {
             \cs_if_exist_use:cTF {
                 __hawkdraw_point_part_ \l__hawkdraw_path_type_str :V
             } {
-                \l_hawkdraw_point_at_path_part_fp
+                \l_hawkdraw_point_at_part_fp
             } {
                 0pt , 0pt
             }
@@ -414,7 +414,7 @@
             \cs_if_exist_use:cTF {
                 __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_str :V
             } {
-                \l_hawkdraw_point_at_path_part_fp
+                \l_hawkdraw_point_at_part_fp
             } {
                 0
             }
