@@ -13,6 +13,7 @@
 \documentclass{standalone}
 \usepackage{hawkdraw}
 
+\hawkdrawsetcolor{victor sky}{named}{cyan!75!blue!25}
 \hawkdrawsetcolor{victor head}{named}{black!35}
 \hawkdrawsetcolor{victor head lighter}{named}{black!15}
 \hawkdrawsetcolor{victor beak}{named}{yellow!75!black}
@@ -43,7 +44,7 @@
 \begin{hawkdraw}[scale={1,-1}]
 
     \begin{scope}
-        \fill[fill color={cyan!50}, clip]
+        \fill[fill color={victor sky}, clip]
             (95,105) circle[radius={75pt}] ; 
     
         % body
