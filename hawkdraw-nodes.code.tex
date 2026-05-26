@@ -31,6 +31,7 @@
 \dim_new:N \l_hawkdraw_node_padding_bottom_dim
 \str_new:N \l_hawkdraw_node_text_color_str
 \str_new:N \l_hawkdraw_node_frame_str
+\bool_new:N \l_hawkdraw_node_sloped_bool
 
 \cs_generate_variant:Nn \keys_set_known:nnN { nV }
 \cs_generate_variant:Nn \draw_coffin_use:Nnnn { NeeV }
@@ -49,6 +50,8 @@
     text ~ color            .initial:n      = { . } ,
     frame                   .str_set:N      = \l_hawkdraw_node_frame_str ,
     frame                   .initial:n      = { rectangle } ,
+    sloped                  .bool_set:N     = \l_hawkdraw_node_sloped_bool ,
+    sloped                  .default:n      = { true } ,
 }
 
 \cs_new_protected:cpn { __hawkdraw_process_path_ n :w } node #1#2 \s__hawkdraw_stop {
@@ -83,14 +86,41 @@
                 }
             }
         }
+        \prop_if_exist:cTF {
+            g__hawkdraw_point_ \l_hawkdraw_point_at_name_tl _prop
+        } {
+            \fp_set:Nn \l_hawkdraw_point_slope_fp {
+                \prop_item:cn {
+                    g__hawkdraw_point_ \l_hawkdraw_point_at_name_tl _prop
+                } { slope }
+            }
+        } {
+            \fp_set:Nn \l_hawkdraw_point_slope_fp {
+                \cs_if_exist_use:cTF {
+                    __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_str :V
+                } {
+                    \l_hawkdraw_point_at_fp
+                } {
+                    0
+                }
+            }
+        }
+        \tl_if_blank:nF \l_hawkdraw_point_name_tl {
+            \prop_if_exist:cF {
+                g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
+            } {
+                \prop_new_linked:c {
+                    g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
+                }
+            }
+            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+                { point } \l_hawkdraw_point_at_fp
+            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+                { slope } \l_hawkdraw_point_slope_fp
+        }
         \keys_set_known:nVN { hawkdraw / path / node }
             \l__hawkdraw_keys_unprocessed_clist
             \l__hawkdraw_keys_unprocessed_clist
-        \tl_if_blank:nF \l_hawkdraw_point_name_tl {
-            \prop_gput:cVV { g__hawkdraw_points_ \int_use:N \g_hawkdraw_id_int _prop }
-                \l_hawkdraw_point_name_tl
-                \l_hawkdraw_point_at_fp
-        }
         \bool_if:NTF \l__hawkdraw_node_vbox_bool {
             \vcoffin_set:Nnn \l_hawkdraw_node_coffin {
                 \l_hawkdraw_node_width_dim
@@ -111,6 +141,9 @@
             \l_hawkdraw_node_coffin { hc } { vc }
             { 0.5 \l_hawkdraw_node_padding_left_dim - 0.5 \l_hawkdraw_node_padding_right_dim }
             { 0.5 \l_hawkdraw_node_padding_bottom_dim - 0.5 \l_hawkdraw_node_padding_top_dim }
+        \bool_if:NT \l_hawkdraw_node_sloped_bool {
+            \coffin_rotate:Nn \l_hawkdraw_node_frame_coffin { \l_hawkdraw_point_slope_fp }
+        }
         \exp_args:Ne
         \draw_coffin_use:NeeV \l_hawkdraw_node_frame_coffin {
             \clist_item:Nn \l_hawkdraw_node_anchor_clist { 1 }
