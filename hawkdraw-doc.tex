@@ -912,6 +912,19 @@ The command \macro{\map} is a shortcut for \macro{\path (0pt,0pt) map}
   } ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
+    
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+\path[stroke] (0cm,0cm) 
+  .. (7mm,-10mm) & (14mm,8mm) .. (20mm,-5mm) 
+  map[end={10}] {
+      tip[
+        at part={0.095 * #1},
+        fill color=blue! #1 0!red
+      ] {stealth}
+  } ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
 
 \section{Main path options}
 
@@ -1221,7 +1234,7 @@ Using the \macro{tip} operation, an arrow head is drawn at the current point on 
 \begin{macrodef}
 !path/tip/!|at part|={<float>}
 \end{macrodef}
-The position of the arrow head can be adjusted with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpathpart}{above}).
+The position of the arrow head can be adjusted with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpart}{above}).
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
