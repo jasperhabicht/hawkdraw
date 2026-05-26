@@ -60,17 +60,17 @@
     } {
         #1#2 \s__hawkdraw_stop
     } {
-        \hawkdraw_put_node:nn { } {#1}
+        \hawkdraw_node_put:nn { } {#1}
         \tl_trim_spaces_apply:nN {#2} \__hawkdraw_continue_path:n
     }
 }
 
 \cs_new_protected:cpn { __hawkdraw_process_path_node_ [ :w } [ #1 ] #2#3 \s__hawkdraw_stop {
-    \hawkdraw_put_node:nn {#1} {#2}
+    \hawkdraw_node_put:nn {#1} {#2}
     \tl_trim_spaces_apply:nN {#3} \__hawkdraw_continue_path:n
 }
 
-\cs_new_protected:Npn \hawkdraw_put_node:nn #1#2 {
+\cs_new_protected:Npn \hawkdraw_node_put:nn #1#2 {
     \draw_scope_begin:
         \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_last_point_fp
         \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_last_slope_fp
@@ -138,8 +138,8 @@
                 \normalfont #2
             }
         }
-        \__hawkdraw_set_node_padding:
-        \__hawkdraw_set_node_frame:V \l__hawkdraw_keys_unprocessed_clist
+        \__hawkdraw_node_set_padding:
+        \__hawkdraw_node_set_frame:V \l__hawkdraw_keys_unprocessed_clist
         \coffin_attach:NnnNnnnn
             \l_hawkdraw_node_frame_coffin { hc } { vc }
             \l_hawkdraw_node_coffin { hc } { vc }
@@ -157,7 +157,7 @@
     \draw_scope_end:
 }
 
-\cs_new_protected:Npn \__hawkdraw_set_node_padding: {
+\cs_new_protected:Npn \__hawkdraw_node_set_padding: {
     \int_case:nn { \clist_count:N \l_hawkdraw_node_padding_clist } {
         { 1 } {
             \dim_set:Nn \l_hawkdraw_node_padding_left_dim {
@@ -218,12 +218,12 @@
     }
 }
 
-\cs_new_protected:Npn \__hawkdraw_set_node_frame:n #1 {
+\cs_new_protected:Npn \__hawkdraw_node_set_frame:n #1 {
     \hcoffin_set:Nn \l_hawkdraw_node_frame_coffin {
         \draw_suspend_begin:
             \draw_begin:
                 \keys_set:nn { hawkdraw / path } {#1}
-                \hawkdraw_set_path_options:
+                \hawkdraw_path_set_options:
                 \cs_if_exist_use:cTF { hawkdraw_node_frame_ \l_hawkdraw_node_frame_str :NVVVV } {
                     \l_hawkdraw_node_coffin
                     \l_hawkdraw_node_padding_left_dim
@@ -239,7 +239,7 @@
         \draw_suspend_end:
     }
 }
-\cs_generate_variant:Nn \__hawkdraw_set_node_frame:n { V }
+\cs_generate_variant:Nn \__hawkdraw_node_set_frame:n { V }
 
 \dim_new:N \hawkdraw_node_natural_width_dim
 \dim_new:N \hawkdraw_node_natural_height_dim

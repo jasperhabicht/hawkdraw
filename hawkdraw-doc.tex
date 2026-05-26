@@ -775,7 +775,7 @@ Using the \macro{node} operation, a node at the current position is defined and 
 !path/node/!|at path part|={<float>}
 !path/node/!|anchor|={<clist>}
 \end{macrodef}
-The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at path part} which accespts a floating-point number (see \hyperlink{key:atpathpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. The node can be named by setting the \macro{name} option.
+The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at path part} option which accespts a floating-point number (see \hyperlink{key:atpathpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. The node can be named by setting the \macro{name} option.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -1212,6 +1212,35 @@ The following arrow tips are available, of these the last three, \macro{simple},
   \arrowexample{bar} & \macro{bar} \\
   \bottomrule
 \end{longtable}
+
+\begin{macrodef}
+|tip|[<options>] {<arrow>}
+\end{macrodef}
+Using the \macro{tip} operation, an arrow head is drawn at the current point on the path. 
+
+\begin{macrodef}
+!path/tip/!|at path part|={<float>}
+\end{macrodef}
+The position of the arrow head can be adjusted with the \macro{at path part} option which accespts a floating-point number (see \hyperlink{key:atpathpart}{above}).
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \stroke (0cm,0cm) -- (2cm,1cm)
+    tip[at path part={0.25}] {straight} ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{macrodef}
+!path/tip/!|flipped|={<boolean>}
+\end{macrodef}
+If the boolean option \macro{flipped} is set, the arrow head is rotated to the other direction.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \stroke (0cm,0cm) -- (2cm,1cm)
+    tip[at path part={0.25}, flipped] {straight} ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
 
 \subsection{Patterns}
 

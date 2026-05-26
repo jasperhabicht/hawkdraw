@@ -348,7 +348,7 @@
 }
 \cs_generate_variant:Nn \hawkdraw_tuple_use_ii:n { V }
 
-\cs_new_protected:Npn \hawkdraw_set_path_options: {
+\cs_new_protected:Npn \hawkdraw_path_set_options: {
     \color_stroke:V \l_hawkdraw_path_stroke_color_str
     \color_fill:V \l_hawkdraw_path_fill_color_str
     \opacity_stroke:V \l_hawkdraw_path_stroke_opacity_fp
@@ -550,7 +550,7 @@
 \cs_new_protected:cpn { __hawkdraw_process_path_ [ :w } [ #1 ] #2 \s__hawkdraw_stop {
     \bool_if:NF \l__hawkdraw_path_ignore_keys_bool {
         \keys_set:nn { hawkdraw / path } {#1}
-        \hawkdraw_set_path_options:
+        \hawkdraw_path_set_options:
     }
     \tl_trim_spaces_apply:nN {#2} \__hawkdraw_continue_path:n
 }
