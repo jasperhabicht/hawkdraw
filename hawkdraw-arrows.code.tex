@@ -83,7 +83,7 @@
         \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }
     \draw_scope_end:
 }
-\cs_generate_variant:Nn \hawkdraw_put_arrow:nnnn { nVVV }
+\cs_generate_variant:Nn \hawkdraw_put_arrow:nnnn { nVVV , VVVV }
 
 \cs_new_protected:Npn \hawkdraw_arrow_create:nnn #1#2#3 {
     \prop_gput:Nnn \g_hawkdraw_arrow_default_keys_prop {#1} {#2}
