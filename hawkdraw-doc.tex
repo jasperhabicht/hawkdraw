@@ -269,7 +269,7 @@
   [The hawkdraw package]
   {The \titlemacro{hawkdraw} package}
   {A LaTeX package to generate vector graphic output based on the l3draw package and related LaTeX3 modules using a simple syntax}
-  {Jasper Habicht}[E-mail: \href{mailto:mail@jasperhabicht.de}{mail@jasperhabicht.de}. I am grateful to Joseph Wright, Max Chernoff, Mikael Clea F. Rees, Persson Sundqvist and Jonathan P. Spratte who helped me improving the code and the math behind it. Victor, the drawing hawk: \textcopyright{} 2026 Hannah Klöber.]
+  {Jasper Habicht}[E-mail: \href{mailto:mail@jasperhabicht.de}{mail@jasperhabicht.de}. I am grateful to Joseph Wright, Max Chernoff, Clea F. Rees, Mikael Persson Sundqvist and Jonathan P. Spratte who helped me improving the code and the math behind it. Victor, the drawing hawk: \textcopyright{} 2026 Hannah Klöber.]
   {Version \hawkdrawfileversion, released on \hawkdrawfiledate}
 
 \changes{v0.0.5}{2026/05/18}{First public alpha release.}
@@ -295,7 +295,7 @@ The package is currently still in an experimental stage. The code may be subject
 
 \section{Loading the package}
 
-To install the package, copy the package file \macro{hawkdraw.sty} into the working directory or into the \macro{texmf} directory. After the package has been installed, the \macro{hawkdraw} package is loaded by calling \macro{\usepackage{hawkdraw}} in the preamble of the document.
+To install the package, copy the package file \macro{hawkdraw.sty} together with the module files ending with \macro{.code.tex} into the working directory or into the \macro{texmf} directory. After the package has been installed, the \macro{hawkdraw} package is loaded by calling \macro{\usepackage{hawkdraw}} in the preamble of the document.
 
 The package can be used with PDFLaTeX, LuaLaTeX or XeLaTeX. The package does not load any dependencies, but it needs a LaTeX kernel of 1 June 2022 or newer. It is recommended to use the package with an up-to-date TeX distribution.
 
@@ -307,7 +307,7 @@ The package has only very few main user commands. Among these, the \macro{hawkdr
 
 Similar to Ti\emph{k}Z, the \macro{hawkdraw} package makes use of key-value pairs to set options for commands. Some options are available for almost all commands, other have very specific uses. In the descriptions of the options, this manual states which data type the relevant option assumes. The following data types exist:
 
-\begin{longtable}{ @{} p{2.5cm} p{\dimexpr\textwidth-\tabcolsep-2.5cm} @{} }
+\begin{longtable}{ @{} p{2.5cm} p{\dimexpr\textwidth-2\tabcolsep-2.5cm} @{} }
   \toprule
   \textbf{Data type} & \textbf{Explanation} \\
   \midrule
@@ -527,19 +527,19 @@ The radius is specified as a dimension with the \macro{radius} option.
 Using the \macro{ellipse} operation, an ellipse is drawn with the current point as center.
 
 \begin{macrodef}
-!path/ellipse/!|radius a|={<dimension>}
-!path/ellipse/!|radius b|={<dimension>}
+!path/ellipse/!|radius x|={<dimension>}
+!path/ellipse/!|radius y|={<dimension>}
 !path/ellipse/!|vector a|={<tuple>}
 !path/ellipse/!|vector b|={<tuple>}
 \end{macrodef}
-The vectors of the ellipse are specified as tuples of dimensions with the \macro{vector a} and \macro{vector b} options. ALternatively, the options \macro{radius a} and \macro{radius b} can be used to define the radii in the x- and y-dimension.
+The vectors of the ellipse are specified as tuples of dimensions with the \macro{vector a} and \macro{vector b} options. ALternatively, the options \macro{radius x} and \macro{radius y} can be used to define the radii in the x- and y-dimension.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     ellipse[
-      radius a={0.5cm},
-      radius b={1cm}
+      radius x={0.5cm},
+      radius y={1cm}
     ] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -560,15 +560,16 @@ The vectors of the ellipse are specified as tuples of dimensions with the \macro
 Using the \macro{arc} operation, an arc is drawn with the current point as origin.
 
 \begin{macrodef}
+!path/arc/!|radius|={<dimension>}
+!path/arc/!|radius x|={<dimension>}
+!path/arc/!|radius y|={<dimension>}
 !path/arc/!|vector a|={<tuple>}
 !path/arc/!|vector b|={<tuple>}
-!path/arc/!|radius a|={<dimension>}
-!path/arc/!|radius b|={<dimension>}
 !path/arc/!|angle start|={<float>}
 !path/arc/!|angle end|={<float>}
 !path/arc/!|angle delta|={<float>}
 \end{macrodef}
-The vectors of the arc are specified as tuples of dimensions with the \macro{vector a} and \macro{vector b} options. ALternatively, the options \macro{radius a} and \macro{radius b} can be used to define the radii in the x- and y-dimension. The angles are specified as dimensions with the \macro{start angle} and \macro{end angle} options. Instead of the \macro{angle end} option, the option \macro{angle delta} can be used.
+The vectors of the arc are specified as tuples of dimensions with the options \macro{radius x} and \macro{radius y} that define the radii in the x- and y-dimension. It is possible to use the \macro{radius} option to define a uniform radius for both dimensions. Alternatively, the options \macro{vector a} and \macro{vector b} can be used to specify the vectors of the arc as tuples of dimensions. The angles are specified as dimensions with the \macro{start angle} and \macro{end angle} options. Instead of the \macro{angle end} option, the option \macro{angle delta} can be used.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -585,8 +586,8 @@ The vectors of the arc are specified as tuples of dimensions with the \macro{vec
 \begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     arc[
-      radius a={0.5cm},
-      radius b={1cm},
+      radius x={0.5cm},
+      radius y={1cm},
       angle start={45},
       angle delta={90}
     ] ;
@@ -629,11 +630,12 @@ The other corner of the rectangle is specified as a point (a tuple) with the \ma
 Using the \macro{grid} operation, a grid with the current point as origin corner is drawn.
 
 \begin{macrodef}
-!path/grid/!|step|={<tuple>}
+!path/grid/!|step|={<clist>}
 !path/grid/!|corner|={<tuple>}
+!path/grid/!|relative|={<boolean>}
 \end{macrodef}
 
-The step is specified as a comma-separated list of at most two dimensions with the \macro{step} option. The first item in the tuple is the step in the x-direction, and the second item is the step in the y-direction. If only one dimension is given, it is used for both directions. The other corner is specified as a point (a tuple) with the \macro{corner} option.
+The step is specified as a comma-separated list of at most two dimensions with the \macro{step} option. The first item in the list is the step in the x-direction, and the second item is the step in the y-direction. If only one dimension is given, it is used for both directions. The other corner is specified as a point (a tuple) with the \macro{corner} option. If the boolean option \macro{relative} is set, the corner point is interpreted as relative to the current point instead of absolute.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -657,23 +659,25 @@ The step is specified as a comma-separated list of at most two dimensions with t
 Using the \macro{point} operation, a point at the current position is defined and named with the given name.
 
 \begin{macrodef}
-!path/point/!|at|={<tuple>}
 !path/point/!|name|={<string>}
 \end{macrodef}
-The position of the point can be adjusted with the \macro{at} option which accepts a point (a tuple). The point can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}).
+The point can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}).
 
-The command \macro{\point} is a shortcut for \macro{\path (0pt, 0pt) point}
+The command \macro{\point} is a shortcut for \macro{\path (0pt,0pt) point}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path (0,0) point[name={A}, at={(2cm,0.5cm)}] ;
+  \path (2cm,0.5cm) point[name={A}] ;
   \path[stroke] (0cm,0cm) -- (A) -- (0cm,1cm) ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{macrodef}[key:atpart]
+!path/point/!|at|={<tuple>}
 !path/point/!|at part|={<float>}
 \end{macrodef}
+The position of the point can be adjusted with the \macro{at} option which accepts a point (a tuple). 
+
 The position of a point can also be adjusted using the \macro{at part} option which accespts a floating-point number that defines the position on the last path segment with \num{0} being the previous and \num{1} being the current point.
 
 \begin{codeexamplecolumns}
@@ -817,12 +821,12 @@ The position of a point can also be adjusted using the \macro{at part} option wh
 Using the \macro{node} operation, a node at the current position is defined and assigned the relevant content by the relevant argument.
 
 \begin{macrodef}
-!path/node/!|at|={<tuple>}
 !path/node/!|name|={<string>}
+!path/node/!|at|={<tuple>}
 !path/node/!|at part|={<float>}
 !path/node/!|anchor|={<clist>}
 \end{macrodef}
-The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. The node can be named by setting the \macro{name} option.
+The node can be named by setting the \macro{name} option which can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}). The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{l}, \macro{r}, \macro{vc} and \macro{hc}.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -868,7 +872,7 @@ Using the \macro{sloped} option, the node can be rotated to follow the direction
 \begin{macrodef}
 !path/node/!|flipped|={<boolean>}
 \end{macrodef}
-Using the \macro{flipped} option, the node can be rotated by additional 180 degrees if it is sloped. The default value is \macro{false}.
+Using the \macro{flipped} option, the node can be rotated by additional \num{180} degrees if it is sloped. The default value is \macro{false}.
 
 \begin{macrodef}
 !path/node/!|padding|={<clist>}
@@ -904,12 +908,14 @@ Using the \macro{padding} option, the padding between the border of the node and
 !path/node/!|text color|={<color>}
 !path/node/!|text opacity|={<float>}
 \end{macrodef}
-Using the \macro{text color} option, the color of the node contents is set. The default text color is the current (text) color. The option \macro{text opacity} sets the text opacity. The floating-point number should be in the range of \num{0} and \num{1}. The default text opacity is \num{1} (fully opaque). Note that \macro{\DocumentMetadata{}} needs to be set in order to activate support for PDF transparency.
+Using the \macro{text color} option, the color of the node contents is set. The default text color is the current (text) color. The option \macro{text opacity} sets the text opacity. The floating-point number should be in the range of \num{0} and \num{1}. The default text opacity is \num{1} (fully opaque).
+
+Note that \macro{\DocumentMetadata{}} needs to be set in order to activate support for PDF transparency.
 
 \begin{macrodef}
 !path/node/!|frame|={<string>}
 \end{macrodef}
-Using the \macro{frame} command, the frame surrounding the node text can be selected. The frame \macro{rectangle} is set per default. All options that are available for paths are also available for node frames.
+Using the \macro{frame} command, the frame surrounding the node text can be selected. The \macro{rectangle} frame is set per default. All options that are available for paths are also available for node frames.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -950,7 +956,7 @@ The following node frames are available, the frame \macro{none} is special as it
 \begin{macrodef}
 |map|[<options>]{<code>}
 \end{macrodef}
-The \macro{map} operation is used to map over a comma-separated list of items or a range of numbers and execute code for each item that is given by the relevant argument. The code can reference the current item with \macro{#1} and the current index with \macro{#2}. The following options can be set for the command:
+The \macro{map} operation is used to map over a comma-separated list of items or a range of numbers and execute code for each item that is given by the relevant argument. The code can reference the current item with \macro{#1} and the current index with \macro{#2}. The index starts at \num{1}. The \macro{map} operation can be nested. The following options can be set for the command:
 
 \begin{macrodef}
 !path/map/!|list|={<clist>}
@@ -981,6 +987,7 @@ The command \macro{\map} is a shortcut for \macro{\path (0pt,0pt) map}
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
+\begin{codeexamplecolumns}
 \begin{hawkdraw}
   \path[stroke] 
     map[list={A,B}] {
@@ -989,6 +996,7 @@ The command \macro{\map} is a shortcut for \macro{\path (0pt,0pt) map}
       }
   } ;
 \end{hawkdraw}
+\end{codeexamplecolumns}
     
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -1059,9 +1067,9 @@ These options add a stroke to the path, fill the path, or use the path as a clip
 
 The command \macro{\stroke} is a shortcut for \macro{\path [stroke]}.
 
-The command \macro{\fill} is a shortcut for \macro{\path [fill]}
+The command \macro{\fill} is a shortcut for \macro{\path [fill]}.
 
-The command \macro{\clip} is a shortcut for \macro{\path [clip]}
+The command \macro{\clip} is a shortcut for \macro{\path [clip]}.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -1100,7 +1108,9 @@ The options \macro{stroke color} and \macro{fill color} set the stroke color and
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-The options \macro{stroke opacity} and \macro{fill opacity} set the stroke opacity and the fill opacity for the path. The floating-point number should be in the range of \num{0} and \num{1}. The default stroke opacity and fill opacity is \num{1} (fully opaque). Note that \macro{\DocumentMetadata{}} needs to be set in order to activate support for PDF transparency.
+The options \macro{stroke opacity} and \macro{fill opacity} set the stroke opacity and the fill opacity for the path. The floating-point number should be in the range of \num{0} and \num{1}. The default stroke opacity and fill opacity is \num{1} (fully opaque). 
+
+Note that \macro{\DocumentMetadata{}} needs to be set in order to activate support for PDF transparency.
 
 \subsection{Line styling}
 
@@ -1183,14 +1193,14 @@ The option \macro{corner arc} the corner arc for the path as a comma-separated l
 \begin{macrodef}
 !path/!|fill rule|={<string>}
 \end{macrodef}
-The option \macro{fill rule} sets the fill rule for the path. The possible values are \macro{non-zero} and \macro{even-odd}. The default fill rule is \macro{non-zero}. Note that this option is not influenced by scoping.
+This option sets the fill rule for the path. The possible values are \macro{non-zero} and \macro{even-odd}. The default fill rule is \macro{non-zero}. Note that this option is not influenced by scoping.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[fill rule={even-odd}]
   \fill (0cm,0cm)
     rectangle[corner={(2cm,1cm)}]
     (1cm,0.5cm)
-    circle[radius={0.4cm}] ;
+    circle[radius={0.6cm}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1303,7 +1313,9 @@ The options \macro{arrow start} and \macro{arrow end} set an arrow tip to the st
 !path/!|arrow end style set|={<options>}
 !path/!|arrow end style add|={<options>}
 \end{macrodef}
-Arrow tips can be styled using the options \macro{arrow start style set} and \macro{arrow end style set}. The option \macro{arrow style set} sets the same style for start and end arrow tips. The options \macro{arrow start style add}, \macro{arrow end style add} and \macro{arrow style add} append the relevant styles to the existing styles. All options that are available for paths are also available for arrow tips.
+Arrow tips can be styled using the options \macro{arrow start style set} and \macro{arrow end style set}. The option \macro{arrow style set} sets the same style for start and end arrow tips. 
+
+The options \macro{arrow start style add}, \macro{arrow end style add} and \macro{arrow style add} append the relevant styles to the existing styles. All options that are available for paths are also available for arrow tips.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
