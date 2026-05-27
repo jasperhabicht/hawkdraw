@@ -975,11 +975,20 @@ The command \macro{\map} is a shortcut for \macro{\path (0pt,0pt) map}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \map[start={30}, step={120}, end={270}] { [fill]
-    (#1:0.75cm) circle[radius={5pt}]
+  \map[start={30}, step={120}, end={270}] {
+    [fill] (#1:0.75cm) circle[radius={5pt}]
   } ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
+
+\begin{hawkdraw}
+  \path[stroke] 
+    map[list={A,B}] {
+      map[list={x,y}] {
+        (#2 cm,##2 cm) node {#1,##1}
+      }
+  } ;
+\end{hawkdraw}
     
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
