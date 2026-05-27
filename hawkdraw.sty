@@ -713,7 +713,7 @@
 \cs_generate_variant:Nn \__hawkdraw_point_part_circle:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_circle:n #1 {
-    #1 * 360 - 90
+    \fp_eval:n { #1 * 360 - 90 }
 }
 \cs_generate_variant:Nn \__hawkdraw_point_part_slope_circle:n { V }
 
@@ -728,7 +728,19 @@
 \cs_generate_variant:Nn \__hawkdraw_point_part_ellipse:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_ellipse:n #1 {
-    #1 * 360 - 90
+    \fp_eval:n {
+        atand(
+            \hawkdraw_tuple_use_ii:V \l_hawkdraw_path_ellipse_vector_b_fp *
+            cosd( #1 * 360 ) -
+            \hawkdraw_tuple_use_ii:V \l_hawkdraw_path_ellipse_vector_a_fp *
+            sind( #1 * 360 )
+        ,
+            \hawkdraw_tuple_use_i:V \l_hawkdraw_path_ellipse_vector_b_fp *
+            cosd( #1 * 360 ) -
+            \hawkdraw_tuple_use_i:V \l_hawkdraw_path_ellipse_vector_a_fp *
+            sind( #1 * 360 )
+        )
+    }
 }
 \cs_generate_variant:Nn \__hawkdraw_point_part_slope_ellipse:n { V }
 
@@ -753,51 +765,66 @@
             \l_hawkdraw_path_arc_angle_start_fp
             \l_hawkdraw_path_arc_angle_end_fp
     } {
-        (
-            \draw_point_polar:VVn \l_hawkdraw_path_arc_radius_a_dim \l_hawkdraw_path_arc_radius_b_dim {
-                \l_hawkdraw_path_arc_angle_start_fp +
-                #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
-            }
-        ) -
-        (
-            \draw_point_polar:VVn \l_hawkdraw_path_arc_radius_a_dim \l_hawkdraw_path_arc_radius_b_dim {
-                \l_hawkdraw_path_arc_angle_start_fp
-            }
-        )
+        \fp_eval:n {
+            (
+                \draw_point_polar:VVn \l_hawkdraw_path_arc_radius_a_dim \l_hawkdraw_path_arc_radius_b_dim {
+                    \l_hawkdraw_path_arc_angle_start_fp +
+                    #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
+                }
+            ) -
+            (
+                \draw_point_polar:VVn \l_hawkdraw_path_arc_radius_a_dim \l_hawkdraw_path_arc_radius_b_dim {
+                    \l_hawkdraw_path_arc_angle_start_fp
+                }
+            )
+        }
     }
 }
 \cs_generate_variant:Nn \__hawkdraw_point_part_arc:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_arc:n #1 {
     \bool_if:NTF \l_hawkdraw_path_arc_axes_bool {
-        atand(
-            \hawkdraw_tuple_use_ii:V \l_hawkdraw_path_arc_vector_a_fp *
-            sind(
-                \l_hawkdraw_path_arc_angle_start_fp +
-                #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
-            ) -
-            \hawkdraw_tuple_use_ii:V \l_hawkdraw_path_arc_vector_b_fp *
-            cosd(
-                \l_hawkdraw_path_arc_angle_start_fp +
-                #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
+        \fp_eval:n {
+            atand(
+                \hawkdraw_tuple_use_ii:V \l_hawkdraw_path_arc_vector_b_fp *
+                cosd(
+                    \l_hawkdraw_path_arc_angle_start_fp +
+                    #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
+                ) -
+                \hawkdraw_tuple_use_ii:V \l_hawkdraw_path_arc_vector_a_fp *
+                sind(
+                    \l_hawkdraw_path_arc_angle_start_fp +
+                    #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
+                )
+            ,
+                \hawkdraw_tuple_use_i:V \l_hawkdraw_path_arc_vector_b_fp *
+                cosd(
+                    \l_hawkdraw_path_arc_angle_start_fp +
+                    #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
+                ) -
+                \hawkdraw_tuple_use_i:V \l_hawkdraw_path_arc_vector_a_fp *
+                sind(
+                    \l_hawkdraw_path_arc_angle_start_fp +
+                    #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
+                )
             )
-        ,
-            \hawkdraw_tuple_use_i:V \l_hawkdraw_path_arc_vector_a_fp *
-            sind(
-                \l_hawkdraw_path_arc_angle_start_fp +
-                #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
-            ) -
-            \hawkdraw_tuple_use_i:V \l_hawkdraw_path_arc_vector_b_fp *
-            cosd(
-                \l_hawkdraw_path_arc_angle_start_fp +
-                #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
-            )
-        )
+        }
     } {
         \fp_eval:n {
-            \l_hawkdraw_path_arc_angle_start_fp +
-            #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
-        } - 90
+            atand(
+                 \l_hawkdraw_path_arc_radius_a_dim *
+                sind(
+                    \l_hawkdraw_path_arc_angle_start_fp +
+                    #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
+                )
+            ,
+                \l_hawkdraw_path_arc_radius_b_dim *
+                cosd(
+                    \l_hawkdraw_path_arc_angle_start_fp +
+                    #1 * ( \l_hawkdraw_path_arc_angle_end_fp - \l_hawkdraw_path_arc_angle_start_fp )
+                )  
+            ) - 90
+        }
     }
 }
 \cs_generate_variant:Nn \__hawkdraw_point_part_slope_arc:n { V }
@@ -847,15 +874,15 @@
     \fp_compare:nNnTF {#1} > { 0.25 } {
         \fp_compare:nNnTF {#1} > { 0.5 } {
             \fp_compare:nNnTF {#1} > { 0.75 } {
-                180
+                \fp_eval:n { 180 }
             } {
-                270
+                \fp_eval:n { 270 }
             }
         } {
-            0
+            \fp_eval:n { 0 }
         }
     } {
-        90
+        \fp_eval:n { 90 }
     }
 }
 \cs_generate_variant:Nn \__hawkdraw_point_part_slope_rectangle:n { V }
@@ -1224,6 +1251,7 @@
 \fp_new:N \l_hawkdraw_map_step_fp
 \fp_new:N \l_hawkdraw_map_end_fp
 \int_new:N \l_hawkdraw_map_index_int
+\int_new:N \l_hawkdraw_map_level_int
 
 \keys_define:nn { hawkdraw /path / map } {
     list                    .clist_set:N    = \l_hawkdraw_map_list_clist ,
@@ -1242,10 +1270,25 @@
     \tl_trim_spaces_apply:nN {#4} \__hawkdraw_continue_path:n
 }
 
+\cs_generate_variant:Nn \cs_generate_variant:Nn { cn }
+
 \cs_new_protected:Npn \hawkdraw_map:nn #1#2 {
     \keys_set:nn { hawkdraw / path / map } {#1}
     \int_zero:N \l_hawkdraw_map_index_int
-    \cs_set_protected:Npn \__hawkdraw_map_function:nn ##1##2 {#2}
+    \int_incr:N \l_hawkdraw_map_level_int
+    \cs_if_exist:cF {
+        __hawkdraw_map_function_ \int_use:N \l_hawkdraw_map_level_int :nn
+    } {
+        \cs_new_protected:cpn {
+            __hawkdraw_map_function_ \int_use:N \l_hawkdraw_map_level_int :nn
+        } ##1##2 { }
+        \cs_generate_variant:cn {
+            __hawkdraw_map_function_ \int_use:N \l_hawkdraw_map_level_int :nn
+        } { nV }
+    }
+    \cs_set_protected:cpn {
+        __hawkdraw_map_function_ \int_use:N \l_hawkdraw_map_level_int :nn
+    } ##1##2 {#2}
     \clist_if_empty:NTF \l_hawkdraw_map_list_clist {
         \fp_step_function:nnnN
             { \l_hawkdraw_map_start_fp }
@@ -1257,16 +1300,14 @@
             \l_hawkdraw_map_list_clist
             \__hawkdraw_map_function:n
     }
+    \int_decr:N \l_hawkdraw_map_level_int
 }
 
 \cs_new_protected:Npn \__hawkdraw_map_function:n #1 {
     \int_incr:N \l_hawkdraw_map_index_int
-    \__hawkdraw_map_function:nV {#1} \l_hawkdraw_map_index_int
+    \use:c { __hawkdraw_map_function_ \int_use:N \l_hawkdraw_map_level_int :nV }
+        {#1} \l_hawkdraw_map_index_int
 }
-
-\cs_new_protected:Npn \__hawkdraw_map_function:nn #1#2 { }
-
-\cs_generate_variant:Nn \__hawkdraw_map_function:nn { nV }
 
 % ===
 
