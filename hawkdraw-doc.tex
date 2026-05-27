@@ -12,8 +12,8 @@
 %
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
-\def\hawkdrawfileversion{0.0.7}
-\def\hawkdrawfiledate{25 May 2026}
+\def\hawkdrawfileversion{0.0.8}
+\def\hawkdrawfiledate{27 May 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -275,6 +275,7 @@
 \changes{v0.0.5}{2026/05/18}{First public alpha release.}
 \changes{v0.0.6}{2026/05/20}{Splitting up code into modules.}
 \changes{v0.0.7}{2026/05/25}{Adding patterns; adding \titlemacro{at part} option.}
+\changes{v0.0.8}{2026/05/27}{Improving mapping functionality.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -764,6 +765,52 @@ The position of a point can also be adjusted using the \macro{at part} option wh
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \path[stroke] (0cm,0cm)
+    circle[
+      radius={1cm}
+    ]
+    point[name={A}, at part={0}]
+    point[name={B}, at part={0.5}]
+    point[name={C}, at part={0.9}] ;
+  \fill[fill color=red] (A) circle[radius=2pt] ;
+  \fill[fill color=blue] (B) circle[radius=2pt] ;
+  \fill[fill color=green] (C) circle[radius=2pt] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \path[stroke] (0cm,0cm)
+    ellipse[
+      vector a={(0.5cm,1cm)},
+      vector b={(0.75cm,0cm)}
+    ]
+    point[name={A}, at part={0}]
+    point[name={B}, at part={0.5}]
+    point[name={C}, at part={0.9}] ;
+  \fill[fill color=red] (A) circle[radius=2pt] ;
+  \fill[fill color=blue] (B) circle[radius=2pt] ;
+  \fill[fill color=green] (C) circle[radius=2pt] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \path[stroke] (0cm,0cm)
+    rectangle[
+      corner={(2cm,1cm)}
+    ]
+    point[name={A}, at part={0}]
+    point[name={B}, at part={0.5}]
+    point[name={C}, at part={0.9}] ;
+  \fill[fill color=red] (A) circle[radius=2pt] ;
+  \fill[fill color=blue] (B) circle[radius=2pt] ;
+  \fill[fill color=green] (C) circle[radius=2pt] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
 \begin{macrodef}
 |node|[<options>]{<content>}
 \end{macrodef}
@@ -775,7 +822,7 @@ Using the \macro{node} operation, a node at the current position is defined and 
 !path/node/!|at part|={<float>}
 !path/node/!|anchor|={<clist>}
 \end{macrodef}
-The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpathpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. The node can be named by setting the \macro{name} option.
+The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. The node can be named by setting the \macro{name} option.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -801,6 +848,27 @@ The width of the node can be set with the \macro{width} option.
     node[stroke, width={1cm}] {foo} ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
+
+\begin{macrodef}
+!path/node/!|sloped|={<boolean>}
+\end{macrodef}
+Using the \macro{sloped} option, the node can be rotated to follow the direction of the path. The default value is \macro{false}.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \stroke (0cm,0cm) -- (2cm,1cm)
+    node[
+      stroke,
+      at part={0.25},
+      sloped
+    ] {foo} ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{macrodef}
+!path/node/!|flipped|={<boolean>}
+\end{macrodef}
+Using the \macro{flipped} option, the node can be rotated by additional 180 degrees if it is sloped. The default value is \macro{false}.
 
 \begin{macrodef}
 !path/node/!|padding|={<clist>}
@@ -882,7 +950,7 @@ The following node frames are available, the frame \macro{none} is special as it
 \begin{macrodef}
 |map|[<options>]{<code>}
 \end{macrodef}
-The \macro{map} operation is used to map over a comma-separated list of items or a range of numbers and execute code for each item that is given by the relevant argument. The code can reference the current item with \macro{#1}. The following options can be set for the command:
+The \macro{map} operation is used to map over a comma-separated list of items or a range of numbers and execute code for each item that is given by the relevant argument. The code can reference the current item with \macro{#1} and the current index with \macro{#2}. The following options can be set for the command:
 
 \begin{macrodef}
 !path/map/!|list|={<clist>}
@@ -923,6 +991,42 @@ The command \macro{\map} is a shortcut for \macro{\path (0pt,0pt) map}
         fill color=blue! #1 0!red
       ] {stealth}
   } ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{macrodef}
+|\hawkdrawmap|[<option>]{<code>}
+\end{macrodef}
+The command \macro{\hawkdrawmap} can be used to repeat whole paths. The syntax is the same as for the \macro{map} opation.
+
+\begin{macrodef}
+|\hawkdrawarrayset|{<string>}{<clist>}
+\end{macrodef}
+The command \macro{\hawkdrawarrayset} can be used to define arrays of values. The first argument is the name of the array, and the second argument is a comma-separated list of items that are stored in the array. The items can be referenced with \macro{\hawkdrawarrayitem}.
+
+\begin{macrodef}*
+|\hawkdrawarrayitem|{<string>}{<integer>}
+\end{macrodef}
+The command \macro{\hawkdrawarrayitem} can be used to reference items in an array. The first argument is the name of the array, and the second argument is the index of the item to reference. The index is an integer where the first item has index \num{1}.
+
+\begin{codeexamplecolumns}
+\hawkdrawarrayset{myparts}{0,0.5,0.9}
+\hawkdrawarrayset{mycolors}{red,blue,green}
+
+\begin{hawkdraw}
+  \path[stroke] (0cm,0cm)
+    -- (2cm,1cm)
+    map[list={A,B,C}] {
+      point[
+        name={#1}, 
+        at part={\hawkdrawarrayitem{myparts}{#2}}
+      ]
+    } ;
+  \hawkdrawmap[list={A,B,C}] {
+    \fill[
+      fill color={\hawkdrawarrayitem{mycolors}{#2}}
+    ] (#1) circle[radius=2pt] ;
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 

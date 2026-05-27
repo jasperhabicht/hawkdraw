@@ -30,7 +30,7 @@
         \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
             \draw_scope_begin:
                 \bool_set_true:N \l__hawkdraw_path_clip_bool
-                \tl_trim_spaces_apply:nN { \g_hawkdraw_path_current_tl} \__hawkdraw_process_path:e
+                \tl_trim_spaces_apply:nN { \g_hawkdraw_path_current_tl } \__hawkdraw_process_path:o
                 \draw_path_use_clear:n { clip }
                 \hawkdraw_pattern_fill:nV {#1} \l_hawkdraw_pattern_keys_clist
                 \bool_set_false:N \l__hawkdraw_path_clip_bool

@@ -100,11 +100,11 @@
         \exp_not:N
         \hawkdraw_arrow_put:nnnn {#3}
             {
-                \use:c { __hawkdraw_point_part_ \l__hawkdraw_path_type_str :V }
+                \use:c { __hawkdraw_point_part_ \l__hawkdraw_path_type_tl :V }
                     \l_hawkdraw_tip_at_part_fp
             }
             {
-                \use:c { __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_str :V }
+                \use:c { __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_tl :V }
                     \l_hawkdraw_tip_at_part_fp 
                 \bool_if:NTF \l_hawkdraw_tip_flipped_bool {
                     + 90
