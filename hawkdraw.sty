@@ -371,7 +371,7 @@
     \opacity_stroke:V \l_hawkdraw_path_stroke_opacity_fp
     \opacity_fill:V \l_hawkdraw_path_fill_opacity_fp
     \draw_set_linewidth:V \l_hawkdraw_path_linewidth_dim
-    \draw_set_miterlimit:V\l_hawkdraw_path_miterlimit_fp
+    \draw_set_miterlimit:V \l_hawkdraw_path_miterlimit_fp
     \use:c { draw_set_cap_ \l_hawkdraw_path_cap_tl : }
     \use:c { draw_set_join_ \l_hawkdraw_path_join_tl : }
     \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_corner_arc_clist } > { 1 } {
@@ -1216,7 +1216,7 @@
         \draw_path_rectangle_corners:VV \l__hawkdraw_point_o_fp
             \l_hawkdraw_path_rectangle_corner_fp
     }
-    \fp_gset:Nn \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
+    \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
     \tl_trim_spaces_apply:nN {#3} \__hawkdraw_continue_path:n
 }
 
@@ -1382,12 +1382,12 @@
     % ensure that relevant characters are not active
     \int_gincr:N \g_hawkdraw_id_int
     \cs_set_eq:NN \path \hawkdraw_path:w
-    \cs_set:Npn \stroke { \path [ stroke ] }
-    \cs_set:Npn \fill { \path [ fill ] }
-    \cs_set:Npn \clip { \path [ clip ] }
-    \cs_set:Npn \node { \path ( 0pt , 0pt ) node }
-    \cs_set:Npn \point { \path ( 0pt , 0pt ) point }
-    \cs_set:Npn \map { \path ( 0pt , 0pt ) map }
+    \cs_set_protected:Npn \stroke { \path [ stroke ] }
+    \cs_set_protected:Npn \fill { \path [ fill ] }
+    \cs_set_protected:Npn \clip { \path [ clip ] }
+    \cs_set_protected:Npn \node { \path ( 0pt , 0pt ) node }
+    \cs_set_protected:Npn \point { \path ( 0pt , 0pt ) point }
+    \cs_set_protected:Npn \map { \path ( 0pt , 0pt ) map }
     \NewExpandableDocumentCommand \firstpoint { } {
         \fp_use:N \g_hawkdraw_path_first_point_fp
     }
@@ -1400,8 +1400,10 @@
     \NewExpandableDocumentCommand \lastslope { } {
         \fp_use:N \g_hawkdraw_path_last_slope_fp
     }
+    \fp_set:Nn \l__hawkdraw_point_o_fp { ( 0pt , 0pt ) }
     \fp_set:Nn \l__hawkdraw_point_a_fp { ( 0pt , 0pt ) }
     \fp_set:Nn \l__hawkdraw_point_b_fp { ( 0pt , 0pt ) }
+    \fp_set:Nn \l__hawkdraw_point_c_fp { ( 0pt , 0pt ) }
     \fp_gset:Nn \g_hawkdraw_path_first_point_fp { ( 0pt , 0pt ) }
     \fp_gset:Nn \g_hawkdraw_path_last_point_fp { ( 0pt , 0pt ) }
     \fp_gset:Nn \g_hawkdraw_path_first_slope_fp { nan }
