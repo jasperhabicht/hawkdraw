@@ -275,7 +275,7 @@
 \changes{v0.0.5}{2026/05/18}{First public alpha release.}
 \changes{v0.0.6}{2026/05/20}{Splitting up code into modules.}
 \changes{v0.0.7}{2026/05/25}{Adding patterns; adding \titlemacro{at part} option.}
-\changes{v0.0.8}{2026/05/27}{Improving mapping functionality; adding slope option for nodes; adding mechanism to place arrow heads on paths; adding \titlemacro{at part} option for circles, ellipses and rectangles.}
+\changes{v0.0.8}{2026/05/27}{Improving mapping functionality; adding mechanism to place arrow heads on paths; adding \titlemacro{at part} option for circles, ellipses and rectangles; adding \titlemacro{sloped} option for nodes; adding support for referencing anchors of nodes.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -293,13 +293,13 @@ The package intends to define a set of user-level commands that can be used for 
 
 The package is currently still in an experimental stage. The code may be subject to fundamental and frequent changes. The author is grateful for reporting any bugs via GitHub at \url{https://github.com/jasperhabicht/hawkdraw/issues}. A site for asking questions about the package and for suggestions for improvement is available at \url{https://github.com/jasperhabicht/hawkdraw/discussions}.
 
+\warning Note that the underlying code of the \macro{l3draw} package which is about to be included as module to the L3 kernel is experimental as well and hence might change possibly breaking the functionality of this package. Although a row of fall-backs exist to ensure backward compatibility, in order to ensure the functionality of the \macro{hawkdraw} package, it is highly recommended to use it with an up-to-date TeX distribution, especially with the most recent version of the \macro{l3draw} package.
+
 \section{Loading the package}
 
 To install the package, copy the package file \macro{hawkdraw.sty} together with the module files ending with \macro{.code.tex} into the working directory or into the \macro{texmf} directory. After the package has been installed, the \macro{hawkdraw} package is loaded by calling \macro{\usepackage{hawkdraw}} in the preamble of the document.
 
 The package can be used with PDFLaTeX, LuaLaTeX or XeLaTeX. The package does not load any dependencies, but it needs a LaTeX kernel of 1 June 2022 or newer. It is recommended to use the package with an up-to-date TeX distribution.
-
-Note that the underlying code of the \macro{l3draw} package is experimental as well and hence might as well change possibly breaking the functionality of this package.
 
 \section{Main user environment}
 
@@ -826,11 +826,21 @@ Using the \macro{node} operation, a node at the current position is defined and 
 !path/node/!|at part|={<float>}
 !path/node/!|anchor|={<clist>}
 \end{macrodef}
-The node can be named by setting the \macro{name} option which can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}). The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{l}, \macro{r}, \macro{vc} and \macro{hc}.
+The node can be named by setting the \macro{name} option which can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}). The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{H} (which refers to the baseline of the node's contents), \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. Nodes where the width is set additionally provide the poles \macro{T} and \macro{B} that refer to the top and bottom baseline of the node's contents respectively.
+
+It is possible to reference a point where two poles of the node intersect by appending the node name with the relevant poles concatenated with a dash and separated by a dot from the node name. For example, if a node is named \macro{foo}, the point where the top and left pole of the node intersect can be referenced by \macro{(foo.t-l)}.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \node {foo} ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \node[stroke, name={A}] {foo} ;
+  \fill[fill color=red] (A.b-l) circle[radius=2pt] ;
+  \fill[fill color=red] (A.t-r) circle[radius=2pt] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -994,20 +1004,20 @@ The command \macro{\map} is a shortcut for \macro{\path (0pt,0pt) map}
       map[list={x,y}] {
         (#2 cm,##2 cm) node {#1,##1}
       }
-  } ;
+    } ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
     
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-\path[stroke] (0cm,0cm) 
-  .. (7mm,-10mm) & (14mm,8mm) .. (20mm,-5mm) 
-  map[end={10}] {
-      tip[
-        at part={0.095 * #1},
-        fill color=blue! #1 0!red
-      ] {stealth}
-  } ;
+  \path[stroke] (0cm,0cm) 
+    .. (7mm,-10mm) & (14mm,8mm) .. (20mm,-5mm) 
+    map[end={10}] {
+        tip[
+          at part={0.095 * #1},
+          fill color=blue! #1 0!red
+        ] {stealth}
+    } ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
