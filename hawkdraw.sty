@@ -525,9 +525,9 @@
 }
 
 \prg_new_conditional:Npnn \__hawkdraw_tl_has_greater_than_sign:n #1 { TF } {
-    \__hawkdraw_tl_has_greater:w \q_mark #1 > \q_nil > \q_stop
+    \__hawkdraw_tl_has_greater_than_sign:w \q_mark #1 > \q_nil > \q_stop
 }
-\cs_new:Npn \__hawkdraw_tl_has_greater:w #1 > #2 > #3 \q_stop {
+\cs_new:Npn \__hawkdraw_tl_has_greater_than_sign:w #1 > #2 > #3 \q_stop {
     \quark_if_nil:nTF {#2} { \prg_return_false: } { \prg_return_true: }
 }
 
