@@ -117,15 +117,15 @@
 }
 \cs_generate_variant:Nn \hawkdraw_arrow_put_single:nnn { nV , eV }
 
-\cs_new_protected:cpn { __hawkdraw_process_path_ t :w } tip #1#2 \s__hawkdraw_stop {
-    \cs_if_exist_use:cTF {
-        __hawkdraw_process_path_tip_ \tl_head:n {#1} :w
+\cs_new_protected:cpn { __hawkdraw_path_process_ t :w } tip #1#2 \s__hawkdraw_stop {
+    \__hawkdraw_cs_if_exist_use_secure:nnTF {#1} {
+        __hawkdraw_path_process_tip_ \tl_head:n {#1} :w
     } {
         #1#2 \s__hawkdraw_stop
     } {
         \hawkdraw_arrow_put_single:nVn { }
             \l_hawkdraw_tip_at_part_fp {#1}
-        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_continue_path:n
+        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_continue:n
     }
 }
 
@@ -139,13 +139,13 @@
     flipped                 .default:n      = { true } ,
 }
 
-\cs_new_protected:cpn { __hawkdraw_process_path_tip_ [ :w } [ #1 ] #2#3 \s__hawkdraw_stop {
+\cs_new_protected:cpn { __hawkdraw_path_process_tip_ [ :w } [ #1 ] #2#3 \s__hawkdraw_stop {
     \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
     \keys_set_known:nnN { hawkdraw / path / tip } {#1}
         \l__hawkdraw_keys_unprocessed_clist
     \hawkdraw_arrow_put_single:eVn { \clist_use:N \l__hawkdraw_keys_unprocessed_clist }
         \l_hawkdraw_tip_at_part_fp {#2}
-    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_continue_path:n
+    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_continue:n
 }
 
 % ===

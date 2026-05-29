@@ -1444,17 +1444,29 @@ The following patterns are available:
 
 \section{User commands}
 
-\begin{macrodef}
-|\firstpoint|
-|\lastpoint|
+\begin{macrodef}*
+|\getpoint|{<point>}
 \end{macrodef}
-The commands \macro{\firstpoint} and \macro{\lastpoint} can be used to access the first and last point of the current path, respectively.
+Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used to access the coordinates of a point on the current path. The point is given as an argument. The command returns the coordinates of the point as a tuple of dimensions and can be used in subsequent calculations.
 
-\begin{macrodef}
-|\firstslope|
-|\lastslope|
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \point[name={A}, at={(1cm,1cm)}] ;
+  \stroke (0cm,0cm) -- ({\getpoint{A} + (1cm,0cm)}) ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{macrodef}*
+|\getfirstpoint|
+|\getlastpoint|
 \end{macrodef}
-The commands \macro{\firstslope} and \macro{\lastslope} can be used to access the slope at the first and last point of the current path, respectively. The slope is represented as the angle with respect to the positive x-axis.
+The commands \macro{\getfirstpoint} and \macro{\getlastpoint} can be used to access the first and last point of the current path, respectively. The commands return the coordinates of the relevant point as a tuple of dimensions and can be used in subsequent calculations.
+
+\begin{macrodef}*
+|\getfirstslope|
+|\getlastslope|
+\end{macrodef}
+The commands \macro{\getfirstslope} and \macro{\getlastslope} can be used to access the slope at the first and last point of the current path, respectively. The slope is represented as the angle with respect to the positive x-axis.
 
 % =====
 

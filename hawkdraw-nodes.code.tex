@@ -57,20 +57,20 @@
     flipped                 .default:n      = { true } ,
 }
 
-\cs_new_protected:cpn { __hawkdraw_process_path_ n :w } node #1#2 \s__hawkdraw_stop {
-    \cs_if_exist_use:cTF {
-        __hawkdraw_process_path_node_ \tl_head:n {#1} :w
+\cs_new_protected:cpn { __hawkdraw_path_process_ n :w } node #1#2 \s__hawkdraw_stop {
+    \__hawkdraw_cs_if_exist_use_secure:nnTF {#1} {
+        __hawkdraw_path_process_node_ \tl_head:n {#1} :w
     } {
         #1#2 \s__hawkdraw_stop
     } {
         \hawkdraw_node_put:nn { } {#1}
-        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_continue_path:n
+        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_continue:n
     }
 }
 
-\cs_new_protected:cpn { __hawkdraw_process_path_node_ [ :w } [ #1 ] #2#3 \s__hawkdraw_stop {
+\cs_new_protected:cpn { __hawkdraw_path_process_node_ [ :w } [ #1 ] #2#3 \s__hawkdraw_stop {
     \hawkdraw_node_put:nn {#1} {#2}
-    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_continue_path:n
+    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_continue:n
 }
 
 \cs_new_protected:Npn \hawkdraw_node_put:nn #1#2 {
