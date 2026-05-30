@@ -1452,7 +1452,10 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \point[name={A}, at={(1cm,1cm)}] ;
-  \stroke (0cm,0cm) -- ({\getpoint{A} + (1cm,0cm)}) ;
+  \stroke[stroke color={blue}]
+     (0cm,0cm) rectangle[corner={(A)}] ;
+  \stroke (0cm,0cm)
+    -- ({\getpoint{A} + (1cm,0cm)}) ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 

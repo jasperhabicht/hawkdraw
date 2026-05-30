@@ -1244,7 +1244,9 @@
     relative                .bool_set:N     = \l_hawkdraw_path_rectangle_relative_bool ,
     relative                .default:n      = { true } ,
     relative                .initial:n      = { false } ,
-    corner                  .fp_set:N       = \l_hawkdraw_path_rectangle_corner_fp ,
+    corner                  .code:n         = {
+        \hawkdraw_point_parse_set:Nn \l_hawkdraw_path_rectangle_corner_fp {#1}
+    } ,
     corner                  .initial:n      = { ( 1cm , 1cm ) } ,
 }
 
@@ -1279,7 +1281,9 @@
     relative                .bool_set:N     = \l_hawkdraw_path_grid_relative_bool ,
     relative                .default:n      = { true } ,
     relative                .initial:n      = { false } ,
-    corner                  .fp_set:N       = \l_hawkdraw_path_grid_corner_fp ,
+    corner                  .code:n         = {
+        \hawkdraw_point_parse_set:Nn \l_hawkdraw_path_grid_corner_fp {#1}
+    } ,
     corner                  .initial:n      = { ( 1cm , 1cm ) } ,
 }
 
