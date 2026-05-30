@@ -18,6 +18,16 @@
     Node ~ frame ~ `#1` ~ unknown.
 }
 
+\clist_const:Nn \c__hawkdraw_node_vpoles_clist {
+    l , hc , r
+}
+\clist_const:Nn \c__hawkdraw_node_hhpoles_clist {
+    t , vc , b , H
+}
+\clist_const:Nn \c__hawkdraw_node_vhpoles_clist {
+    t , vc , b , H , T , B
+}
+
 \bool_new:N \l__hawkdraw_node_vbox_bool
 \coffin_new:N \l_hawkdraw_node_coffin
 \coffin_new:N \l_hawkdraw_node_frame_coffin

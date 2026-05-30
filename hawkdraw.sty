@@ -50,30 +50,27 @@
 }
 
 % backward compatibility
-\cs_if_exist:NF \draw_set_linewidth:n {
-    \cs_set_eq:NN \draw_set_linewidth:n \draw_linewidth:n
-}
-\cs_if_exist:NF \draw_set_baseline:n {
-    \cs_set_eq:NN \draw_set_baseline:n \draw_baseline:n
-}
-\cs_if_exist:NF \draw_set_cap_round: {
-    \cs_set_eq:NN \draw_set_cap_round: \draw_cap_round:
-}
-\cs_if_exist:NF \draw_set_join_round: {
-    \cs_set_eq:NN \draw_set_join_round: \draw_join_round:
-}
-\cs_if_exist:NF \draw_set_miterlimit:n {
-    \cs_set_eq:NN \draw_set_miterlimit:n \draw_miterlimit:n
-}
-\cs_if_exist:NF \draw_set_dash_pattern:nn {
-    \cs_set_eq:NN \draw_set_dash_pattern:nn \draw_dash_pattern:nn
+\clist_map_inline:nn {
+    linewidth:n ,
+    baseline:n ,
+    miterlimit:n ,
+    dash_pattern:nn ,
+    cap_butt: ,
+    cap_rectangle: ,
+    cap_round: ,
+    join_bevel: ,
+    join_miter: ,
+    join_round: ,
+    evenodd_rule: ,
+    nonzero_rule:
+} {
+    \cs_if_exist:cF { draw_set_ #1 } {
+        \cs_set_eq:cc { draw_set_ #1 } { draw_ #1 }
+    }
 }
 \cs_if_exist:NF \draw_point_interpolate_curve:nnnnn {
     \cs_set_eq:NN \draw_point_interpolate_curve:nnnnn \draw_point_interpolate_curve:nnnnnn
 }
-% \draw_set_evenodd_rule: \draw_set_nonzero_rule:
-% \draw_set_cap_butt: \draw_set_cap_rectangle: \draw_set_cap_round:
-% \draw_set_join_bevel: \draw_set_join_miter: \draw_set_join_round:
 \cs_if_exist:NF \draw_point_interpolate_curve:nnnn {
     \cs_set:Npn \draw_point_interpolate_curve:nnnn #1#2#3#4 {
         \draw_point_interpolate_curve:nnnnn {#1} {#2} {
@@ -163,16 +160,6 @@
 }
 
 % ===
-
-\clist_const:Nn \c__hawkdraw_node_vpoles_clist {
-    l , hc , r
-}
-\clist_const:Nn \c__hawkdraw_node_hhpoles_clist {
-    t , vc , b , H
-}
-\clist_const:Nn \c__hawkdraw_node_vhpoles_clist {
-    t , vc , b , H , T , B
-}
 
 \clist_new:N \l__hawkdraw_keys_unprocessed_clist
 
