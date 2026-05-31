@@ -138,45 +138,6 @@
 
 \IfPDFManagementActiveTF {
     \hawkdraw_modules_load:n { patterns }
-
-    \cs_generate_variant:Nn \tag_socket_use:nn { nV }
-
-    \NewTaggingSocket { hawkdraw / picture / before } { 1 }
-    \NewTaggingSocket { hawkdraw / picture / after } { 0 }
-
-    \NewTaggingSocketPlug { hawkdraw / picture / before } { alt } {
-        \tag_mc_end_push:
-        \tag_struct_begin:n {
-            tag = Figure ,
-            alt = {#1}
-        }
-        \tag_mc_begin:n { }
-    }
-
-    \NewTaggingSocketPlug { hawkdraw / picture / after } { alt } {
-        \tag_mc_end:
-        \tag_struct_end:
-        \tag_mc_begin_pop:n { }
-    }
-
-    \NewTaggingSocketPlug { hawkdraw / picture / before } { actualtext } {
-        \tag_mc_end_push:
-        \tag_struct_begin:n {
-            tag = Span ,
-            actualtext = { ~ #1 ~ }
-        }
-        \tag_mc_begin:n { }
-    }
-
-    \NewTaggingSocketPlug { hawkdraw / picture / after } { actualtext } {
-        \tag_mc_end:
-        \tag_struct_end:
-        \tag_mc_begin_pop:n { }
-    }
-
-    \NewTaggingSocketPlug { hawkdraw / picture / before } { artifact } { }
-
-    \NewTaggingSocketPlug { hawkdraw / picture / after } { artifact } { }
 } {
     \msg_warning:nn { hawkdraw } { documentmetadata-required }
     \keys_define:nn { hawkdraw / path } {
@@ -186,25 +147,46 @@
         pattern ~ x             .code:n     = { } ,
         pattern ~ y             .code:n     = { } ,
     }
-
-    \cs_if_exist:NF \tag_socket_use:n {
-        \cs_new:Npn \tag_socket_use:n #1 { }
-    }
-    \cs_if_exist:NF \tag_socket_use:nn {
-        \cs_new:Npn \tag_socket_use:nn #1#2 { }
-    }
-    \cs_if_exist:NF \tag_socket_use:nV {
-        \cs_new:Npn \tag_socket_use:nV #1#2 { }
-    }
-    \cs_if_exist:NF \tag_suspend:n {
-        \cs_new:Npn \tag_suspend:n #1 { }
-    }
-    \cs_if_exist:NF \tag_resume:n {
-        \cs_new:Npn \tag_resume:n #1 { }
-    }
 }
 
+\cs_generate_variant:Nn \tag_socket_use:nn { nV }
 
+\NewTaggingSocket { hawkdraw / picture / before } { 1 }
+\NewTaggingSocket { hawkdraw / picture / after } { 0 }
+
+\NewTaggingSocketPlug { hawkdraw / picture / before } { alt } {
+    \tag_mc_end_push:
+    \tag_struct_begin:n {
+        tag = Figure ,
+        alt = {#1}
+    }
+    \tag_mc_begin:n { }
+}
+
+\NewTaggingSocketPlug { hawkdraw / picture / after } { alt } {
+    \tag_mc_end:
+    \tag_struct_end:
+    \tag_mc_begin_pop:n { }
+}
+
+\NewTaggingSocketPlug { hawkdraw / picture / before } { actualtext } {
+    \tag_mc_end_push:
+    \tag_struct_begin:n {
+        tag = Span ,
+        actualtext = { ~ #1 ~ }
+    }
+    \tag_mc_begin:n { }
+}
+
+\NewTaggingSocketPlug { hawkdraw / picture / after } { actualtext } {
+    \tag_mc_end:
+    \tag_struct_end:
+    \tag_mc_begin_pop:n { }
+}
+
+\NewTaggingSocketPlug { hawkdraw / picture / before } { artifact } { }
+
+\NewTaggingSocketPlug { hawkdraw / picture / after } { artifact } { }
 
 % ===
 
@@ -1440,16 +1422,19 @@
     overlay                 .bool_set:N     = \l_hawkdraw_picture_overlay_bool ,
     overlay                 .default:n      = { true } ,
     overlay                 .initial:n      = { false } ,
+}
+
+\keys_define:nn { hawkdraw / tag } {
     actualtext              .code:n         = {
-        \tl_set:Nn \l_hawkdraw_picture_actualtext_tl {#1}
+        \tl_set:Nn \l_hawkdraw_tag_picture_tl {#1}
         \AssignTaggingSocketPlug { hawkdraw / picture / before } { actualtext }
     } ,
     alt                     .code:n         = {
-        \tl_set:Nn \l_hawkdraw_picture_alt_tl {#1}
+        \tl_set:Nn \l_hawkdraw_tag_picture_tl {#1}
         \AssignTaggingSocketPlug { hawkdraw / picture / before } { alt }
     } ,
     artifact                .code:n         = {
-        \tl_clear:N \l_hawkdraw_picture_actualtext_tl
+        \tl_clear:N \l_hawkdraw_tag_picture_tl
         \AssignTaggingSocketPlug { hawkdraw / picture / before } { artifact }
     } ,
 }
@@ -1486,9 +1471,6 @@
 }
 
 \NewDocumentEnvironment { hawkdraw } { O{} } {
-    \mode_leave_vertical:
-    \tag_socket_use:nV { hawkdraw / picture / before } \l_hawkdraw_tag_picture_tl
-    \nullfont
     % ensure that relevant characters are not active
     \int_gincr:N \g_hawkdraw_id_int
     \cs_set_eq:NN \path \hawkdraw_path:w
@@ -1511,14 +1493,6 @@
     \NewExpandableDocumentCommand \getlastslope { } {
         \fp_use:N \g_hawkdraw_path_last_slope_fp
     }
-    \fp_set:Nn \l__hawkdraw_point_o_fp { ( 0pt , 0pt ) }
-    \fp_set:Nn \l__hawkdraw_point_a_fp { ( 0pt , 0pt ) }
-    \fp_set:Nn \l__hawkdraw_point_b_fp { ( 0pt , 0pt ) }
-    \fp_set:Nn \l__hawkdraw_point_c_fp { ( 0pt , 0pt ) }
-    \fp_gset:Nn \g_hawkdraw_path_first_point_fp { ( 0pt , 0pt ) }
-    \fp_gset:Nn \g_hawkdraw_path_last_point_fp { ( 0pt , 0pt ) }
-    \fp_gset:Nn \g_hawkdraw_path_first_slope_fp { nan }
-    \fp_gset:Nn \g_hawkdraw_path_last_slope_fp { nan }
     \NewDocumentEnvironment { scope } { O{} } {
         \draw_scope_begin:
             \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
@@ -1534,10 +1508,24 @@
             }
         \draw_scope_end:
     }
+    \fp_set:Nn \l__hawkdraw_point_o_fp { ( 0pt , 0pt ) }
+    \fp_set:Nn \l__hawkdraw_point_a_fp { ( 0pt , 0pt ) }
+    \fp_set:Nn \l__hawkdraw_point_b_fp { ( 0pt , 0pt ) }
+    \fp_set:Nn \l__hawkdraw_point_c_fp { ( 0pt , 0pt ) }
+    \fp_gset:Nn \g_hawkdraw_path_first_point_fp { ( 0pt , 0pt ) }
+    \fp_gset:Nn \g_hawkdraw_path_last_point_fp { ( 0pt , 0pt ) }
+    \fp_gset:Nn \g_hawkdraw_path_first_slope_fp { nan }
+    \fp_gset:Nn \g_hawkdraw_path_last_slope_fp { nan }
     \fp_set:Nn \l_draw_picture_baseline_fp { nan }
+
+    \mode_leave_vertical:
+    \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
+    \keys_set_known:nnN { hawkdraw / tag } {#1}
+        \l__hawkdraw_keys_unprocessed_clist
+    \tag_socket_use:nV { hawkdraw / picture / before } \l_hawkdraw_tag_picture_tl
+    \nullfont
     \draw_begin:
-        \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
-        \keys_set_known:nnN { hawkdraw / picture } {#1}
+        \keys_set_known:nVN { hawkdraw / picture } \l__hawkdraw_keys_unprocessed_clist
             \l__hawkdraw_keys_unprocessed_clist
         \keys_set:nV { hawkdraw / path } \l__hawkdraw_keys_unprocessed_clist
         \fp_if_nan:nF { \l_draw_picture_baseline_fp } {
@@ -1550,7 +1538,7 @@
         }
 } {
     \draw_end:
-    \tag_socket_use:nV { hawkdraw / picture / after }
+    \tag_socket_use:n { hawkdraw / picture / after }
 }
 
 % EOF
