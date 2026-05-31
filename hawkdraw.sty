@@ -149,6 +149,43 @@
     }
 }
 
+\NewTaggingSocket { hawkdraw / instance / before } { 1 }
+\NewTaggingSocket { hawkdraw / instance / after } { 0 }
+
+\NewTaggingSocketPlug { hawkdraw / instance / before } { alt } {
+    \tag_mc_end_push:
+    \tag_struct_begin:n {
+        tag = Figure ,
+        alt = {#1}
+    }
+    \tag_mc_begin:n { }
+}
+
+\NewTaggingSocketPlug { hawkdraw / instance / after } { alt } {
+    \tag_mc_end:
+    \tag_struct_end:
+    \tag_mc_begin_pop:n { }
+}
+
+\NewTaggingSocketPlug { hawkdraw / instance / before } { actualtext } {
+    \tag_mc_end_push:
+    \tag_struct_begin:n {
+        tag = Span ,
+        actualtext = { ~ #1 ~ }
+    }
+    \tag_mc_begin:n { }
+}
+
+\NewTaggingSocketPlug { hawkdraw / instance / after } { actualtext } {
+    \tag_mc_end:
+    \tag_struct_end:
+    \tag_mc_begin_pop:n { }
+}
+
+\NewTaggingSocketPlug { hawkdraw / instance / before } { artifact } { }
+
+\NewTaggingSocketPlug { hawkdraw / instance / after } { artifact } { }
+
 % ===
 
 \cs_generate_variant:Nn \prg_new_conditional:Npnn { Npne }
@@ -167,6 +204,8 @@
 
 \bool_new:N \l_hawkdraw_instance_overlay_bool
 \fp_new:N \l_draw_instance_baseline_fp
+
+\tl_new:N \l_hawkdraw_tag_instance_tl
 
 \tl_new:N \g_hawkdraw_path_current_tl
 \tl_new:N \l_hawkdraw_path_preactions_tl
@@ -1381,6 +1420,18 @@
     overlay                 .bool_set:N     = \l_hawkdraw_instance_overlay_bool ,
     overlay                 .default:n      = { true } ,
     overlay                 .initial:n      = { false } ,
+    actualtext              .code:n         = {
+        \tl_set:Nn \l_hawkdraw_instance_actualtext_tl {#1}
+        \AssignTaggingSocketPlug { hawkdraw / instance / before } { actualtext }
+    } ,
+    alt                     .code:n         = {
+        \tl_set:Nn \l_hawkdraw_instance_alt_tl {#1}
+        \AssignTaggingSocketPlug { hawkdraw / instance / before } { alt }
+    } ,
+    artifact                .code:n         = {
+        \tl_clear:N \l_hawkdraw_instance_actualtext_tl
+        \AssignTaggingSocketPlug { hawkdraw / instance / before } { artifact }
+    } ,
 }
 
 \keys_define:nn { hawkdraw / scope } {
@@ -1416,6 +1467,7 @@
 
 \NewDocumentEnvironment { hawkdraw } { O{} } {
     \mode_leave_vertical:
+    \tag_socket_use:nV { hawkdraw / instance / before } \l_hawkdraw_tag_instance_tl
     \nullfont
     % ensure that relevant characters are not active
     \int_gincr:N \g_hawkdraw_id_int
@@ -1478,6 +1530,7 @@
         }
 } {
     \draw_end:
+    \tag_socket_use:nV { hawkdraw / instance / after }
 }
 
 % EOF
