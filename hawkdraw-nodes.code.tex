@@ -28,6 +28,13 @@
     t , vc , b , H , T , B
 }
 
+\tl_new:N \l_hawkdraw_tag_node_tl
+
+\IfPDFManagementActiveTF {
+    \NewTaggingSocket { hawkdraw / node / before } { 1 }
+    \NewTaggingSocket { hawkdraw / node / after } { 0 }
+}
+
 \bool_new:N \l__hawkdraw_node_vbox_bool
 \coffin_new:N \l_hawkdraw_node_coffin
 \coffin_new:N \l_hawkdraw_node_frame_coffin
@@ -187,11 +194,13 @@
                 }
             }
         }
+        \tag_socket_use:nV { hawkdraw / node / before } \l_hawkdraw_tag_node_tl
         \draw_coffin_use:NeeV \l_hawkdraw_node_frame_coffin {
             \clist_item:Nn \l_hawkdraw_node_anchor_clist { 1 }
         } {
             \clist_item:Nn \l_hawkdraw_node_anchor_clist { 2 }
         } \l_hawkdraw_point_at_fp
+        \tag_socket_use:nV { hawkdraw / node / after }
     \draw_scope_end:
 }
 

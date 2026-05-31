@@ -138,6 +138,45 @@
 
 \IfPDFManagementActiveTF {
     \hawkdraw_modules_load:n { patterns }
+
+    \cs_generate_variant:Nn \tag_socket_use:nn { nV }
+
+    \NewTaggingSocket { hawkdraw / picture / before } { 1 }
+    \NewTaggingSocket { hawkdraw / picture / after } { 0 }
+
+    \NewTaggingSocketPlug { hawkdraw / picture / before } { alt } {
+        \tag_mc_end_push:
+        \tag_struct_begin:n {
+            tag = Figure ,
+            alt = {#1}
+        }
+        \tag_mc_begin:n { }
+    }
+
+    \NewTaggingSocketPlug { hawkdraw / picture / after } { alt } {
+        \tag_mc_end:
+        \tag_struct_end:
+        \tag_mc_begin_pop:n { }
+    }
+
+    \NewTaggingSocketPlug { hawkdraw / picture / before } { actualtext } {
+        \tag_mc_end_push:
+        \tag_struct_begin:n {
+            tag = Span ,
+            actualtext = { ~ #1 ~ }
+        }
+        \tag_mc_begin:n { }
+    }
+
+    \NewTaggingSocketPlug { hawkdraw / picture / after } { actualtext } {
+        \tag_mc_end:
+        \tag_struct_end:
+        \tag_mc_begin_pop:n { }
+    }
+
+    \NewTaggingSocketPlug { hawkdraw / picture / before } { artifact } { }
+
+    \NewTaggingSocketPlug { hawkdraw / picture / after } { artifact } { }
 } {
     \msg_warning:nn { hawkdraw } { documentmetadata-required }
     \keys_define:nn { hawkdraw / path } {
@@ -147,44 +186,25 @@
         pattern ~ x             .code:n     = { } ,
         pattern ~ y             .code:n     = { } ,
     }
-}
 
-\NewTaggingSocket { hawkdraw / instance / before } { 1 }
-\NewTaggingSocket { hawkdraw / instance / after } { 0 }
-
-\NewTaggingSocketPlug { hawkdraw / instance / before } { alt } {
-    \tag_mc_end_push:
-    \tag_struct_begin:n {
-        tag = Figure ,
-        alt = {#1}
+    \cs_if_exist:NF \tag_socket_use:n {
+        \cs_new:Npn \tag_socket_use:n #1 { }
     }
-    \tag_mc_begin:n { }
-}
-
-\NewTaggingSocketPlug { hawkdraw / instance / after } { alt } {
-    \tag_mc_end:
-    \tag_struct_end:
-    \tag_mc_begin_pop:n { }
-}
-
-\NewTaggingSocketPlug { hawkdraw / instance / before } { actualtext } {
-    \tag_mc_end_push:
-    \tag_struct_begin:n {
-        tag = Span ,
-        actualtext = { ~ #1 ~ }
+    \cs_if_exist:NF \tag_socket_use:nn {
+        \cs_new:Npn \tag_socket_use:nn #1#2 { }
     }
-    \tag_mc_begin:n { }
+    \cs_if_exist:NF \tag_socket_use:nV {
+        \cs_new:Npn \tag_socket_use:nV #1#2 { }
+    }
+    \cs_if_exist:NF \tag_suspend:n {
+        \cs_new:Npn \tag_suspend:n #1 { }
+    }
+    \cs_if_exist:NF \tag_resume:n {
+        \cs_new:Npn \tag_resume:n #1 { }
+    }
 }
 
-\NewTaggingSocketPlug { hawkdraw / instance / after } { actualtext } {
-    \tag_mc_end:
-    \tag_struct_end:
-    \tag_mc_begin_pop:n { }
-}
 
-\NewTaggingSocketPlug { hawkdraw / instance / before } { artifact } { }
-
-\NewTaggingSocketPlug { hawkdraw / instance / after } { artifact } { }
 
 % ===
 
@@ -202,10 +222,10 @@
 
 \int_new:N \g_hawkdraw_id_int
 
-\bool_new:N \l_hawkdraw_instance_overlay_bool
-\fp_new:N \l_draw_instance_baseline_fp
+\bool_new:N \l_hawkdraw_picture_overlay_bool
+\fp_new:N \l_draw_picture_baseline_fp
 
-\tl_new:N \l_hawkdraw_tag_instance_tl
+\tl_new:N \l_hawkdraw_tag_picture_tl
 
 \tl_new:N \g_hawkdraw_path_current_tl
 \tl_new:N \l_hawkdraw_path_preactions_tl
@@ -1412,25 +1432,25 @@
 
 % ===
 
-\keys_define:nn { hawkdraw / instance } {
-    baseline                .fp_set:N       = \l_draw_instance_baseline_fp ,
+\keys_define:nn { hawkdraw / picture } {
+    baseline                .fp_set:N       = \l_draw_picture_baseline_fp ,
     layers                  .code:n         = {
         \clist_set:Nn \l_draw_layers_clist {#1}
     } ,
-    overlay                 .bool_set:N     = \l_hawkdraw_instance_overlay_bool ,
+    overlay                 .bool_set:N     = \l_hawkdraw_picture_overlay_bool ,
     overlay                 .default:n      = { true } ,
     overlay                 .initial:n      = { false } ,
     actualtext              .code:n         = {
-        \tl_set:Nn \l_hawkdraw_instance_actualtext_tl {#1}
-        \AssignTaggingSocketPlug { hawkdraw / instance / before } { actualtext }
+        \tl_set:Nn \l_hawkdraw_picture_actualtext_tl {#1}
+        \AssignTaggingSocketPlug { hawkdraw / picture / before } { actualtext }
     } ,
     alt                     .code:n         = {
-        \tl_set:Nn \l_hawkdraw_instance_alt_tl {#1}
-        \AssignTaggingSocketPlug { hawkdraw / instance / before } { alt }
+        \tl_set:Nn \l_hawkdraw_picture_alt_tl {#1}
+        \AssignTaggingSocketPlug { hawkdraw / picture / before } { alt }
     } ,
     artifact                .code:n         = {
-        \tl_clear:N \l_hawkdraw_instance_actualtext_tl
-        \AssignTaggingSocketPlug { hawkdraw / instance / before } { artifact }
+        \tl_clear:N \l_hawkdraw_picture_actualtext_tl
+        \AssignTaggingSocketPlug { hawkdraw / picture / before } { artifact }
     } ,
 }
 
@@ -1467,7 +1487,7 @@
 
 \NewDocumentEnvironment { hawkdraw } { O{} } {
     \mode_leave_vertical:
-    \tag_socket_use:nV { hawkdraw / instance / before } \l_hawkdraw_tag_instance_tl
+    \tag_socket_use:nV { hawkdraw / picture / before } \l_hawkdraw_tag_picture_tl
     \nullfont
     % ensure that relevant characters are not active
     \int_gincr:N \g_hawkdraw_id_int
@@ -1514,23 +1534,23 @@
             }
         \draw_scope_end:
     }
-    \fp_set:Nn \l_draw_instance_baseline_fp { nan }
+    \fp_set:Nn \l_draw_picture_baseline_fp { nan }
     \draw_begin:
         \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
-        \keys_set_known:nnN { hawkdraw / instance } {#1}
+        \keys_set_known:nnN { hawkdraw / picture } {#1}
             \l__hawkdraw_keys_unprocessed_clist
         \keys_set:nV { hawkdraw / path } \l__hawkdraw_keys_unprocessed_clist
-        \fp_if_nan:nF { \l_draw_instance_baseline_fp } {
+        \fp_if_nan:nF { \l_draw_picture_baseline_fp } {
             \draw_set_baseline:n {
-                \fp_to_dim:n { \l_draw_instance_baseline_fp }
+                \fp_to_dim:n { \l_draw_picture_baseline_fp }
             }
         }
-        \bool_if:NT \l_hawkdraw_instance_overlay_bool {
+        \bool_if:NT \l_hawkdraw_picture_overlay_bool {
             \bool_set_false:N \l_draw_bb_update_bool
         }
 } {
     \draw_end:
-    \tag_socket_use:nV { hawkdraw / instance / after }
+    \tag_socket_use:nV { hawkdraw / picture / after }
 }
 
 % EOF

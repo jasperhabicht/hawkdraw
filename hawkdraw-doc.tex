@@ -332,17 +332,17 @@ Similar to Ti\emph{k}Z, the \macro{hawkdraw} package makes use of key-value pair
 The \macro{hawkdraw} environment is the main environment for drawing. It defines most other commands described in the following sections. The following options can be set for the \macro{hawkdraw} environment:
 
 \begin{macrodef}
-!instance/!|baseline|={<dimension>}
+!picture/!|baseline|={<dimension>}
 \end{macrodef}
 The option \macro{baseline} sets the baseline for the environment as dimension. The default baseline is typically the bottom of the the bounding box of the drawing.
 
 \begin{macrodef}
-!instance/!|layers|={<clist>}
+!picture/!|layers|={<clist>}
 \end{macrodef}
 The option \macro{layers} sets the layers for the environment as a comma-separated list. The layer \macro{main} must always be present and is the default layer. Layers are drawn in the order they are defined (see \hyperlink{sec:scopes}{below}).
 
 \begin{macrodef}
-!instance/!|overlay|={<boolean>}
+!picture/!|overlay|={<boolean>}
 \end{macrodef}
 The option \macro{overlay} sets the environment to have a zero-sized bounding box.
 
