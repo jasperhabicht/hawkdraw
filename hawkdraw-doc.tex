@@ -1442,6 +1442,32 @@ The following patterns are available:
   \bottomrule
 \end{longtable}
 
+\section{Tagging support}
+
+The \macro{hawkdraw} package supports tagging to provide accessible PDF structures. The following tags are available for the \macro{hawkdraw} environment as well as for nodes:
+
+\begin{macrodef}
+!tag/!|text|
+!tag/!|artifact|
+!tag/!|actualtext|={<string>}
+!tag/!|alt|={<string>}
+!tag/!|off|
+\end{macrodef}
+The \macro{text} key, which is set per default, tags all paths of a \macro{hawkdraw} environment as artifacts and the contents of all nodes as text in the order of their appearance in the code.
+
+The option \macro{artifact} tags all paths and nodes of a \macro{hawkdraw} environment as artifact.
+
+The option \macro{actualtext} sets the relevant value as replacement text for the \macro{hawkdraw} environment and tags it as inline span element. 
+
+The option \macro{alt} sets the relevant value as replacement text for the \macro{hawkdraw} environment and tags it as block (figure) element. 
+
+The option \macro{off} turns off tagging for the \macro{hawkdraw} environment.
+
+\begin{macrodef}
+!tag/!|tagging-setup|={<options>}
+\end{macrodef}
+To enable more complex tagging scenarios, the \macro{tagging-setup} option can be used to configure the tagging behavior. It accepts as options the same options as described above. In addition, it accepts the option \macro{tag} to define the element tag. For example, the setting \macro{tagging-setup={alt={Water (H20)}, tag={Formula}}} would tag the \macro{hawkdraw} environment as a block element with the tag \macro{Formula} and set the replacement text to ``Water (H20)''.
+
 \section{User commands}
 
 \begin{macrodef}*
