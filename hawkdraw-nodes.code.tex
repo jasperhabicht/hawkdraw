@@ -28,10 +28,20 @@
     t , vc , b , H , T , B
 }
 
-\tl_new:N \l_hawkdraw_tag_node_tl
+\NewTaggingSocket { hawkdraw / node / begin } { 0 }
+\NewTaggingSocket { hawkdraw / node / end } { 0 }
 
-\NewTaggingSocket { hawkdraw / node / before } { 1 }
-\NewTaggingSocket { hawkdraw / node / after } { 0 }
+\NewTaggingSocketPlug { hawkdraw / node / begin } { default } {
+   \tag_mc_end:
+   \tag_mc_begin:n { }
+}
+\NewTaggingSocketPlug { hawkdraw / node / end }{ default } {
+   \tag_mc_end:
+   \tag_mc_begin:n { artifact }
+}
+
+\AssignTaggingSocketPlug { hawkdraw / node / begin } { default}
+\AssignTaggingSocketPlug { hawkdraw / node / end } { default}
 
 \bool_new:N \l__hawkdraw_node_vbox_bool
 \coffin_new:N \l_hawkdraw_node_coffin
@@ -192,15 +202,16 @@
                 }
             }
         }
-        \tag_socket_use:nV { hawkdraw / node / before } \l_hawkdraw_tag_node_tl
-        \tag_suspend:n { hawkdraw / node }
+        \str_if_eq:VnT \l_tag_graphic_mode_tl { text } {
+            \tag_resume:n { hawkdraw / node }
+        }
+        \tag_socket_use:n { hawkdraw / node / begin }
         \draw_coffin_use:NeeV \l_hawkdraw_node_frame_coffin {
             \clist_item:Nn \l_hawkdraw_node_anchor_clist { 1 }
         } {
             \clist_item:Nn \l_hawkdraw_node_anchor_clist { 2 }
         } \l_hawkdraw_point_at_fp
-        \tag_resume:n { hawkdraw / node }
-        \tag_socket_use:n { hawkdraw / node / after }
+        \tag_socket_use:n { hawkdraw / node / end }
     \draw_scope_end:
 }
 
