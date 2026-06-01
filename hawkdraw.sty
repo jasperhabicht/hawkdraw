@@ -197,7 +197,7 @@
 \cs_generate_variant:Nn \tag_socket_use:nn { nV }
 
 \NewTaggingSocket { hawkdraw / picture / init } { 1 }
-\NewTaggingSocket { hawkdraw / picture / begin } { 1 }
+\NewTaggingSocket { hawkdraw / picture / begin } { 0 }
 \NewTaggingSocket { hawkdraw / picture / end } { 1 }
 
 \NewTaggingSocketPlug { hawkdraw / picture / init } { default } {
@@ -235,7 +235,6 @@
 }
 
 \NewTaggingSocketPlug { hawkdraw / picture / end } { actualtext } {
-    #1
     \tag_mc_end:
     \tag_struct_end:
     \tag_mc_begin_pop:n { }
@@ -247,7 +246,6 @@
 }
 
 \NewTaggingSocketPlug { hawkdraw / picture / end } { artifact } {
-    #1
     \tag_mc_end:
     \tag_mc_begin_pop:n { }
 }
@@ -258,13 +256,12 @@
 }
 
 \NewTaggingSocketPlug { hawkdraw / picture / end } { text } {
-    #1
     \tag_mc_end:
     \tag_mc_begin_pop:n { }
 }
 
 \NewTaggingSocketPlug { hawkdraw / picture / begin } { off } { }
-\NewTaggingSocketPlug { hawkdraw / picture / end } { off } { #1 }
+\NewTaggingSocketPlug { hawkdraw / picture / end } { off } { }
 
 \AssignTaggingSocketPlug { hawkdraw / picture / begin } { off }
 \AssignTaggingSocketPlug { hawkdraw / picture / end } { off }
@@ -1637,7 +1634,7 @@
     \fp_set:Nn \l_draw_picture_baseline_fp { nan }
     \mode_leave_vertical:
     \tag_socket_use:nn { hawkdraw / picture / init } {#1}
-    \tag_socket_use:nn { hawkdraw / picture / begin } { }
+    \tag_socket_use:n { hawkdraw / picture / begin }
     \tag_suspend:n { hawkdraw / picture }
     \nullfont
     \draw_begin:
