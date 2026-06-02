@@ -656,6 +656,12 @@ The step is specified as a comma-separated list of at most two dimensions with t
 
 \subsection{Points and nodes}
 
+Points are defined as tuple of two dimensions where the first represents the dimension on the x-axis and the second the dimension on the y-axis. Apart from defining points with these two dimensions directly, it is also possible to calculate these two dimensions or to define a point as being at a defined part of a path segment. Moreover, it is possible name points and later refer to them.
+
+Nodes are boxes (coffins to be more exacct) that can contain arbitrary contents. Nodes also have frames that act as boxes surrounding these contents. Since such contents typically have some width and height, it is possible to refer to the corners and other points on the border of nodes via anchors.
+
+\subsubsection{Points}
+
 \begin{macrodef}[operation:point]
 |point|[<options>]
 \end{macrodef}
@@ -817,6 +823,52 @@ The position of a point can also be adjusted using the \macro{at part} option wh
   \fill[fill color=green] (C) circle[radius=2pt] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
+
+\begin{macrodef}*
+|\getpoint|{<point>}
+\end{macrodef}
+Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used to access the coordinates of a point on the current path. The point is given as an argument. The command returns the coordinates of the point as a tuple of dimensions and can be used in subsequent calculations.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \point[name={A}, at={(1cm,1cm)}] ;
+  \stroke[stroke color={blue}]
+     (0cm,0cm) rectangle[corner={(A)}] ;
+  \stroke (0cm,0cm)
+    -- ({\getpoint{A} + (1cm,0cm)}) ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \point[name={A}, at={(1cm,0.5cm)}] ;
+  \stroke[stroke color={blue}]
+     (0cm,0cm) rectangle[corner={(A)}] ;
+  \stroke (0cm,0cm)
+    -- ({\getpoint{A} * 2}) ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \stroke (0cm,0cm)
+    -- ({\getpoint{2cm>30}}) ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{macrodef}*
+|\getfirstpoint|
+|\getlastpoint|
+\end{macrodef}
+The commands \macro{\getfirstpoint} and \macro{\getlastpoint} can be used to access the first and last point of the current path, respectively. The commands return the coordinates of the relevant point as a tuple of dimensions and can be used in subsequent calculations.
+
+\begin{macrodef}*
+|\getfirstslope|
+|\getlastslope|
+\end{macrodef}
+The commands \macro{\getfirstslope} and \macro{\getlastslope} can be used to access the slope at the first and last point of the current path, respectively. The slope is represented as the angle with respect to the positive x-axis.
+
+\subsubsection{Nodes}
 
 \begin{macrodef}
 |node|[<options>]{<content>}
@@ -1467,53 +1519,9 @@ The option \macro{off} turns off tagging for the \macro{hawkdraw} environment.
 \begin{macrodef}
 !tag/!|tagging-setup|={<options>}
 \end{macrodef}
-To enable more complex tagging scenarios, the \macro{tagging-setup} option can be used to configure the tagging behavior. It accepts as options the same options as described above. In addition, it accepts the option \macro{tag} to define the element tag. For example, the setting \macro{tagging-setup={alt={Water (H20)}, tag={Formula}}} would tag the \macro{hawkdraw} environment as a block element with the tag \macro{Formula} and set the replacement text to ``Water (H20)''.
+To enable more complex tagging scenarios, the \macro{tagging-setup} option can be used to configure the tagging behavior. It accepts as options the same options as described above. In addition, it accepts the option \macro{tag} to define the element tag. 
 
-\section{User commands}
-
-\begin{macrodef}*
-|\getpoint|{<point>}
-\end{macrodef}
-Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used to access the coordinates of a point on the current path. The point is given as an argument. The command returns the coordinates of the point as a tuple of dimensions and can be used in subsequent calculations.
-
-\begin{codeexamplecolumns}
-\begin{hawkdraw}
-  \point[name={A}, at={(1cm,1cm)}] ;
-  \stroke[stroke color={blue}]
-     (0cm,0cm) rectangle[corner={(A)}] ;
-  \stroke (0cm,0cm)
-    -- ({\getpoint{A} + (1cm,0cm)}) ;
-\end{hawkdraw}
-\end{codeexamplecolumns}
-
-\begin{codeexamplecolumns}
-\begin{hawkdraw}
-  \point[name={A}, at={(1cm,0.5cm)}] ;
-  \stroke[stroke color={blue}]
-     (0cm,0cm) rectangle[corner={(A)}] ;
-  \stroke (0cm,0cm)
-    -- ({\getpoint{A} * 2}) ;
-\end{hawkdraw}
-\end{codeexamplecolumns}
-
-\begin{codeexamplecolumns}
-\begin{hawkdraw}
-  \stroke (0cm,0cm)
-    -- ({\getpoint{2cm>30}}) ;
-\end{hawkdraw}
-\end{codeexamplecolumns}
-
-\begin{macrodef}*
-|\getfirstpoint|
-|\getlastpoint|
-\end{macrodef}
-The commands \macro{\getfirstpoint} and \macro{\getlastpoint} can be used to access the first and last point of the current path, respectively. The commands return the coordinates of the relevant point as a tuple of dimensions and can be used in subsequent calculations.
-
-\begin{macrodef}*
-|\getfirstslope|
-|\getlastslope|
-\end{macrodef}
-The commands \macro{\getfirstslope} and \macro{\getlastslope} can be used to access the slope at the first and last point of the current path, respectively. The slope is represented as the angle with respect to the positive x-axis.
+For example, the setting \macro{tagging-setup={alt={Water (H20)}, tag={Formula}}} would tag the \macro{hawkdraw} environment as a block element with the tag \macro{Formula} and set the replacement text to ``Water (H20)''.
 
 % =====
 

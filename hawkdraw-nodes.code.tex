@@ -88,13 +88,17 @@
     } {
         #1#2 \s__hawkdraw_stop
     } {
-        \hawkdraw_node_put:nn { } {#1}
+        \bool_if:NF \g__hawkdraw_path_use_clip_bool {
+            \hawkdraw_node_put:nn { } {#1}
+        }
         \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_continue:n
     }
 }
 
 \cs_new_protected:cpn { __hawkdraw_path_process_node_ [ :w } [ #1 ] #2#3 \s__hawkdraw_stop {
-    \hawkdraw_node_put:nn {#1} {#2}
+    \bool_if:NF \g__hawkdraw_path_use_clip_bool {
+        \hawkdraw_node_put:nn {#1} {#2}
+    }
     \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_continue:n
 }
 

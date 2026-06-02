@@ -154,36 +154,36 @@
 \cs_new:Npn \hawkdraw_tag_bb_attribute_use: {
     \tag_struct_gput:ene { \tag_get:n { struct_num } } { attribute } {
         /O /Layout /BBox ~ [
-        \dim_to_decimal_in_bp:n {
-            \property_ref:een {
-                draw. \int_use:N \g_draw_id_int
-            } { xpos } { 0 } sp
-            +
-            \g_draw_bb_xmin_dim
-        }
-        \c_space_tl
-        \dim_to_decimal_in_bp:n {
-            \property_ref:een {
-                draw. \int_use:N \g_draw_id_int
-            } { ypos } { 0 } sp
-            +
-            \g_draw_bb_ymin_dim
-        }
-        \c_space_tl
-        \dim_to_decimal_in_bp:n{
-            \property_ref:een {
-                draw. \int_use:N \g_draw_id_int
-            } { xpos } { 0 } sp
-            +
-            \g_draw_bb_xmax_dim
-        }
-        \c_space_tl
-        \dim_to_decimal_in_bp:n {
-            \property_ref:een {
-                draw. \int_use:N \g_draw_id_int
-            } { ypos } { 0 } sp
-            +
-            \g_draw_bb_ymax_dim
+            \dim_to_decimal_in_bp:n {
+                \property_ref:een {
+                    draw. \int_use:N \g_draw_id_int
+                } { xpos } { 0 } sp
+                +
+                \g_draw_bb_xmin_dim
+            }
+            \c_space_tl
+            \dim_to_decimal_in_bp:n {
+                \property_ref:een {
+                    draw. \int_use:N \g_draw_id_int
+                } { ypos } { 0 } sp
+                +
+                \g_draw_bb_ymin_dim
+            }
+            \c_space_tl
+            \dim_to_decimal_in_bp:n{
+                \property_ref:een {
+                    draw. \int_use:N \g_draw_id_int
+                } { xpos } { 0 } sp
+                +
+                \g_draw_bb_xmax_dim
+            }
+            \c_space_tl
+            \dim_to_decimal_in_bp:n {
+                \property_ref:een {
+                    draw. \int_use:N \g_draw_id_int
+                } { ypos } { 0 } sp
+                +
+                \g_draw_bb_ymax_dim
             }
         ]
     }
