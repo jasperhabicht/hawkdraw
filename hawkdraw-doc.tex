@@ -276,7 +276,7 @@
 \changes{v0.0.6}{2026/05/20}{Splitting up code into modules.}
 \changes{v0.0.7}{2026/05/25}{Adding patterns; adding \titlemacro{at part} option.}
 \changes{v0.0.8}{2026/05/30}{Improving mapping functionality; adding mechanism to place arrow heads on paths; adding \titlemacro{at part} option for circles, ellipses and rectangles; adding \titlemacro{sloped} option for nodes; adding support for referencing anchors of nodes; adding possibility to reference points in calculations.}
-\changes{v0.0.9}{2026/06/01}{Adding tagging support.}
+\changes{v0.0.9}{2026/06/01}{Adding tagging support; adding basic intersection commands.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -867,6 +867,21 @@ The commands \macro{\getfirstpoint} and \macro{\getlastpoint} can be used to acc
 |\getlastslope|
 \end{macrodef}
 The commands \macro{\getfirstslope} and \macro{\getlastslope} can be used to access the slope at the first and last point of the current path, respectively. The slope is represented as the angle with respect to the positive x-axis.
+
+\begin{macrodef}*
+|\getintersectionlines|{<point>}{<point>}{<point>}{<point>}
+\end{macrodef}
+Inside a \macro{hawkdraw} environment, the command \macro{\getintersectionlines} can be used to access the intersection point of two lines. The lines are given as points in four arguments, the first two defining the first line and the last two defining the second line. The command returns the coordinates of the intersection point as a tuple of dimensions and can be used in subsequent calculations.
+
+\begin{macrodef}*
+|\getintersectioncircles|[<integer>]{<point>}{<dimension>}{<point>}{<dimension>}
+\end{macrodef}
+Inside a \macro{hawkdraw} environment, the command \macro{\getintersectioncircles} can be used to access the intersection points of two circles. The circles are given as a point and radius in the first and next two mandatory arguments. The optional argument specifies the number of the intersection to return (root) and defaults to \num{1}. The command returns the coordinates of the intersection points as tuples of dimensions and can be used in subsequent calculations.
+
+\begin{macrodef}*
+|\getintersectionlinecircle|[<integer>]{<point>}{<point>}{<point>}{<dimension>}
+\end{macrodef}
+Inside a \macro{hawkdraw} environment, the command \macro{\getintersectionlinecircle} can be used to access the intersection points of a line and a circle. The line is given as two points in the first two mandatory arguments, and the circle is given as a point and radius in the next two mandatory arguments. The optional argument specifies the number of the intersection to return (root) and defaults to \num{1}. The command returns the coordinates of the intersection points as tuples of dimensions and can be used in subsequent calculations.
 
 \subsubsection{Nodes}
 

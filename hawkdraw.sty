@@ -39,10 +39,6 @@
 
 \RequirePackage { l3draw }
 
-\IfPDFManagementActiveTF { } {
-    \msg_warning:nn { hawkdraw } { documentmetadata-required }
-}
-
 % ===
 
 \IfExplAtLeastTF { 2025-04-14 } { } {
@@ -1595,6 +1591,23 @@
     \cs_set_protected:Npn \node { \path ( 0pt , 0pt ) node }
     \cs_set_protected:Npn \point { \path ( 0pt , 0pt ) point }
     \cs_set_protected:Npn \map { \path ( 0pt , 0pt ) map }
+    \NewExpandableDocumentCommand \getintersectionlines { m m m m } {
+        \draw_point_intersect_lines:nnnn
+            { \hawkdraw_point_parse:n {##1} } { \hawkdraw_point_parse:n {##2} }
+            { \hawkdraw_point_parse:n {##3} } { \hawkdraw_point_parse:n {##4} }
+    }
+    \NewExpandableDocumentCommand \getintersectioncircles { O{ 1 } m m m m } {
+        \draw_point_intersect_circles:nnnnn
+            { \hawkdraw_point_parse:n {##2} } {##3}
+            { \hawkdraw_point_parse:n {##4} } {##5}
+            {##1}
+    }
+    \NewExpandableDocumentCommand \getintersectionlinecircle { O{ 1 } m m m m } {
+        \draw_point_intersect_line_circle:nnnnn
+            { \hawkdraw_point_parse:n {##2} } { \hawkdraw_point_parse:n {##3} }
+            { \hawkdraw_point_parse:n {##4} } {##5}
+            {##1}
+    }
     \NewExpandableDocumentCommand \getfirstpoint { } {
         \fp_use:N \g_hawkdraw_path_first_point_fp
     }
@@ -1611,6 +1624,8 @@
         \draw_scope_begin:
             \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
             \keys_set_known:nnN { hawkdraw / scope } {##1}
+                \l__hawkdraw_keys_unprocessed_clist
+            \keys_set_known:nVN { hawkdraw / tag } \l__hawkdraw_keys_unprocessed_clist
                 \l__hawkdraw_keys_unprocessed_clist
             \keys_set_exclude_groups:nnV { hawkdraw / path } { tag }
                 \l__hawkdraw_keys_unprocessed_clist
