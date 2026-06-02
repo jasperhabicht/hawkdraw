@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.0.9 2026-06-01
+% v0.1.0 2026-06-03
 
 \msg_new:nnn { hawkdraw } { node-unknown } {
     Node ~ frame ~ `#1` ~ unknown.
@@ -97,7 +97,7 @@
         \bool_if:NF \g__hawkdraw_path_use_clip_bool {
             \hawkdraw_node_put:nn { } {#1}
         }
-        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_continue:n
+        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_continue:n
     }
 }
 
@@ -105,7 +105,26 @@
     \bool_if:NF \g__hawkdraw_path_use_clip_bool {
         \hawkdraw_node_put:nn {#1} {#2}
     }
-    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_continue:n
+    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
+}
+
+\cs_new_protected:Npn \hawkdraw_node_contents:n #1 {
+    \cctab_select:N \c_document_cctab
+    \bool_if:NT \l_hawkdraw_node_rescan_bool {
+        \seq_map_inline:Nn \l__hawkdraw_chars_active_seq {
+            \char_set_catcode_active:n {##1}
+        }
+    }
+    \color_select:e { \l_hawkdraw_node_text_color_tl }
+    \normalfont
+    \hook_use:n { hawkdraw / node / begin }
+    \bool_if:NTF \l_hawkdraw_node_rescan_bool {
+        \tl_rescan:nn { } {#1}
+    } {
+        #1
+    }
+    \hook_use:n { hawkdraw / node / end }
+    \skip_horizontal:n { 0pt plus 1fil minus 1fil }
 }
 
 \cs_new_protected:Npn \hawkdraw_node_put:nn #1#2 {
@@ -170,39 +189,11 @@
             \vcoffin_set:Nnn \l_hawkdraw_node_coffin {
                 \l_hawkdraw_node_width_dim
             } {
-                \color_select:e { \l_hawkdraw_node_text_color_tl }
-                \normalfont
-                \bool_if:NT \l_hawkdraw_node_rescan_bool {
-                    \seq_map_inline:Nn \l__hawkdraw_chars_active_seq {
-                        \char_set_catcode_active:n {##1}
-                    }
-                }
-                \hook_use:n { hawkdraw / node / begin }
-                \bool_if:NTF \l_hawkdraw_node_rescan_bool {
-                    \tl_rescan:nn { } {#2}
-                } {
-                    #2
-                }
-                \hook_use:n { hawkdraw / node / end }
-                \skip_horizontal:n { 0pt plus 1fil minus 1fil }
+                \hawkdraw_node_contents:n {#2}
             }
         } {
             \hcoffin_set:Nn \l_hawkdraw_node_coffin {
-                \color_select:e { \l_hawkdraw_node_text_color_tl }
-                \normalfont
-                \bool_if:NT \l_hawkdraw_node_rescan_bool {
-                    \seq_map_inline:Nn \l__hawkdraw_chars_active_seq {
-                        \char_set_catcode_active:n {##1}
-                    }
-                }
-                \hook_use:n { hawkdraw / node / begin }
-                \bool_if:NTF \l_hawkdraw_node_rescan_bool {
-                    \tl_rescan:nn { } {#2}
-                } {
-                    #2
-                }
-                \hook_use:n { hawkdraw / node / end }
-                \skip_horizontal:n { 0pt plus 1fil minus 1fil }
+                \hawkdraw_node_contents:n {#2}
             }
         }
         \__hawkdraw_node_set_padding:
@@ -340,13 +331,13 @@
 
 \cs_new:Npn \__hawkdraw_node_point_normalized:NN #1#2 {
     \fp_eval:n {
-        ( 0pt , 0pt ) 
+        ( 0pt , 0pt )
         \clist_map_tokens:Nn #2 {
             \__hawkdraw_node_point_normalize_x:Nn #1
-        } 
+        }
         \clist_map_tokens:Nn #2 {
             \__hawkdraw_node_point_normalize_y:Nn #1
-        } 
+        }
     }
 }
 
@@ -371,61 +362,32 @@
 \cs_new_protected:Npn \__hawkdraw_node_set_padding: {
     \int_case:nn { \clist_count:N \l_hawkdraw_node_padding_clist } {
         { 1 } {
-            \dim_set:Nn \l_hawkdraw_node_padding_left_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_right_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_top_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_bottom_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
-            }
+            \__hawkdraw_node_set_padding:nnnn { 1 } { 1 } { 1 } { 1 }
         }
         { 2 } {
-            \dim_set:Nn \l_hawkdraw_node_padding_left_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 2 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_right_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 2 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_top_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_bottom_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
-            }
+            \__hawkdraw_node_set_padding:nnnn { 2 } { 2 } { 1 } { 1 }
         }
         { 3 } {
-            \dim_set:Nn \l_hawkdraw_node_padding_left_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 2 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_right_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 2 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_top_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_bottom_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 3 }
-            }
+            \__hawkdraw_node_set_padding:nnnn { 2 } { 2 } { 1 } { 3 }
         }
         { 4 } {
-            \dim_set:Nn \l_hawkdraw_node_padding_left_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 4 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_right_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 2 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_top_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 1 }
-            }
-            \dim_set:Nn \l_hawkdraw_node_padding_bottom_dim {
-                \clist_item:Nn \l_hawkdraw_node_padding_clist { 3 }
-            }
+            \__hawkdraw_node_set_padding:nnnn { 4 } { 2 } { 1 } { 3 }
         }
+    }
+}
+
+\cs_new_protected:Npn \__hawkdraw_node_set_padding:nnnn #1#2#3#4 {
+    \dim_set:Nn \l_hawkdraw_node_padding_left_dim {
+        \clist_item:Nn \l_hawkdraw_node_padding_clist {#1}
+    }
+    \dim_set:Nn \l_hawkdraw_node_padding_right_dim {
+        \clist_item:Nn \l_hawkdraw_node_padding_clist {#2}
+    }
+    \dim_set:Nn \l_hawkdraw_node_padding_top_dim {
+        \clist_item:Nn \l_hawkdraw_node_padding_clist {#3}
+    }
+    \dim_set:Nn \l_hawkdraw_node_padding_bottom_dim {
+        \clist_item:Nn \l_hawkdraw_node_padding_clist {#4}
     }
 }
 

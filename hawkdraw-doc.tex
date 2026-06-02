@@ -12,8 +12,8 @@
 %
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
-\def\hawkdrawfileversion{0.0.9}
-\def\hawkdrawfiledate{1 June 2026}
+\def\hawkdrawfileversion{0.1.0}
+\def\hawkdrawfiledate{3 June 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -276,7 +276,7 @@
 \changes{v0.0.6}{2026/05/20}{Splitting up code into modules.}
 \changes{v0.0.7}{2026/05/25}{Adding patterns; adding \titlemacro{at part} option.}
 \changes{v0.0.8}{2026/05/30}{Improving mapping functionality; adding mechanism to place arrow heads on paths; adding \titlemacro{at part} option for circles, ellipses and rectangles; adding \titlemacro{sloped} option for nodes; adding support for referencing anchors of nodes; adding possibility to reference points in calculations.}
-\changes{v0.0.9}{2026/06/01}{Adding tagging support; adding basic intersection commands; fixing node baseline anchors.}
+\changes{v0.1.0}{2026/06/03}{Adding tagging support; adding basic intersection commands; adding plot functions; fixing node baseline anchors and slopes.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -664,6 +664,71 @@ The step is specified as a comma-separated list of at most two dimensions with t
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
+\subsection{Path functions}
+
+\begin{macrodef}
+|plot|[<options>]{(<point>) ...}
+\end{macrodef}
+The \macro{plot} operator starts a path segment that uses a function as defined by the user. The operator initiates storing the last point and all points given in the braced argument in a sequence. After the operator, the function is executed using the points stored in the sequence.
+
+\begin{macrodef}
+!path/plot/!|function|={<string>}
+\end{macrodef}
+
+The plot function can be selected using the \macro{plot/function} key that expects the name of a plot function as string. Currently, two plot functions are predefined, \macro{sharp} and \macro{smooth}, the latter being selected per default. 
+
+It is possible to use the \macro{map} operator inside the argument to the \macro{plot} operator.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \path[stroke, plot/function={smooth}] (0cm,0cm)
+    plot {
+      map[end=5] {
+        ({#1 * 0.35cm},{sin(#1) * 0.35cm})
+      } 
+    }
+  -- (1cm,2cm);
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\subsubsection['sharp' plot function]{\titlemacro{sharp} plot function}
+
+The \macro{sharp} plot function results in an output equivalent to the \macro{--} operator. It moves to the first point in the stored sequence and executes simple line-to operations to the following points.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \stroke[plot/function={sharp}] (0cm,0cm) 
+    plot { (1cm,1cm) (2cm,.5cm) (3cm,.5cm) } ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\subsubsection['smooth' plot function]{\titlemacro{smooth} plot function}
+
+The \macro{smooth} plot function uses a simple algorithm to smoothen the curve. For paths that have more than three points, it takes the slope of a vector from the point before the relevant point to the point after the relevant point, scales this by a certain amount and uses the resulting points as control points for a Bézier curve. The first and the last path segments are quadratic Bézier curves, all other segments are cubic Bézier curves. If the path only contains two points, a straight line is drawn.
+
+\begin{macrodef}
+!path/plot/!|smooth/tension|={<float>}
+\end{macrodef}
+
+The factor by which the slope vector is scaled can be adjusted using the key \macro{plot/smooth/tension} which is set to \num{0.15} by default
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \stroke[plot/function={smooth}] (0cm,0cm) 
+    plot { (1cm,1cm) (2cm,.5cm) (3cm,.5cm) } ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \stroke[
+    plot/function={smooth},
+    plot/smooth/tension={0.25}
+  ] (0cm,0cm) 
+    plot { (1cm,1cm) (2cm,.5cm) (3cm,.5cm) } ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
 \subsection{Points and nodes}
 
 Points are defined as tuple of two dimensions where the first represents the dimension on the x-axis and the second the dimension on the y-axis. Apart from defining points with these two dimensions directly, it is also possible to calculate these two dimensions or to define a point as being at a defined part of a path segment. Moreover, it is possible name points and later refer to them.
@@ -695,7 +760,7 @@ The command \macro{\point} is a shortcut for \macro{\path (0pt,0pt) point}
 !path/point/!|at|={<tuple>}
 !path/point/!|at part|={<float>}
 \end{macrodef}
-The position of the point can be adjusted with the \macro{at} option which accepts a point (a tuple). 
+The position of the point can be adjusted with the \macro{at} option which accepts a point (a tuple).
 
 The position of a point can also be adjusted using the \macro{at part} option which accespts a floating-point number that defines the position on the last path segment with \num{0} being the previous and \num{1} being the current point.
 
@@ -1090,7 +1155,7 @@ The command \macro{\map} is a shortcut for \macro{\path (0pt,0pt) map}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] 
+  \path[stroke]
     map[list={A,B}] {
       map[list={x,y}] {
         (#2 cm,##2 cm) node {#1,##1}
@@ -1098,11 +1163,11 @@ The command \macro{\map} is a shortcut for \macro{\path (0pt,0pt) map}
     } ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
-    
+
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm) 
-    .. (7mm,-10mm) & (14mm,8mm) .. (20mm,-5mm) 
+  \path[stroke] (0cm,0cm)
+    .. (7mm,-10mm) & (14mm,8mm) .. (20mm,-5mm)
     map[end={10}] {
         tip[
           at part={0.095 * #1},
@@ -1136,7 +1201,7 @@ The command \macro{\hawkdrawarrayitem} can be used to reference items in an arra
     -- (2cm,1cm)
     map[list={A,B,C}] {
       point[
-        name={#1}, 
+        name={#1},
         at part={\hawkdrawarrayitem{myparts}{#2}}
       ]
     } ;
@@ -1209,7 +1274,7 @@ The options \macro{stroke color} and \macro{fill color} set the stroke color and
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-The options \macro{stroke opacity} and \macro{fill opacity} set the stroke opacity and the fill opacity for the path. The floating-point number should be in the range of \num{0} and \num{1}. The default stroke opacity and fill opacity is \num{1} (fully opaque). 
+The options \macro{stroke opacity} and \macro{fill opacity} set the stroke opacity and the fill opacity for the path. The floating-point number should be in the range of \num{0} and \num{1}. The default stroke opacity and fill opacity is \num{1} (fully opaque).
 
 Note that \macro{\DocumentMetadata{}} needs to be set in order to activate support for PDF transparency.
 
@@ -1414,7 +1479,7 @@ The options \macro{arrow start} and \macro{arrow end} set an arrow tip to the st
 !path/!|arrow end style set|={<options>}
 !path/!|arrow end style add|={<options>}
 \end{macrodef}
-Arrow tips can be styled using the options \macro{arrow start style set} and \macro{arrow end style set}. The option \macro{arrow style set} sets the same style for start and end arrow tips. 
+Arrow tips can be styled using the options \macro{arrow start style set} and \macro{arrow end style set}. The option \macro{arrow style set} sets the same style for start and end arrow tips.
 
 The options \macro{arrow start style add}, \macro{arrow end style add} and \macro{arrow style add} append the relevant styles to the existing styles. All options that are available for paths are also available for arrow tips.
 
@@ -1455,7 +1520,7 @@ The following arrow tips are available, of these the last three, \macro{simple},
 \begin{macrodef}
 |tip|[<options>] {<arrow>}
 \end{macrodef}
-Using the \macro{tip} operation, an arrow head is drawn at the current point on the path. 
+Using the \macro{tip} operation, an arrow head is drawn at the current point on the path.
 
 \begin{macrodef}
 !path/tip/!|at part|={<float>}
@@ -1546,16 +1611,16 @@ The \macro{text} key, which is set per default, tags all paths of a \macro{hawkd
 
 The option \macro{artifact} tags all paths and nodes of a \macro{hawkdraw} environment as artifact.
 
-The option \macro{actualtext} sets the relevant value as replacement text for the \macro{hawkdraw} environment and tags it as inline span element. 
+The option \macro{actualtext} sets the relevant value as replacement text for the \macro{hawkdraw} environment and tags it as inline span element.
 
-The option \macro{alt} sets the relevant value as replacement text for the \macro{hawkdraw} environment and tags it as block (figure) element. 
+The option \macro{alt} sets the relevant value as replacement text for the \macro{hawkdraw} environment and tags it as block (figure) element.
 
 The option \macro{off} turns off tagging for the \macro{hawkdraw} environment.
 
 \begin{macrodef}
 !tag/!|tagging-setup|={<options>}
 \end{macrodef}
-To enable more complex tagging scenarios, the \macro{tagging-setup} option can be used to configure the tagging behavior. It accepts as options the same options as described above. In addition, it accepts the option \macro{tag} to define the element tag. 
+To enable more complex tagging scenarios, the \macro{tagging-setup} option can be used to configure the tagging behavior. It accepts as options the same options as described above. In addition, it accepts the option \macro{tag} to define the element tag.
 
 For example, the setting \macro{tagging-setup={alt={Water (H20)}, tag={Formula}}} would tag the \macro{hawkdraw} environment as a block element with the tag \macro{Formula} and set the replacement text to ``Water (H20)''.
 

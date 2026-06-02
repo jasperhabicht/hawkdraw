@@ -1,0 +1,192 @@
+% File: hawkdraw-plots.code.tex
+% Copyright 2026 Jasper Habicht (mail(at)jasperhabicht.de).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License version 1.3c,
+% available at http://www.latex-project.org/lppl/.
+%
+% This file is part of the `hawkdraw' package (The Work in LPPL)
+% and all files in that bundle must be distributed together.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% BOF
+
+% v0.1.0 2026-06-03
+
+\msg_new:nnn { hawkdraw } { plot-unknown } {
+    Plot ~ function ~ `#1` ~ unknown.
+}
+
+\scan_new:N \s__hawkdraw_plot_mark
+
+\seq_new:N \g__hawkdraw_path_plot_points_seq
+\tl_new:N \l_hawkdraw_path_plot_tl
+
+\keys_define:nn { hawkdraw / path / plot } {
+    function                .tl_set:N         = \l_hawkdraw_path_plot_tl ,
+    function                .initial:n        = { debug } ,
+}
+
+% ===
+
+\cs_new_protected:cpn { __hawkdraw_path_process_p_ l :w } plot #1#2 \s__hawkdraw_stop {
+    \__hawkdraw_cs_if_exist_use_secure:nnTF {#1} {
+        __hawkdraw_path_process_plot_ \tl_head:n {#1} :w
+    } {
+        #1#2 \s__hawkdraw_stop
+    } {
+        \__hawkdraw_path_plot:nn { } {#1}
+        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_continue:n
+    }
+}
+
+\cs_new_protected:cpn { __hawkdraw_path_process_plot_ [ :w } [ #1 ] #2#3 \s__hawkdraw_stop {
+    \__hawkdraw_path_plot:nn {#1} {#2}
+    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
+}
+
+\cs_new_protected:Npn \__hawkdraw_path_plot:nn #1#2 {
+    \str_set:Nn \l__hawkdraw_path_type_tl { plot }
+    \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
+    \keys_set:nn { hawkdraw / path / plot } {#1}
+    \seq_gclear:N \g__hawkdraw_path_plot_points_seq
+    \seq_gput_right:Ne \g__hawkdraw_path_plot_points_seq {
+        \fp_to_decimal:N \l__hawkdraw_point_o_fp
+    }
+    \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_plot:n
+    \cs_if_exist_use:cF { __hawkdraw_plot_ \l_hawkdraw_path_plot_tl : } {
+        \msg_error:nnV { hawkdraw } { plot-unknown } \l_hawkdraw_path_plot_tl
+    }
+}
+
+\cs_new_protected:Npn \__hawkdraw_path_process_plot:n #1 {
+    \__hawkdraw_cs_if_exist_use_secure:nnT {#1} {
+        __hawkdraw_path_process_plot_i_ \tl_head:n {#1} :w
+    } {
+        #1 \s__hawkdraw_stop
+    }
+}
+
+\cs_new_protected:cpn { __hawkdraw_path_process_plot_i_ ( :w } ( #1 ) #2 \s__hawkdraw_stop {
+    \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_a_fp {#1}
+    \seq_gput_right:Ne \g__hawkdraw_path_plot_points_seq {
+        \fp_to_decimal:N \l__hawkdraw_point_a_fp
+    }
+    \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
+    \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_plot:n
+}
+
+\cs_new_protected:cpn { __hawkdraw_path_process_plot_i_ m :w } map #1 [ #2 ] #3#4 \s__hawkdraw_stop {
+    \hawkdraw_map:nn {#2} {
+        \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_plot:n
+    }
+    \tl_trim_spaces_apply:nN {#4} \__hawkdraw_path_process_plot:n
+}
+
+% ===
+
+\prop_new:N \l__hawkdraw_plot_keys_prop
+\seq_new:N \l__hawkdraw_plot_key_value_seq
+
+\cs_new:Npn \__hawkdraw_plot_keys_process:nnn #1#2#3 {
+    #2                      .fp_set:c         = { l_hawkdraw_plot_ #1 _ #2 _fp } ,
+    #2                      .initial:n        = {#3} ,
+}
+
+\cs_new_protected:Npn \hawkdraw_plot_create:nn #1#2#3 {
+    \prop_clear:N \l__hawkdraw_plot_keys_prop
+    \seq_clear:N \l__hawkdraw_plot_key_value_seq
+    \clist_map_inline:nn {#2} {
+        \seq_set_split:Nnn \l__hawkdraw_plot_key_value_seq { = } {##1}
+        \prop_put:Nee \l__hawkdraw_plot_keys_prop
+            { \seq_item:Nn \l__hawkdraw_plot_key_value_seq { 1 } }
+            { \seq_item:Nn \l__hawkdraw_plot_key_value_seq { 2 } }
+        \tl_if_exist:cF { l_hawkdraw_plot_ #1 _ ##1 _fp } {
+            \tl_new:c { l_hawkdraw_plot_ #1 _ ##1 _fp }
+        }
+    }
+    \exp_args:Nne
+    \keys_define:nn { hawkdraw / path / plot / #1 } {
+        \prop_map_tokens:Nn \l__hawkdraw_plot_keys_prop {
+            \__hawkdraw_plot_keys_process:nnn {#1}
+        }
+    }
+    \cs_new_protected:cpn { __hawkdraw_plot_ #1 : } {
+        \seq_if_empty:NF \g__hawkdraw_path_plot_points_seq {
+            #3
+        }
+    }
+}
+
+% ===
+
+\hawkdraw_plot_create:nn { debug } { } {
+    \tl_analysis_log:N \g__hawkdraw_path_plot_points_seq
+}
+
+\hawkdraw_plot_create:nn { sharp } { } {
+    \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 0 } {
+        \draw_path_moveto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 1 } }
+        \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 1 } {
+            \int_step_inline:nnn { 2 } { \seq_count:N \g__hawkdraw_path_plot_points_seq } {
+                \draw_path_lineto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1} }
+            }
+        }
+    }
+}
+
+\hawkdraw_plot_create:nn { smooth } {
+    % can be set via plot/smooth/tension
+    tension = 0.15
+} {
+    \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 0 } {
+        \draw_path_moveto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 1 } }
+        \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 1 } {
+            \int_compare:nNnTF { \seq_count:N \g__hawkdraw_path_plot_points_seq } < { 3 } {
+                \draw_path_lineto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 2 } }
+            } {
+                % more than 2 points: calculate slope between P0 and P2 and use it to calculate control points
+                % first segment
+                \draw_path_curveto:nn {
+                    \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 2 } -
+                    (
+                        \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 3 } -
+                        \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 1 }
+                    ) * \l_hawkdraw_plot_smooth_tension_fp
+                } {
+                    \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 2 }
+                }
+                \int_step_inline:nnn { 3 } { \seq_count:N \g__hawkdraw_path_plot_points_seq - 1 } {
+                    \draw_path_curveto:nnn {
+                        \seq_item:Nn \g__hawkdraw_path_plot_points_seq { ##1 - 1 } +
+                        (
+                            \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1} -
+                            \seq_item:Nn \g__hawkdraw_path_plot_points_seq { ##1 - 2 }
+                        ) * \l_hawkdraw_plot_smooth_tension_fp
+                    } {
+                        \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1} -
+                        (
+                            \seq_item:Nn \g__hawkdraw_path_plot_points_seq { ##1 + 1 } -
+                            \seq_item:Nn \g__hawkdraw_path_plot_points_seq { ##1 - 1 }
+                        ) * \l_hawkdraw_plot_smooth_tension_fp
+                    } {
+                        \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1}
+                    }
+                }
+                % last segment
+                \draw_path_curveto:nn {
+                    \seq_item:Nn \g__hawkdraw_path_plot_points_seq { -2 } +
+                    (
+                        \seq_item:Nn \g__hawkdraw_path_plot_points_seq { -1 } -
+                        \seq_item:Nn \g__hawkdraw_path_plot_points_seq { -3 }
+                    ) * \l_hawkdraw_plot_smooth_tension_fp
+                } {
+                    \seq_item:Nn \g__hawkdraw_path_plot_points_seq { -1 }
+                }
+            }
+        }
+    }
+}
+
+% EOF
