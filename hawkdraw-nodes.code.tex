@@ -423,15 +423,15 @@
 }
 \cs_generate_variant:Nn \__hawkdraw_node_set_frame:n { V }
 
-\dim_new:N \hawkdraw_node_natural_width_dim
-\dim_new:N \hawkdraw_node_natural_height_dim
+\dim_new:N \l_hawkdraw_node_natural_width_dim
+\dim_new:N \l_hawkdraw_node_natural_height_dim
 
 \cs_new_protected:Npn \hawkdraw_node_create_frame:nn #1#2 {
     \cs_new_protected:cpn { hawkdraw_node_frame_ #1 :Nnnnn } ##1##2##3##4##5 {
-        \dim_set:Nn \hawkdraw_node_natural_width_dim {
+        \dim_set:Nn \l_hawkdraw_node_natural_width_dim {
             \coffin_wd:N ##1 + ##2 + ##3
         }
-        \dim_set:Nn \hawkdraw_node_natural_height_dim {
+        \dim_set:Nn \l_hawkdraw_node_natural_height_dim {
             \coffin_ht_plus_dp:N ##1 + ##4 + ##5
         }
         #2
@@ -446,49 +446,49 @@
 \hawkdraw_node_create_frame:nn { rectangle } {
     \draw_path_rectangle:nn {
         (
-            -0.5 * \hawkdraw_node_natural_width_dim
+            -0.5 * \l_hawkdraw_node_natural_width_dim
         ,
-            -0.5 * \hawkdraw_node_natural_width_dim
+            -0.5 * \l_hawkdraw_node_natural_height_dim
         )
     } {
         (
-            \hawkdraw_node_natural_width_dim
+            \l_hawkdraw_node_natural_width_dim
         ,
-            \hawkdraw_node_natural_height_dim
+            \l_hawkdraw_node_natural_height_dim
         )
     }
 }
 
 \hawkdraw_node_create_frame:nn { ellipse } {
     \draw_path_ellipse:nnn { 0pt , 0pt } {
-        ( 0.5 * \hawkdraw_node_natural_width_dim , 0pt )
+        ( 0.5 * \l_hawkdraw_node_natural_width_dim , 0pt )
     } {
-        ( 0pt , 0.5 * \hawkdraw_node_natural_height_dim )
+        ( 0pt , 0.5 * \l_hawkdraw_node_natural_height_dim )
     }
 }
 
 \hawkdraw_node_create_frame:nn { circle } {
     \draw_path_circle:nn { 0pt , 0pt } {
         max(
-            0.5 * \hawkdraw_node_natural_width_dim
+            0.5 * \l_hawkdraw_node_natural_width_dim
         ,
-            0.5 * \hawkdraw_node_natural_height_dim
+            0.5 * \l_hawkdraw_node_natural_height_dim
         )
     }
 }
 
 \hawkdraw_node_create_frame:nn { diamond } {
     \draw_path_moveto:n {
-        ( 0pt , \hawkdraw_node_natural_height_dim )
+        ( 0pt , \l_hawkdraw_node_natural_height_dim )
     }
     \draw_path_lineto:n {
-        ( \hawkdraw_node_natural_width_dim , 0pt )
+        ( \l_hawkdraw_node_natural_width_dim , 0pt )
     }
     \draw_path_lineto:n {
-        ( 0pt , -1 * \hawkdraw_node_natural_height_dim )
+        ( 0pt , -1 * \l_hawkdraw_node_natural_height_dim )
     }
     \draw_path_lineto:n {
-        ( -1 * \hawkdraw_node_natural_width_dim , 0pt )
+        ( -1 * \l_hawkdraw_node_natural_width_dim , 0pt )
     }
     \draw_path_close:
 }

@@ -337,6 +337,14 @@ The \macro{hawkdraw} environment is the main environment for drawing. It defines
 \end{macrodef}
 The option \macro{baseline} sets the baseline for the environment as dimension. The default baseline is typically the bottom of the the bounding box of the drawing.
 
+\begin{codeexamplecolumns}
+foo
+\begin{hawkdraw}[baseline={0pt}]
+  \node[stroke, anchor={H,l}] {bar} ;
+\end{hawkdraw}
+baz
+\end{codeexamplecolumns}
+
 \begin{macrodef}
 !picture/!|layers|={<clist>}
 \end{macrodef}
