@@ -1591,6 +1591,12 @@
     \cs_set_protected:Npn \node { \path ( 0pt , 0pt ) node }
     \cs_set_protected:Npn \point { \path ( 0pt , 0pt ) point }
     \cs_set_protected:Npn \map { \path ( 0pt , 0pt ) map }
+    \NewExpandableDocumentCommand \getpointx { m } {
+        \hawkdraw_tuple_use_i:n { \hawkdraw_point_parse:n {##1} }
+    }
+    \NewExpandableDocumentCommand \getpointy { m } {
+        \hawkdraw_tuple_use_ii:n { \hawkdraw_point_parse:n {##1} }
+    }
     \NewExpandableDocumentCommand \getintersectionlines { m m m m } {
         \draw_point_intersect_lines:nnnn
             { \hawkdraw_point_parse:n {##1} } { \hawkdraw_point_parse:n {##2} }

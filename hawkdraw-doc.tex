@@ -874,6 +874,12 @@ The commands \macro{\getfirstslope} and \macro{\getlastslope} can be used to acc
 Inside a \macro{hawkdraw} environment, the command \macro{\getintersectionlines} can be used to access the intersection point of two lines. The lines are given as points in four arguments, the first two defining the first line and the last two defining the second line. The command returns the coordinates of the intersection point as a tuple of dimensions and can be used in subsequent calculations.
 
 \begin{macrodef}*
+|\getpointx|{<point>}
+|\getpointy|{<point>}
+\end{macrodef}
+Inside a \macro{hawkdraw} environment, the commands \macro{\getpointx} and \macro{\getpointy} can be used to access the x- and y-coordinate of a point, respectively. The point is given as an argument, and the commands return the relevant coordinate as dimension.
+
+\begin{macrodef}*
 |\getintersectioncircles|[<integer>]{<point>}{<dimension>}{<point>}{<dimension>}
 \end{macrodef}
 Inside a \macro{hawkdraw} environment, the command \macro{\getintersectioncircles} can be used to access the intersection points of two circles. The circles are given as a point and radius in the first and next two mandatory arguments. The optional argument specifies the number of the intersection to return (root) and defaults to \num{1}. The command returns the coordinates of the intersection points as tuples of dimensions and can be used in subsequent calculations.
