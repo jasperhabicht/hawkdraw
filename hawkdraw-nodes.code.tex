@@ -182,6 +182,35 @@
             \l_hawkdraw_node_coffin { hc } { vc }
             { 0.5 \l_hawkdraw_node_padding_left_dim - 0.5 \l_hawkdraw_node_padding_right_dim }
             { 0.5 \l_hawkdraw_node_padding_bottom_dim - 0.5 \l_hawkdraw_node_padding_top_dim }
+        \coffin_set_horizontal_pole:Nnn
+            \l_hawkdraw_node_frame_coffin { H } {
+                \l_hawkdraw_node_padding_bottom_dim -
+                \exp_last_unbraced:Ne \use_ii:nnnn {
+                    \coffin_pole:Nn \l_hawkdraw_node_coffin { b }
+                }
+            }
+        \bool_if:NT \l__hawkdraw_node_vbox_bool {
+            \coffin_set_horizontal_pole:Nnn
+                \l_hawkdraw_node_frame_coffin { T } {
+                    \l_hawkdraw_node_padding_bottom_dim -
+                    \exp_last_unbraced:Ne \use_ii:nnnn {
+                        \coffin_pole:Nn \l_hawkdraw_node_coffin { b }
+                    } +
+                    \exp_last_unbraced:Ne \use_ii:nnnn {
+                        \coffin_pole:Nn \l_hawkdraw_node_coffin { T }
+                    }
+                }
+            \coffin_set_horizontal_pole:Nnn
+                \l_hawkdraw_node_frame_coffin { B } {
+                    \l_hawkdraw_node_padding_bottom_dim -
+                    \exp_last_unbraced:Ne \use_ii:nnnn {
+                        \coffin_pole:Nn \l_hawkdraw_node_coffin { b }
+                    } +
+                    \exp_last_unbraced:Ne \use_ii:nnnn {
+                        \coffin_pole:Nn \l_hawkdraw_node_coffin { B }
+                    }
+                }
+        }
         \bool_if:NT \l_hawkdraw_node_sloped_bool {
             \coffin_rotate:Nn \l_hawkdraw_node_frame_coffin {
                 \l_hawkdraw_point_slope_fp
