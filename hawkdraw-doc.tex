@@ -364,6 +364,8 @@ foo
 bar
 \end{codeexamplecolumns}
 
+Note that the \macro{hawkdraw} environment sets all category codes to the default LaTeX category codes, but it collects all characters with category code \num{13} (active) and a character code between \num{32} and \num{127}, resets these to active inside nodes and rescans the node's contents to ensure proper output.
+
 \section{Scopes and layers}\label{sec:scopes}
 
 \begin{macrodef}
@@ -903,6 +905,11 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getintersectionlineci
 |node|[<options>]{<content>}
 \end{macrodef}
 Using the \macro{node} operation, a node at the current position is defined and assigned the relevant content by the relevant argument.
+
+\begin{macrodef}
+!path/node/!|rescan|={<boolean>}
+\end{macrodef}
+Using the \macro{rescan} option, the node's contents are rescanned using the current category ccodes. The default value is \macro{false}, but rescanning is activated automatically if active characters with character code between \num{32} and \num{127} are found before the relevant \macro{hawkdraw} environment.
 
 \begin{macrodef}
 !path/node/!|name|={<string>}
