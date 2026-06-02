@@ -1,4 +1,4 @@
-![Version 0.1.0](https://img.shields.io/badge/version-0.1.0-blue)
+![Version 0.1.1](https://img.shields.io/badge/version-0.1.1-blue)
 
 ![Victor, the drawing hawk](https://github.com/user-attachments/assets/ba80f7d5-f012-4fb2-9676-ee11cb614699)
 
