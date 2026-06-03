@@ -1607,7 +1607,13 @@
     end                     .initial:n      = { 1 } ,
 }
 
-\hawkdraw_operator_construct_arg:nN { map } \hawkdraw_map:nn
+\cs_new_protected:Npn \__hawkdraw_map_path_process_continue:nn #1#2 {
+    \hawkdraw_map:nn {#1} {
+        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_continue:n
+    }
+}
+
+\hawkdraw_operator_construct_arg:nN { map } \__hawkdraw_map_path_process_continue:nn
 
 \cs_generate_variant:Nn \cs_generate_variant:Nn { cn }
 
@@ -1627,9 +1633,7 @@
     }
     \cs_set_protected:cpn {
         __hawkdraw_map_function_ \int_use:N \l_hawkdraw_map_level_int :nn
-    } ##1##2 {
-        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_continue:n
-    }
+    } ##1##2 {#2}
     \clist_if_empty:NTF \l_hawkdraw_map_list_clist {
         \fp_step_function:nnnN
             { \l_hawkdraw_map_start_fp }

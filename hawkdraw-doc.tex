@@ -1251,7 +1251,7 @@ The command \macro{\hawkdrawarrayitem} can be used to reference items in an arra
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-\section{Main path options}
+\section{Path options}
 
 The following options can be set for the path:
 
@@ -1489,7 +1489,9 @@ The command \macro{\hawkdrawsetcolor} is used to define colors using the \macro{
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-\subsection{Arrow tips}
+\section{Arrow tips}
+
+\subsection{Arrow tips at path ends}
 
 \begin{macrodef}
 !path/!|arrow start|={<string>}
@@ -1550,6 +1552,8 @@ The following arrow tips are available, of these the last three, \macro{simple},
   \bottomrule
 \end{longtable}
 
+\subsection{Arrow tips on paths}
+
 \begin{macrodef}
 |tip|[<options>] {<arrow>}
 \end{macrodef}
@@ -1579,7 +1583,7 @@ If the boolean option \macro{flipped} is set, the arrow head is rotated to the o
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-\subsection{Patterns}
+\section{Patterns}
 
 Note that in order to be able to use patterns, \macro{\DocumentMetadata{}} needs to be set.
 
