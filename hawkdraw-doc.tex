@@ -389,8 +389,10 @@ The option \macro{bounding box} sets the environment to have a custom bounding b
 
 \begin{codeexamplecolumns}
 foo
-\begin{hawkdraw}[bounding box={zero}, baseline={0pt}]
-  \stroke[stroke color={blue}]
+\begin{hawkdraw}[
+  bounding box={zero},
+  baseline={0pt}
+] \stroke[stroke color={blue}]
     (0cm,0cm) circle[radius={0.5cm}] ;
 \end{hawkdraw}
 bar
