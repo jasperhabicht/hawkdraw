@@ -553,7 +553,7 @@ Using \macro{!} the path is closed by drawing a line from the last point to the 
 
 \subsection{Circles, ellipses, arcs, rectangles and grids}
 
-The following path operations require one argument in a pair of square brackets (which may be empty). As for options, the relevant operator only accepts the relevant subset to the \macro{path/} set.
+As for options, the following operators only accept the relevant subset to the \macro{path/} set.
 
 \begin{macrodef}
 |circle|[<options>]
@@ -778,7 +778,7 @@ Nodes are boxes (coffins to be more exacct) that can contain arbitrary contents.
 \begin{macrodef}[operation:point]
 |point|[<options>]
 \end{macrodef}
-Using the \macro{point} operation, a point at the current position is defined and named with the given name. As for options, the \macro{point} operator only accepts the \macro{path/point/} subset. The \macro{point} operator requires one argument in a pair of square brackets (which may be empty).
+Using the \macro{point} operation, a point at the current position is defined and named with the given name. As for options, the \macro{point} operator only accepts the \macro{path/point/} subset.
 
 \begin{macrodef}
 !path/point/!|name|={<string>}
@@ -1160,7 +1160,7 @@ The following node frames are available, the frame \macro{none} is special as it
 \begin{macrodef}
 |map|[<options>]{<code>}
 \end{macrodef}
-The \macro{map} operation is used to map over a comma-separated list of items or a range of numbers and execute code for each item that is given by the relevant argument. The code can reference the current item with \macro{#1} and the current index with \macro{#2}. The index starts at \num{1}. The \macro{map} operation can be nested. As for options, the \macro{map} operator only accepts the \macro{path/map/} subset. The \macro{map} operator requires one argument in a pair of square brackets (which may be empty).
+The \macro{map} operation is used to map over a comma-separated list of items or a range of numbers and execute code for each item that is given by the relevant argument. The code can reference the current item with \macro{#1} and the current index with \macro{#2}. The index starts at \num{1}. The \macro{map} operation can be nested. As for options, the \macro{map} operator only accepts the \macro{path/map/} subset.
 
 \begin{macrodef}
 !path/map/!|list|={<clist>}
