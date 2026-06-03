@@ -1607,13 +1607,13 @@
     end                     .initial:n      = { 1 } ,
 }
 
-\cs_new_protected:Npn \__hawkdraw_map_path_process_continue:nn #1#2 {
+\cs_new_protected:Npn \__hawkdraw_map_path_process:nn #1#2 {
     \hawkdraw_map:nn {#1} {
         \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_continue:n
     }
 }
 
-\hawkdraw_operator_construct_arg:nN { map } \__hawkdraw_map_path_process_continue:nn
+\hawkdraw_operator_construct_arg:nN { map } \__hawkdraw_map_path_process:nn
 
 \cs_generate_variant:Nn \cs_generate_variant:Nn { cn }
 
