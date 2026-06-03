@@ -3,26 +3,29 @@
 \contentsline {section}{\numberline {3}Loading the package}{2}{section.3}%
 \contentsline {section}{\numberline {4}General remarks}{3}{section.4}%
 \contentsline {section}{\numberline {5}Main user environment}{3}{section.5}%
-\contentsline {subsection}{\numberline {5.1}`hawkdraw' environment}{3}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Options to the main user environment}{4}{subsection.5.2}%
-\contentsline {section}{\numberline {6}Scopes and layers}{4}{section.6}%
+\contentsline {subsection}{\numberline {5.1}\titlemacro {hawkdraw} environment}{3}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Setting the baseline, the layers and the bounding box}{4}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Scopes and layers}{5}{section.6}%
 \contentsline {section}{\numberline {7}Path syntax}{5}{section.7}%
 \contentsline {subsection}{\numberline {7.1}Path command and options}{5}{subsection.7.1}%
-\contentsline {subsection}{\numberline {7.2}Points on the path}{5}{subsection.7.2}%
-\contentsline {subsection}{\numberline {7.3}Path operations}{6}{subsection.7.3}%
-\contentsline {subsection}{\numberline {7.4}Plot functions}{10}{subsection.7.4}%
-\contentsline {subsubsection}{\numberline {7.4.1}'sharp' plot function}{11}{subsubsection.7.4.1}%
-\contentsline {subsubsection}{\numberline {7.4.2}'smooth' plot function}{11}{subsubsection.7.4.2}%
-\contentsline {subsection}{\numberline {7.5}Points and nodes}{11}{subsection.7.5}%
-\contentsline {subsubsection}{\numberline {7.5.1}Points}{11}{subsubsection.7.5.1}%
-\contentsline {subsubsection}{\numberline {7.5.2}Nodes}{16}{subsubsection.7.5.2}%
+\contentsline {subsection}{\numberline {7.2}Points on the path}{6}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Straight lines}{6}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Bézier curves}{7}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}Closing a path}{7}{subsection.7.5}%
+\contentsline {subsection}{\numberline {7.6}Circles, ellipses, rectangles and grids}{8}{subsection.7.6}%
+\contentsline {subsection}{\numberline {7.7}Plot functions}{10}{subsection.7.7}%
+\contentsline {subsubsection}{\numberline {7.7.1}\titlemacro {sharp} plot function}{11}{subsubsection.7.7.1}%
+\contentsline {subsubsection}{\numberline {7.7.2}\titlemacro {smooth} plot function}{11}{subsubsection.7.7.2}%
+\contentsline {subsection}{\numberline {7.8}Points and nodes}{12}{subsection.7.8}%
+\contentsline {subsubsection}{\numberline {7.8.1}Points}{12}{subsubsection.7.8.1}%
+\contentsline {subsubsection}{\numberline {7.8.2}Nodes and frames}{16}{subsubsection.7.8.2}%
 \contentsline {section}{\numberline {8}Mapping operation}{19}{section.8}%
 \contentsline {section}{\numberline {9}Main path options}{21}{section.9}%
-\contentsline {subsection}{\numberline {9.1}Stroke and fill color, clipping}{21}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.1}Stroke and fill color, opacity, clipping}{21}{subsection.9.1}%
 \contentsline {subsection}{\numberline {9.2}Line styling}{22}{subsection.9.2}%
 \contentsline {subsection}{\numberline {9.3}Rounded corners and full rule}{23}{subsection.9.3}%
 \contentsline {subsection}{\numberline {9.4}Transformations}{24}{subsection.9.4}%
-\contentsline {section}{\numberline {10}Setting styles and colors}{25}{section.10}%
+\contentsline {section}{\numberline {10}Defining custom styles and colors}{25}{section.10}%
 \contentsline {subsection}{\numberline {10.1}Arrow tips}{26}{subsection.10.1}%
 \contentsline {subsection}{\numberline {10.2}Patterns}{27}{subsection.10.2}%
 \contentsline {section}{\numberline {11}Tagging support}{28}{section.11}%

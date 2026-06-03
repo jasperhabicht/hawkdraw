@@ -29,6 +29,8 @@
     to ~ enable ~ full ~ functionality.
 }
 
+% \NeedsTeXFormat{LaTeX2e}[2026-05-26]
+
 \cs_if_exist:NF \ProcessKeyOptions {
     \msg_critical:nn { hawkdraw } { old-kernel }
 }
@@ -41,11 +43,11 @@
 
 % ===
 
+% backward compatibility
 \IfExplAtLeastTF { 2025-04-14 } { } {
     \RequirePackage { l3opacity }
 }
 
-% backward compatibility
 \clist_map_inline:nn {
     linewidth:n ,
     baseline:n ,
@@ -346,7 +348,7 @@
 
 \int_new:N \g_hawkdraw_id_int
 
-\bool_new:N \l_hawkdraw_picture_overlay_bool
+\clist_new:N \l_hawkdraw_picture_bb_clist
 \fp_new:N \l_draw_picture_baseline_fp
 
 \tl_new:N \g_hawkdraw_path_current_tl
@@ -1568,9 +1570,19 @@
     layers                  .code:n         = {
         \clist_set:Nn \l_draw_layers_clist {#1}
     } ,
-    overlay                 .bool_set:N     = \l_hawkdraw_picture_overlay_bool ,
-    overlay                 .default:n      = { true } ,
-    overlay                 .initial:n      = { false } ,
+    bounding ~ box          .code:n         = {
+        \str_case:nnF {#1} {
+            { auto } {
+                \clist_clear:N \l_hawkdraw_picture_bb_clist
+            }
+            { zero } {
+                \clist_set:Nn \l_hawkdraw_picture_bb_clist
+                    { 0pt , 0pt , 0pt , 0pt }
+            }
+        } {
+            \clist_set:Nn \l_hawkdraw_picture_bb_clist {#1}
+        }
+    } ,
 }
 
 \keys_define:nn { hawkdraw / scope } {
@@ -1707,8 +1719,21 @@
                 \fp_to_dim:n { \l_draw_picture_baseline_fp }
             }
         }
-        \bool_if:NT \l_hawkdraw_picture_overlay_bool {
-            \bool_set_false:N \l_draw_bb_update_bool
+        \int_compare:nNnT { \clist_count:N \l_hawkdraw_picture_bb_clist } = { 4 } {
+            \draw_path_rectangle_corners:nn {
+                (
+                    \clist_item:Nn \l_hawkdraw_picture_bb_clist { 1 }
+                ,
+                    \clist_item:Nn \l_hawkdraw_picture_bb_clist { 2 }
+                )
+            } {
+                (
+                    \clist_item:Nn \l_hawkdraw_picture_bb_clist { 3 }
+                ,
+                    \clist_item:Nn \l_hawkdraw_picture_bb_clist { 4 }
+                )
+            }
+            \draw_path_replace_bb:
         }
 } {
     \draw_end:

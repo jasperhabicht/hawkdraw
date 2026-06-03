@@ -248,7 +248,7 @@
   #1
 }{\MathCollectFalse\vphantom{/g}\lstinline^#2^}
 
-\NewTotalTCBox{\titlemacro}{ s O{} m }{
+\NewTotalTCBox{\titlemacroinner}{ s O{} m }{
   verbatim,
   size=tight,
   arc=1pt,
@@ -264,6 +264,14 @@
   title style hook,
   #2
 }{\vphantom{/g}\IfBooleanT{#1}{\textbackslash}#3}
+
+\NewDocumentCommand{\titlemacro}{ s O{} m }{%
+  \IfBooleanTF{#1}{%
+    \texorpdfstring{\titlemacroinner*[#2]{#3}}{#3}%
+  }{%
+    \texorpdfstring{\titlemacroinner[#2]{#3}}{#3}%
+  }%
+}
 
 \usepackage{hawkdraw}
 
@@ -336,11 +344,13 @@ Keys in the \macro{hawkdraw} package are divided into sets. Depending on where t
 \begin{macrodef}
 |\hawkdrawset|{<options>}
 \end{macrodef}
-The command \macro{\hawkdrawset} is used to set options. It can be used inside or outside of \macro{hawkdraw} environments. It uses the \macro{path/} set of keys. If keys of other sets should be called, they need to be called from the root level. For example keys of the \macro{picture/} set can be called using \macro{\hawkdrawset{picture/<key>}}.
+The command \macro{\hawkdrawset} is used to set options. It can be used inside or outside of \macro{hawkdraw} environments. It uses the \macro{path/} set of keys. If keys of other sets should be called, they need to be called from the root level.
+
+For example keys of the \macro{picture/} set can be called using \macro{\hawkdrawset{picture/<key>}}.
 
 \section{Main user environment}
 
-\subsection[`hawkdraw' environment]{\titlemacro{hawkdraw} environment}
+\subsection{\titlemacro{hawkdraw} environment}
 
 The package has only very few main user commands that can be used almost everywhere in the document body. Among these, the \macro{hawkdraw} environment is the most important as it is used to define a drawing and most other commands are only defined inside this environment.
 
@@ -350,7 +360,7 @@ The package has only very few main user commands that can be used almost everywh
 \end{macrodef}
 The \macro{hawkdraw} environment is the main environment for drawing. It defines most other commands described in the following sections. It can take an optional argument for options to the environment, which are explained in the following, or to paths which then apply to all paths inside the environment. As for options, the \macro{hawkdraw} environment accepts the \macro{picture/} set, the \macro{path/} set and the \macro{tag/} set.
 
-\subsection{Options to the main user environment}
+\subsection{Setting the baseline, the layers and the bounding box}
 
 \begin{macrodef}
 !picture/!|baseline|={<dimension>}
@@ -371,13 +381,15 @@ baz
 The option \macro{layers} sets the layers for the environment as a comma-separated list. The layer \macro{main} must always be present and is the default layer. Layers are drawn in the order they are defined (see \hyperlink{sec:scopes}{below}).
 
 \begin{macrodef}
-!picture/!|overlay|={<boolean>}
+!picture/!|bounding box|={auto}
+!picture/!|bounding box|={zero}
+!picture/!|bounding box|={<clist>}
 \end{macrodef}
-The option \macro{overlay} sets the environment to have a zero-sized bounding box.
+The option \macro{bounding box} sets the environment to have a custom bounding box. It can take the value \macro{auto} which sets the bounding box to the default bounding box of the drawing. It can take the value \macro{zero} to set a zero-sized bounding box. It can also take as value a comma-separated list of four dimensions that define the lower left x- and y-coordinate as well as the upper right x- and y-coordinate of a rectangle that describes the bounding box of the drawing.
 
 \begin{codeexamplecolumns}
 foo
-\begin{hawkdraw}[overlay, baseline={0.5ex}]
+\begin{hawkdraw}[bounding box={zero}, baseline={0.5ex}]
   \stroke[stroke color={blue}]
     (0cm,0cm) circle[radius={0.5cm}] ;
 \end{hawkdraw}
@@ -464,7 +476,7 @@ Points on the path can also be defined using radius and angle parts as floating-
 \end{macrodef}
 Points on the path can finally be referenced using names as strings. Points on the path can be named by either using the \macro{point} or the \macro{node} operation with the given name set via the \macro{nname} option (see \hyperlink{operation:point}{below}).
 
-\subsection{Path operations}
+\subsection{Straight lines}
 
 \begin{macrodef}
 |--| (<point>)
@@ -498,11 +510,13 @@ Using \macro{|-} a vertical, then horizontal line to the next point is drawn. Us
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
+\subsection{Bézier curves}
+
 \begin{macrodef}
 |..| (<control point>) |..| (<point>)
 |..| (<control point>) |&| (<control point>) |..| (<point>)
 \end{macrodef}
-The above syntax draws a curve to the next point with a single control point or with two control points.
+The above syntax draws a Bézier curve to the next point with a single control point (quadratic Bézier) or with two control points (cubic Bézier).
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -520,6 +534,8 @@ The above syntax draws a curve to the next point with a single control point or 
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
+\subsection{Closing a path}
+
 \begin{macrodef}
 |!|
 \end{macrodef}
@@ -533,7 +549,7 @@ Using \macro{!} the path is closed by drawing a line from the last point to the 
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-\bigskip
+\subsection{Circles, ellipses, rectangles and grids}
 
 The following path operations require at least one option to be set. As for options, the relevant operator only accepts the relevant subset to the \macro{path/} set.
 
@@ -711,7 +727,7 @@ It is possible to use the \macro{map} operator inside the argument to the \macro
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-\subsubsection['sharp' plot function]{\titlemacro{sharp} plot function}
+\subsubsection{\titlemacro{sharp} plot function}
 
 The \macro{sharp} plot function results in an output equivalent to the \macro{--} operator. It moves to the first point in the stored sequence and executes simple line-to operations to the following points.
 
@@ -722,7 +738,7 @@ The \macro{sharp} plot function results in an output equivalent to the \macro{--
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-\subsubsection['smooth' plot function]{\titlemacro{smooth} plot function}
+\subsubsection{\titlemacro{smooth} plot function}
 
 The \macro{smooth} plot function uses a simple algorithm to smoothen the curve. For paths that have more than three points, it takes the slope of a vector from the point before the relevant point to the point after the relevant point, scales this by a certain amount and uses the resulting points as control points for a Bézier curve. The first and the last path segments are quadratic Bézier curves, all other segments are cubic Bézier curves. If the path only contains two points, a straight line is drawn.
 
@@ -984,7 +1000,7 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getintersectioncircle
 \end{macrodef}
 Inside a \macro{hawkdraw} environment, the command \macro{\getintersectionlinecircle} can be used to access the intersection points of a line and a circle. The line is given as two points in the first two mandatory arguments, and the circle is given as a point and radius in the next two mandatory arguments. The optional argument specifies the number of the intersection to return (root) and defaults to \num{1}. The command returns the coordinates of the intersection points as tuples of dimensions and can be used in subsequent calculations.
 
-\subsubsection{Nodes}
+\subsubsection{Nodes and frames}
 
 \begin{macrodef}
 |node|[<options>]{<content>}
@@ -1237,7 +1253,7 @@ The command \macro{\hawkdrawarrayitem} can be used to reference items in an arra
 
 The following options can be set for the path:
 
-\subsection{Stroke and fill color, clipping}
+\subsection{Stroke and fill color, opacity, clipping}
 
 \begin{macrodef}
 !path/!|stroke|
@@ -1431,7 +1447,7 @@ The option \macro{slant} sets the slant for the path as a comma-separated list o
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-\section{Setting styles and colors}
+\section{Defining custom styles and colors}
 
 \begin{macrodef}
 !path/!|style set|={<options>}
