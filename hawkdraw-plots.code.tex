@@ -30,23 +30,9 @@
 
 % ===
 
-\cs_new_protected:cpn { __hawkdraw_path_process_p_ l :w } plot #1#2 \s__hawkdraw_stop {
-    \__hawkdraw_cs_if_exist_use_secure:nnTF {#1} {
-        __hawkdraw_path_process_plot_ \tl_head:n {#1} :w
-    } {
-        #1#2 \s__hawkdraw_stop
-    } {
-        \__hawkdraw_path_plot:nn { } {#1}
-        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_continue:n
-    }
-}
+\hawkdraw_operator_construct_i_arg:nN { plot } \hawkdraw_path_plot:nn
 
-\cs_new_protected:cpn { __hawkdraw_path_process_plot_ [ :w } [ #1 ] #2#3 \s__hawkdraw_stop {
-    \__hawkdraw_path_plot:nn {#1} {#2}
-    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
-}
-
-\cs_new_protected:Npn \__hawkdraw_path_plot:nn #1#2 {
+\cs_new_protected:Npn \hawkdraw_path_plot:nn #1#2 {
     \str_set:Nn \l__hawkdraw_path_type_tl { plot }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
     \keys_set:nn { hawkdraw / path / plot } {#1}

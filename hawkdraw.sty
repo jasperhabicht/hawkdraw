@@ -133,38 +133,6 @@
 
 % ===
 
-\msg_new:nnn { hawkdraw } { style-undefined } {
-    The ~ style ~ `#1` ~ is ~ undefined.
-}
-\msg_new:nnn { hawkdraw } { module-missing } {
-    The ~ module ~ `#1` ~ is ~ missing.
-}
-
-\cs_new_protected:Npn \hawkdraw_modules_load:n #1 {
-    \clist_map_inline:nn {#1} {
-        \file_if_exist_input:nF { hawkdraw- ##1 .code.tex } {
-            \msg_warning:nnn { hawkdraw } { module-missing } {##1}
-        }
-    }
-}
-
-\hawkdraw_modules_load:n { nodes , arrows , plots }
-
-\IfPDFManagementActiveTF {
-    \hawkdraw_modules_load:n { patterns }
-} {
-    \msg_warning:nn { hawkdraw } { documentmetadata-required }
-    \keys_define:nn { hawkdraw / path } {
-        fill ~ pattern          .code:n     = { } ,
-        pattern ~ style ~ set   .code:n     = { } ,
-        pattern ~ style ~ add   .code:n     = { } ,
-        pattern ~ x             .code:n     = { } ,
-        pattern ~ y             .code:n     = { } ,
-    }
-}
-
-% ===
-
 \cs_new:Npn \hawkdraw_tag_bb_attribute_use: {
     \tag_struct_gput:ene { \tag_get:n { struct_num } } { attribute } {
         /O /Layout /BBox ~ [
@@ -588,6 +556,126 @@
 
 % ===
 
+\cs_new_protected:Npn \hawkdraw_operator_construct:nN #1#2 {
+    \cs_new_protected:cpn {
+        __hawkdraw_path_process_ #1 _options:w
+    } ##1 [ ##2 ] ##3 \s__hawkdraw_stop {
+        #2 {##2}
+        \tl_trim_spaces_apply:nN {##3} \__hawkdraw_path_process_continue:n
+    }
+    \cs_new_protected:cpn {
+        __hawkdraw_path_process_ \tl_head:n {#1} :w
+    } #1 ##1 \s__hawkdraw_stop {
+        \tl_if_head_eq_meaning:nNTF {##1} [ {
+            \use:c { __hawkdraw_path_process_ #1 _options:w } ##1 \s__hawkdraw_stop
+        } {
+            #2 { }
+            \tl_trim_spaces_apply:nN {##1} \__hawkdraw_path_process_continue:n
+        }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_operator_construct_arg:nN #1#2 {
+    \cs_new_protected:cpn {
+        __hawkdraw_path_process_ #1 _options:w
+    } ##1 [ ##2 ] ##3##4 \s__hawkdraw_stop {
+        #2 {##2} {##3}
+        \tl_trim_spaces_apply:nN {##4} \__hawkdraw_path_process_continue:n
+    }
+    \cs_new_protected:cpn {
+        __hawkdraw_path_process_ \tl_head:n {#1} :w
+    } #1 ##1##2 \s__hawkdraw_stop {
+        \tl_if_head_eq_meaning:nNTF {##1} [ {
+            \use:c { __hawkdraw_path_process_ #1 _options:w } ##1##2 \s__hawkdraw_stop
+        } {
+            #2 { } {##1}
+            \tl_trim_spaces_apply:nN {##2} \__hawkdraw_path_process_continue:n
+        }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_operator_prepare_i:n #1 {
+    \cs_new_protected:cpn { __hawkdraw_path_process_ #1 :w } #1 ##1 \s__hawkdraw_stop {
+        \__hawkdraw_cs_if_exist_use_secure:nnT {##1} {
+            __hawkdraw_path_process_ #1 _ \tl_head:n {##1} :w
+        } {
+            #1 ##1 \s__hawkdraw_stop
+        }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_operator_construct_i:nN #1#2 {
+    \cs_new_protected:cpn {
+        __hawkdraw_path_process_ #1 _options:w
+    } ##1 [ ##2 ] ##3 \s__hawkdraw_stop {
+        #2 {##2}
+        \tl_trim_spaces_apply:nN {##3} \__hawkdraw_path_process_continue:n
+    }
+    \cs_new_protected:cpn {
+        __hawkdraw_path_process_ \tl_head:n {#1} _ \tl_item:nn {#1} { 2 } :w
+    } #1 ##1 \s__hawkdraw_stop {
+        \tl_if_head_eq_meaning:nNTF {##1} [ {
+            \use:c { __hawkdraw_path_process_ #1 _options:w } ##1 \s__hawkdraw_stop
+        } {
+            #2 { }
+            \tl_trim_spaces_apply:nN {##1} \__hawkdraw_path_process_continue:n
+        }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_operator_construct_i_arg:nN #1#2 {
+    \cs_new_protected:cpn {
+        __hawkdraw_path_process_ #1 _options:w
+    } ##1 [ ##2 ] ##3##4 \s__hawkdraw_stop {
+        #2 {##2} {##3}
+        \tl_trim_spaces_apply:nN {##4} \__hawkdraw_path_process_continue:n
+    }
+    \cs_new_protected:cpn {
+        __hawkdraw_path_process_ \tl_head:n {#1} _ \tl_item:nn {#1} { 2 } :w
+    } #1 ##1##2 \s__hawkdraw_stop {
+        \tl_if_head_eq_meaning:nNTF {##1} [ {
+            \use:c { __hawkdraw_path_process_ #1 _options:w } ##1##2 \s__hawkdraw_stop
+        } {
+            #2 { } {##1}
+            \tl_trim_spaces_apply:nN {##2} \__hawkdraw_path_process_continue:n
+        }
+    }
+}
+
+% ===
+
+\msg_new:nnn { hawkdraw } { style-undefined } {
+    The ~ style ~ `#1` ~ is ~ undefined.
+}
+\msg_new:nnn { hawkdraw } { module-missing } {
+    The ~ module ~ `#1` ~ is ~ missing.
+}
+
+\cs_new_protected:Npn \hawkdraw_modules_load:n #1 {
+    \clist_map_inline:nn {#1} {
+        \file_if_exist_input:nF { hawkdraw- ##1 .code.tex } {
+            \msg_warning:nnn { hawkdraw } { module-missing } {##1}
+        }
+    }
+}
+
+\hawkdraw_modules_load:n { nodes , arrows , plots }
+
+\IfPDFManagementActiveTF {
+    \hawkdraw_modules_load:n { patterns }
+} {
+    \msg_warning:nn { hawkdraw } { documentmetadata-required }
+    \keys_define:nn { hawkdraw / path } {
+        fill ~ pattern          .code:n     = { } ,
+        pattern ~ style ~ set   .code:n     = { } ,
+        pattern ~ style ~ add   .code:n     = { } ,
+        pattern ~ x             .code:n     = { } ,
+        pattern ~ y             .code:n     = { } ,
+    }
+}
+
+% ===
+
 \scan_new:N \s__hawkdraw_stop
 \scan_new:N \s__hawkdraw_path_end
 
@@ -606,20 +694,17 @@
     at ~ part               .fp_set:N       = \l_hawkdraw_point_at_part_fp ,
 }
 
-\cs_new_protected:cpn { __hawkdraw_path_process_ p :w } p #1 \s__hawkdraw_stop {
-    \__hawkdraw_cs_if_exist_use_secure:nnT {#1} {
-        __hawkdraw_path_process_p_ \tl_head:n {#1} :w
-    } {
-        p #1 \s__hawkdraw_stop
-    }
-}
+\hawkdraw_operator_prepare_i:n { p }
 
-\cs_new_protected:cpn { __hawkdraw_path_process_p_ o :w } point #1 [ #2 ] #3 \s__hawkdraw_stop {
+\hawkdraw_operator_construct_i:nN { point } \hawkdraw_path_point:n
+
+\cs_new_protected:Npn \hawkdraw_path_point:n #1 {
+%\cs_new_protected:cpn { __hawkdraw_path_process_p_ o :w } point #1 [ #2 ] #3 \s__hawkdraw_stop {
     \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_last_point_fp
     \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_last_slope_fp
     \fp_set:Nn \l_hawkdraw_point_at_part_fp { nan }
     \tl_clear:N \l_hawkdraw_point_at_name_tl
-    \keys_set:nn { hawkdraw / path / point } {#2}
+    \keys_set:nn { hawkdraw / path / point } {#1}
     \fp_if_nan:nF { \l_hawkdraw_point_at_part_fp } {
         \fp_set:Nn \l_hawkdraw_point_at_fp {
             \cs_if_exist_use:cTF {
@@ -653,7 +738,6 @@
         \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
             { slope } \l_hawkdraw_point_slope_fp
     }
-    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
 }
 
 % ===
@@ -1301,13 +1385,14 @@
     radius                  .initial:n      = { 1cm } ,
 }
 
-\cs_new_protected:cpn { __hawkdraw_path_process_ c :w } circle #1 [ #2 ] #3 \s__hawkdraw_stop {
+\hawkdraw_operator_construct:nN { circle } \hawkdraw_path_circle:n
+
+\cs_new_protected:Npn \hawkdraw_path_circle:n #1 {
     \str_set:Nn \l__hawkdraw_path_type_tl { circle }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
-    \keys_set:nn { hawkdraw / path / circle } {#2}
+    \keys_set:nn { hawkdraw / path / circle } {#1}
     \draw_path_circle:VV \g_hawkdraw_path_last_point_fp
         \l_hawkdraw_path_circle_radius_dim
-    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
 }
 
 \fp_new:N \l_hawkdraw_path_ellipse_vector_a_fp
@@ -1328,14 +1413,15 @@
     } ,
 }
 
-\cs_new_protected:cpn { __hawkdraw_path_process_ e :w } ellipse #1 [ #2 ] #3 \s__hawkdraw_stop {
+\hawkdraw_operator_construct:nN { ellipse } \hawkdraw_path_ellipse:n
+
+\cs_new_protected:Npn \hawkdraw_path_ellipse:n #1 {
     \str_set:Nn \l__hawkdraw_path_type_tl { ellipse }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
-    \keys_set:nn { hawkdraw / path / ellipse } {#2}
+    \keys_set:nn { hawkdraw / path / ellipse } {#1}
     \draw_path_ellipse:VVV \g_hawkdraw_path_last_point_fp
         \l_hawkdraw_path_ellipse_vector_a_fp
         \l_hawkdraw_path_ellipse_vector_b_fp
-    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
 }
 
 \bool_new:N \l_hawkdraw_path_arc_axes_bool
@@ -1384,10 +1470,12 @@
     } ,
 }
 
-\cs_new_protected:cpn { __hawkdraw_path_process_ a :w } arc #1 [ #2 ] #3 \s__hawkdraw_stop {
+\hawkdraw_operator_construct:nN { arc } \hawkdraw_path_arc:n
+
+\cs_new_protected:Npn \hawkdraw_path_arc:n #1 {
     \str_set:Nn \l__hawkdraw_path_type_tl { arc }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
-    \keys_set:nn { hawkdraw / path / arc } {#2}
+    \keys_set:nn { hawkdraw / path / arc } {#1}
     \bool_if:NTF \l_hawkdraw_path_arc_axes_bool {
         \draw_path_arc_axes:VVVV \l_hawkdraw_path_arc_vector_a_fp
             \l_hawkdraw_path_arc_vector_b_fp
@@ -1410,7 +1498,6 @@
     \fp_gset:Nn \g_hawkdraw_path_last_point_fp {
         \__hawkdraw_point_part_arc:n { 1 }
     }
-    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
 }
 
 \bool_new:N \l_hawkdraw_path_rectangle_relative_bool
@@ -1429,10 +1516,12 @@
     corner                  .initial:n      = { ( 1cm , 1cm ) } ,
 }
 
-\cs_new_protected:cpn { __hawkdraw_path_process_ r :w } rectangle #1 [ #2 ] #3 \s__hawkdraw_stop {
+\hawkdraw_operator_construct:nN { rectangle } \hawkdraw_path_rectangle:n
+
+\cs_new_protected:Npn \hawkdraw_path_rectangle:n #1 {
     \str_set:Nn \l__hawkdraw_path_type_tl { rectangle }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
-    \keys_set:nn { hawkdraw / path / rectangle } {#2}
+    \keys_set:nn { hawkdraw / path / rectangle } {#1}
     \bool_if:NTF \l_hawkdraw_path_rectangle_relative_bool {
         \fp_set:Nn \l__hawkdraw_point_a_fp {
             \l__hawkdraw_point_o_fp + \l_hawkdraw_path_rectangle_corner_fp
@@ -1445,7 +1534,6 @@
             \l_hawkdraw_path_rectangle_corner_fp
     }
     \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
-    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
 }
 
 \clist_new:N \l_hawkdraw_path_grid_step_clist
@@ -1466,10 +1554,12 @@
     corner                  .initial:n      = { ( 1cm , 1cm ) } ,
 }
 
-\cs_new_protected:cpn { __hawkdraw_path_process_ g :w } grid #1 [ #2 ] #3 \s__hawkdraw_stop {
+\hawkdraw_operator_construct:nN { grid } \hawkdraw_path_grid:n
+
+\cs_new_protected:Npn \hawkdraw_path_grid:n #1 {
     \str_set:Nn \l__hawkdraw_path_type_tl { grid }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
-    \keys_set:nn { hawkdraw / path / grid } {#2}
+    \keys_set:nn { hawkdraw / path / grid } {#1}
     \bool_if:NTF \l_hawkdraw_path_grid_relative_bool {
         \fp_set:Nn \l__hawkdraw_point_a_fp {
             \l__hawkdraw_point_o_fp + \l_hawkdraw_path_grid_corner_fp
@@ -1495,7 +1585,6 @@
             \l__hawkdraw_point_a_fp
     }
     \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
-    \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
 }
 
 % ===
@@ -1517,12 +1606,7 @@
     end                     .initial:n      = { 1 } ,
 }
 
-\cs_new_protected:cpn { __hawkdraw_path_process_ m :w } map #1 [ #2 ] #3#4 \s__hawkdraw_stop {
-    \hawkdraw_map:nn {#2} {
-        \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
-    }
-    \tl_trim_spaces_apply:nN {#4} \__hawkdraw_path_process_continue:n
-}
+\hawkdraw_operator_construct_arg:nN { map } \hawkdraw_map:nn
 
 \cs_generate_variant:Nn \cs_generate_variant:Nn { cn }
 
@@ -1542,7 +1626,9 @@
     }
     \cs_set_protected:cpn {
         __hawkdraw_map_function_ \int_use:N \l_hawkdraw_map_level_int :nn
-    } ##1##2 {#2}
+    } ##1##2 {
+        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_continue:n
+    }
     \clist_if_empty:NTF \l_hawkdraw_map_list_clist {
         \fp_step_function:nnnN
             { \l_hawkdraw_map_start_fp }

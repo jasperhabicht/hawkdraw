@@ -551,9 +551,9 @@ Using \macro{!} the path is closed by drawing a line from the last point to the 
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-\subsection{Circles, ellipses, rectangles and grids}
+\subsection{Circles, ellipses, arcs, rectangles and grids}
 
-The following path operations require at least one option to be set. As for options, the relevant operator only accepts the relevant subset to the \macro{path/} set.
+The following path operations require one argument in a pair of square brackets (which may be empty). As for options, the relevant operator only accepts the relevant subset to the \macro{path/} set.
 
 \begin{macrodef}
 |circle|[<options>]
@@ -778,7 +778,7 @@ Nodes are boxes (coffins to be more exacct) that can contain arbitrary contents.
 \begin{macrodef}[operation:point]
 |point|[<options>]
 \end{macrodef}
-Using the \macro{point} operation, a point at the current position is defined and named with the given name. As for options, the \macro{point} operator only accepts the \macro{path/point/} subset.
+Using the \macro{point} operation, a point at the current position is defined and named with the given name. As for options, the \macro{point} operator only accepts the \macro{path/point/} subset. The \macro{point} operator requires one argument in a pair of square brackets (which may be empty).
 
 \begin{macrodef}
 !path/point/!|name|={<string>}
@@ -809,9 +809,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius=2pt] ;
-  \fill[fill color=blue] (B) circle[radius=2pt] ;
-  \fill[fill color=green] (C) circle[radius=2pt] ;
+  \fill[fill color=red] (A) circle[radius={2pt}] ;
+  \fill[fill color=blue] (B) circle[radius={2pt}] ;
+  \fill[fill color=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -822,9 +822,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius=2pt] ;
-  \fill[fill color=blue] (B) circle[radius=2pt] ;
-  \fill[fill color=green] (C) circle[radius=2pt] ;
+  \fill[fill color=red] (A) circle[radius={2pt}] ;
+  \fill[fill color=blue] (B) circle[radius={2pt}] ;
+  \fill[fill color=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -836,9 +836,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius=2pt] ;
-  \fill[fill color=blue] (B) circle[radius=2pt] ;
-  \fill[fill color=green] (C) circle[radius=2pt] ;
+  \fill[fill color=red] (A) circle[radius={2pt}] ;
+  \fill[fill color=blue] (B) circle[radius={2pt}] ;
+  \fill[fill color=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -850,9 +850,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius=2pt] ;
-  \fill[fill color=blue] (B) circle[radius=2pt] ;
-  \fill[fill color=green] (C) circle[radius=2pt] ;
+  \fill[fill color=red] (A) circle[radius={2pt}] ;
+  \fill[fill color=blue] (B) circle[radius={2pt}] ;
+  \fill[fill color=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -867,9 +867,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius=2pt] ;
-  \fill[fill color=blue] (B) circle[radius=2pt] ;
-  \fill[fill color=green] (C) circle[radius=2pt] ;
+  \fill[fill color=red] (A) circle[radius={2pt}] ;
+  \fill[fill color=blue] (B) circle[radius={2pt}] ;
+  \fill[fill color=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -885,9 +885,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius=2pt] ;
-  \fill[fill color=blue] (B) circle[radius=2pt] ;
-  \fill[fill color=green] (C) circle[radius=2pt] ;
+  \fill[fill color=red] (A) circle[radius={2pt}] ;
+  \fill[fill color=blue] (B) circle[radius={2pt}] ;
+  \fill[fill color=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -900,9 +900,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius=2pt] ;
-  \fill[fill color=blue] (B) circle[radius=2pt] ;
-  \fill[fill color=green] (C) circle[radius=2pt] ;
+  \fill[fill color=red] (A) circle[radius={2pt}] ;
+  \fill[fill color=blue] (B) circle[radius={2pt}] ;
+  \fill[fill color=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -916,9 +916,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius=2pt] ;
-  \fill[fill color=blue] (B) circle[radius=2pt] ;
-  \fill[fill color=green] (C) circle[radius=2pt] ;
+  \fill[fill color=red] (A) circle[radius={2pt}] ;
+  \fill[fill color=blue] (B) circle[radius={2pt}] ;
+  \fill[fill color=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -931,9 +931,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius=2pt] ;
-  \fill[fill color=blue] (B) circle[radius=2pt] ;
-  \fill[fill color=green] (C) circle[radius=2pt] ;
+  \fill[fill color=red] (A) circle[radius={2pt}] ;
+  \fill[fill color=blue] (B) circle[radius={2pt}] ;
+  \fill[fill color=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1033,8 +1033,8 @@ It is possible to reference a point where two poles of the node intersect by app
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \node[stroke, name={A}] {foo} ;
-  \fill[fill color=red] (A.b-l) circle[radius=2pt] ;
-  \fill[fill color=red] (A.t-r) circle[radius=2pt] ;
+  \fill[fill color=red] (A.b-l) circle[radius={2pt}] ;
+  \fill[fill color=red] (A.t-r) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1160,7 +1160,7 @@ The following node frames are available, the frame \macro{none} is special as it
 \begin{macrodef}
 |map|[<options>]{<code>}
 \end{macrodef}
-The \macro{map} operation is used to map over a comma-separated list of items or a range of numbers and execute code for each item that is given by the relevant argument. The code can reference the current item with \macro{#1} and the current index with \macro{#2}. The index starts at \num{1}. The \macro{map} operation can be nested. As for options, the \macro{map} operator only accepts the \macro{path/map/} subset.
+The \macro{map} operation is used to map over a comma-separated list of items or a range of numbers and execute code for each item that is given by the relevant argument. The code can reference the current item with \macro{#1} and the current index with \macro{#2}. The index starts at \num{1}. The \macro{map} operation can be nested. As for options, the \macro{map} operator only accepts the \macro{path/map/} subset. The \macro{map} operator requires one argument in a pair of square brackets (which may be empty).
 
 \begin{macrodef}
 !path/map/!|list|={<clist>}
@@ -1246,7 +1246,7 @@ The command \macro{\hawkdrawarrayitem} can be used to reference items in an arra
   \hawkdrawmap[list={A,B,C}] {
     \fill[
       fill color={\hawkdrawarrayitem{mycolors}{#2}}
-    ] (#1) circle[radius=2pt] ;
+    ] (#1) circle[radius={2pt}] ;
   }
 \end{hawkdraw}
 \end{codeexamplecolumns}

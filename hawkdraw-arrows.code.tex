@@ -26,7 +26,7 @@
     arrow ~ start           .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
             \fp_if_nan:nF { \g_hawkdraw_path_first_slope_fp } {
-                \hawkdraw_arrow_put:nVnV {#1}
+                \hawkdraw_arrow:nVnV {#1}
                     \g_hawkdraw_path_first_point_fp
                     { \g_hawkdraw_path_first_slope_fp + 90 }
                     \l_hawkdraw_arrow_start_keys_clist
@@ -37,7 +37,7 @@
     arrow ~ end             .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
             \fp_if_nan:nF { \g_hawkdraw_path_last_slope_fp } {
-                \hawkdraw_arrow_put:nVnV {#1}
+                \hawkdraw_arrow:nVnV {#1}
                     \g_hawkdraw_path_last_point_fp
                     { \g_hawkdraw_path_last_slope_fp - 90 }
                     \l_hawkdraw_arrow_end_keys_clist
@@ -67,7 +67,7 @@
     } ,
 }
 
-\cs_new_protected:Npn \hawkdraw_arrow_put:nnnn #1#2#3#4 {
+\cs_new_protected:Npn \hawkdraw_arrow:nnnn #1#2#3#4 {
     \draw_scope_begin:
         \draw_transform_shift:n {#2}
         \draw_transform_rotate:n {#3}
@@ -83,7 +83,7 @@
         \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }
     \draw_scope_end:
 }
-\cs_generate_variant:Nn \hawkdraw_arrow_put:nnnn { nVVV , nVnV }
+\cs_generate_variant:Nn \hawkdraw_arrow:nnnn { nVVV , nVnV }
 
 \cs_new_protected:Npn \hawkdraw_arrow_create:nnn #1#2#3 {
     \prop_gput:Nnn \g_hawkdraw_arrow_default_keys_prop {#1} {#2}
@@ -94,36 +94,28 @@
 
 % ===
 
-\cs_new_protected:Npn \hawkdraw_arrow_put_single:nnn #1#2#3 {
+\hawkdraw_operator_construct_arg:nN { tip } \hawkdraw_arrow_single:nn
+
+\cs_new_protected:Npn \hawkdraw_arrow_single:nn #1#2 {
+    \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
+    \keys_set_known:nnN { hawkdraw / path / tip } {#1}
+        \l__hawkdraw_keys_unprocessed_clist
     \exp_args:NNe
     \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
         \exp_not:N
-        \hawkdraw_arrow_put:nnnn {#3} {
-                \use:c { __hawkdraw_point_part_ \l__hawkdraw_path_type_tl :V }
-                    \l_hawkdraw_tip_at_part_fp
+        \hawkdraw_arrow:nnnn {#2} {
+            \use:c { __hawkdraw_point_part_ \l__hawkdraw_path_type_tl :V }
+                \l_hawkdraw_tip_at_part_fp
+        } {
+            \use:c { __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_tl :V }
+                \l_hawkdraw_tip_at_part_fp
+            \bool_if:NTF \l_hawkdraw_tip_flipped_bool {
+                + 90
             } {
-                \use:c { __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_tl :V }
-                    \l_hawkdraw_tip_at_part_fp
-                \bool_if:NTF \l_hawkdraw_tip_flipped_bool {
-                    + 90
-                } {
-                    - 90
-                }
+                - 90
             }
-            {#1}
-    }
-}
-\cs_generate_variant:Nn \hawkdraw_arrow_put_single:nnn { nV , eV }
-
-\cs_new_protected:cpn { __hawkdraw_path_process_ t :w } tip #1#2 \s__hawkdraw_stop {
-    \__hawkdraw_cs_if_exist_use_secure:nnTF {#1} {
-        __hawkdraw_path_process_tip_ \tl_head:n {#1} :w
-    } {
-        #1#2 \s__hawkdraw_stop
-    } {
-        \hawkdraw_arrow_put_single:nVn { }
-            \l_hawkdraw_tip_at_part_fp {#1}
-        \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_continue:n
+        }
+        { \clist_use:N \l__hawkdraw_keys_unprocessed_clist }
     }
 }
 
@@ -137,12 +129,11 @@
     flipped                 .default:n      = { true } ,
 }
 
+
+
 \cs_new_protected:cpn { __hawkdraw_path_process_tip_ [ :w } [ #1 ] #2#3 \s__hawkdraw_stop {
-    \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
-    \keys_set_known:nnN { hawkdraw / path / tip } {#1}
-        \l__hawkdraw_keys_unprocessed_clist
-    \hawkdraw_arrow_put_single:eVn { \clist_use:N \l__hawkdraw_keys_unprocessed_clist }
-        \l_hawkdraw_tip_at_part_fp {#2}
+    
+    \hawkdraw_arrow_single:eVn { \clist_use:N \l__hawkdraw_keys_unprocessed_clist } {#2}
     \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
 }
 
