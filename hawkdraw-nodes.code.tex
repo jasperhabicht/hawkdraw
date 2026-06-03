@@ -407,6 +407,7 @@
                 } {
                     \msg_warning:nnV { hawkdraw } { node-unknown } \l_hawkdraw_node_frame_tl
                 }
+                \draw_path_use:n { }
                 \bool_set_false:N \l_draw_bb_update_bool
                 \clist_remove_duplicates:N \l_hawkdraw_path_use_clist
                 \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }

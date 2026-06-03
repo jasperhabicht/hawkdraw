@@ -43,6 +43,7 @@
 \linespread{1.1}\selectfont
 \addtolength{\skip\footins}{1em plus 5pt}
 \makeatletter
+\renewcommand{\tableofcontents}{\@starttoc{toc}}
 \renewcommand*{\thefootnote}{\fnstars{footnote}}
 \renewcommand{\@makefnmark}{\normalfont\@thefnmark}
 \renewcommand{\@makefntext}[1]{%
@@ -299,15 +300,17 @@ The package is currently still in an experimental stage. The code may be subject
 
 \warning Note that the underlying code of the \macro{l3draw} package which is about to be included as module to the L3 kernel is experimental as well and hence might change possibly breaking the functionality of this package. Although a row of fall-backs exist to ensure backward compatibility, in order to ensure the functionality of the \macro{hawkdraw} package, it is highly recommended to use it with an up-to-date TeX distribution, especially with the most recent version of the \macro{l3draw} package.
 
+\section{Contents}
+
+\tableofcontents
+
 \section{Loading the package}
 
 To install the package, copy the package file \macro{hawkdraw.sty} together with the module files ending with \macro{.code.tex} into the working directory or into the \macro{texmf} directory. After the package has been installed, the \macro{hawkdraw} package is loaded by calling \macro{\usepackage{hawkdraw}} in the preamble of the document.
 
 The package can be used with PDFLaTeX, LuaLaTeX or XeLaTeX. The package does not load any dependencies, but it needs a LaTeX kernel of 1 June 2022 or newer. It is recommended to use the package with an up-to-date TeX distribution.
 
-\section{Main user environment}
-
-The package has only very few main user commands. Among these, the \macro{hawkdraw} environment is the most important as it is used to define a drawing and most other commands are only defined inside this environment.
+\section{General remarks}
 
 Similar to Ti\emph{k}Z, the \macro{hawkdraw} package makes use of key-value pairs to set options for commands. Some options are available for almost all commands, other have very specific uses. In the descriptions of the options, this manual states which data type the relevant option assumes. The following data types exist:
 
@@ -318,20 +321,36 @@ Similar to Ti\emph{k}Z, the \macro{hawkdraw} package makes use of key-value pair
   \macro{boolean} & A boolean only allows the values \macro{true} or \macro{false}. If not stated otherwise, setting the key without a value is equivalent with setting the key to \macro{true}. \\
   \macro{string} & A string is a concatenation of letters or numbers of any length. Typically, strings do not contain symbols. For example, strings are used for names of points, frames of nodes, patterns or arrow tips. \\
   \macro{float} & A floating-point number is a number without or with unit that uses a colon as decimal separator. \\
-  \macro{tuple} & A tuple consists of two floating-point numbers without or with unit that are separated by a comma. A tuple may be enclosed by parenthesis. \\
   \macro{dimension} & A dimension or length is a typical TeX length consisting of a floating point number and a length unit. \\
-  \macro{clist} & A comma-separated list is a list of strings that are separated by commas. Such a list can cosnist of no or only one item as well. If the relevant list can only have a maximum number of items, this is stated in the description of the relevant key. \\
+  \macro{tuple} & A tuple consists of two floating-point numbers without or with unit that are separated by a comma. A tuple may be enclosed by parenthesis. \\
+  \macro{point} & A point is essentially a tuple, but it can also be a reference to a named node or, using a special syntax, denote a point in polar coordinates (see \hyperlink{sec:points}{below}). \\
+  \macro{clist} & A comma-separated list is a list of strings that are separated by commas. Such a list can cosnist of no or only one item as well. If the relevant list can only have a maximum number of items, this is stated in the description of the relevant key. Note that a comma-separated list is typically not surrounded by parenthesis. \\
   \macro{options} & A key-value list consists of comma separated entities of keys that may be followed by an equals sign and a value. A value can be another key-value list. \\
   \macro{color} & This means a color definition as specified by the \macro{l3color} module. Note that colors defined by the \macro{xcolor} package have no effect when using the \macro{hawkdraw} package. \\
   \emph{none} & Some keys do not accept any data type as they are only executing some function. \\
   \bottomrule
 \end{longtable}
 
+Keys in the \macro{hawkdraw} package are divided into sets. Depending on where the keys are used in the document, only specific sets can be made use of. If a command or environment accepts specific sets of keys, the relevant prefix should be omitted.
+
+\begin{macrodef}
+|\hawkdrawset|{<options>}
+\end{macrodef}
+The command \macro{\hawkdrawset} is used to set options. It can be used inside or outside of \macro{hawkdraw} environments. It uses the \macro{path/} set of keys. If keys of other sets should be called, they need to be called from the root level. For example keys of the \macro{picture/} set can be called using \macro{\hawkdrawset{picture/<key>}}.
+
+\section{Main user environment}
+
+\subsection[`hawkdraw' environment]{\titlemacro{hawkdraw} environment}
+
+The package has only very few main user commands that can be used almost everywhere in the document body. Among these, the \macro{hawkdraw} environment is the most important as it is used to define a drawing and most other commands are only defined inside this environment.
+
 \begin{macrodef}
 \\\begin{|hawkdraw|}[<options>]
 \end{|hawkdraw|}
 \end{macrodef}
-The \macro{hawkdraw} environment is the main environment for drawing. It defines most other commands described in the following sections. The following options can be set for the \macro{hawkdraw} environment:
+The \macro{hawkdraw} environment is the main environment for drawing. It defines most other commands described in the following sections. It can take an optional argument for options to the environment, which are explained in the following, or to paths which then apply to all paths inside the environment. As for options, the \macro{hawkdraw} environment accepts the \macro{picture/} set, the \macro{path/} set and the \macro{tag/} set.
+
+\subsection{Options to the main user environment}
 
 \begin{macrodef}
 !picture/!|baseline|={<dimension>}
@@ -346,7 +365,7 @@ foo
 baz
 \end{codeexamplecolumns}
 
-\begin{macrodef}
+\begin{macrodef}[key:layers]
 !picture/!|layers|={<clist>}
 \end{macrodef}
 The option \macro{layers} sets the layers for the environment as a comma-separated list. The layer \macro{main} must always be present and is the default layer. Layers are drawn in the order they are defined (see \hyperlink{sec:scopes}{below}).
@@ -373,7 +392,7 @@ Note that the \macro{hawkdraw} environment sets all category codes to the defaul
 \\\begin{|scope|}[<options>]
 \end{|scope|}
 \end{macrodef}
-The \macro{scope} environment is only available inside the \macro{hawkdraw} environment. It can be used to create scopes for the localization of path states, style settings and clipping regions.
+The \macro{scope} environment is only available inside the \macro{hawkdraw} environment. It can be used to create scopes for the localization of path states, style settings and clipping regions. As for options, the \macro{scope} environment accepts the \macro{scope/} set, the \macro{path/} set and the \macro{tag/} set.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[fill color={blue}]
@@ -388,7 +407,7 @@ The \macro{scope} environment is only available inside the \macro{hawkdraw} envi
 \begin{macrodef}
 !scope/!|layer|={<string>}
 \end{macrodef}
-The option \macro{layer} sets the scope to be placed on the relevant layer. The layer must be defined beforehand using the \macro{layers} option.
+The option \macro{layer} sets the scope to be placed on the relevant layer. The layer must be defined beforehand using the \macro{layers} option (see \hyperref{key:layers}{above}).
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[layers={background,main}]
@@ -412,9 +431,9 @@ The command \macro{\path} is used to to draw a path inside the \macro{hawkdraw} 
 \begin{macrodef}
 |[|<options>|]|
 \end{macrodef}
-Options can be for the path using square brackets. The options are the same as for \macro{\hawkdrawset}. Options can be set multiple times for the same path after any point on the path. Some options (such as color options or transformations) will apply to the entire path and the last specified value will be used.
+Options can be for the path using square brackets. The command \macro{\path} accepts the \macro{path/} set including all subsets. Options can be set multiple times for the same path after any point on the path. Some options (such as color options or transformations) will apply to the entire path and the last specified value will be used.
 
-\subsection{Points on the path}
+\subsection{Points on the path}\label{sec:points}
 
 Generally, the package makes use of the \macro{l3fp} module of the LaTeX kernel. As such, it is possible to execute calculations on the fly to define the points. The basic form of a point is a tuple of two expressions resulting in a floating-point number where both expressions are separated by a comma.
 
@@ -516,7 +535,7 @@ Using \macro{!} the path is closed by drawing a line from the last point to the 
 
 \bigskip
 
-The following path operations require at least one option to be set:
+The following path operations require at least one option to be set. As for options, the relevant operator only accepts the relevant subset to the \macro{path/} set.
 
 \begin{macrodef}
 |circle|[<options>]
@@ -670,7 +689,7 @@ The step is specified as a comma-separated list of at most two dimensions with t
 \begin{macrodef}
 |plot|[<options>]{(<point>) ...}
 \end{macrodef}
-The \macro{plot} operator starts a path segment that uses a function as defined by the user. The operator initiates storing the last point and all points given in the braced argument in a sequence. After the operator, the function is executed using the points stored in the sequence.
+The \macro{plot} operator starts a path segment that uses a function as defined by the user. The operator initiates storing the last point and all points given in the braced argument in a sequence. After the operator, the function is executed using the points stored in the sequence. As for options, the \macro{plot} operator only accepts the \macro{path/plot/} subset.
 
 \begin{macrodef}
 !path/plot/!|function|={<string>}
@@ -684,11 +703,11 @@ It is possible to use the \macro{map} operator inside the argument to the \macro
 \begin{hawkdraw}
   \path[stroke, plot/function={smooth}] (0cm,0cm)
     plot {
-      map[end=5] {
-        ({#1 * 0.35cm},{sin(#1) * 0.35cm})
+      map[end=7] {
+        ({#1 * 0.25cm},{sin(#1) * 0.25cm})
       } 
     }
-  -- (1cm,2cm);
+  -- (1cm,1.5cm);
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -699,7 +718,7 @@ The \macro{sharp} plot function results in an output equivalent to the \macro{--
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \stroke[plot/function={sharp}] (0cm,0cm) 
-    plot { (1cm,1cm) (2cm,.5cm) (3cm,.5cm) } ;
+    plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) } ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -716,7 +735,7 @@ The factor by which the slope vector is scaled can be adjusted using the key \ma
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \stroke[plot/function={smooth}] (0cm,0cm) 
-    plot { (1cm,1cm) (2cm,.5cm) (3cm,.5cm) } ;
+    plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) } ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -726,7 +745,7 @@ The factor by which the slope vector is scaled can be adjusted using the key \ma
     plot/function={smooth},
     plot/smooth/tension={0.25}
   ] (0cm,0cm) 
-    plot { (1cm,1cm) (2cm,.5cm) (3cm,.5cm) } ;
+    plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) } ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -741,7 +760,7 @@ Nodes are boxes (coffins to be more exacct) that can contain arbitrary contents.
 \begin{macrodef}[operation:point]
 |point|[<options>]
 \end{macrodef}
-Using the \macro{point} operation, a point at the current position is defined and named with the given name.
+Using the \macro{point} operation, a point at the current position is defined and named with the given name. As for options, the \macro{point} operator only accepts the \macro{path/point/} subset.
 
 \begin{macrodef}
 !path/point/!|name|={<string>}
@@ -970,7 +989,7 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getintersectionlineci
 \begin{macrodef}
 |node|[<options>]{<content>}
 \end{macrodef}
-Using the \macro{node} operation, a node at the current position is defined and assigned the relevant content by the relevant argument.
+Using the \macro{node} operation, a node at the current position is defined and assigned the relevant content by the relevant argument. As for options, the \macro{node} operator accepts the \macro{path/node/} subset as well as the \macro{path/} set.
 
 \begin{macrodef}
 !path/node/!|rescan|={<boolean>}
@@ -1123,7 +1142,7 @@ The following node frames are available, the frame \macro{none} is special as it
 \begin{macrodef}
 |map|[<options>]{<code>}
 \end{macrodef}
-The \macro{map} operation is used to map over a comma-separated list of items or a range of numbers and execute code for each item that is given by the relevant argument. The code can reference the current item with \macro{#1} and the current index with \macro{#2}. The index starts at \num{1}. The \macro{map} operation can be nested. The following options can be set for the command:
+The \macro{map} operation is used to map over a comma-separated list of items or a range of numbers and execute code for each item that is given by the relevant argument. The code can reference the current item with \macro{#1} and the current index with \macro{#2}. The index starts at \num{1}. The \macro{map} operation can be nested. As for options, the \macro{map} operator only accepts the \macro{path/map/} subset.
 
 \begin{macrodef}
 !path/map/!|list|={<clist>}
@@ -1215,11 +1234,6 @@ The command \macro{\hawkdrawarrayitem} can be used to reference items in an arra
 \end{codeexamplecolumns}
 
 \section{Main path options}
-
-\begin{macrodef}
-|\hawkdrawset|{<options>}
-\end{macrodef}
-The command \macro{\hawkdrawset} is used to set options for paths. It can be used inside or outside of \macro{hawkdraw} environments.
 
 The following options can be set for the path:
 
