@@ -1661,6 +1661,70 @@ To enable more complex tagging scenarios, the \macro{tagging-setup} option can b
 
 For example, the setting \macro{tagging-setup={alt={Water (H20)}, tag={Formula}}} would tag the \macro{hawkdraw} environment as a block element with the tag \macro{Formula} and set the replacement text to ``Water (H20)''.
 
+\section{Use with ConTeXt}
+
+The package does not directly work with ConTeXt, but it is possible to run PDFLaTeX from within ConTeXt to create a stand-alone PDF file from the relevant drawing that can then be included into the ConTeXt document.
+
+\begin{codeexample}
+\startluacode
+interfaces.implement {
+    name = "preprocessbuffer",
+    public = true,
+    actions = function()
+        local hawkdraw = buffers.raw("hawkdraw")
+        local hawkdrawstart = buffers.raw("hawkdrawstart")
+        local hawkdrawend = buffers.raw("hawkdrawend")
+        buffers.assign("hawkdraw", table.concat({
+            hawkdrawstart,
+            hawkdraw,
+            hawkdrawend,
+        }, "\n"))
+    end,
+}
+
+sandbox.registerrunner {
+    name     = "hawkdraw",
+    program  = "pdflatex",
+    template = "%filename%",
+    checkers = {
+        filename = "readable",
+        path     = "string",
+    }
+}
+\stopluacode
+
+\startbuffer[hawkdrawstart]
+    \documentclass{standalone}
+    \usepackage{hawkdraw}
+    \begin{document}
+    \begin{hawkdraw}
+\stopbuffer
+
+\startbuffer[hawkdrawend]
+    \end{hawkdraw}
+    \end{document}
+\stopbuffer
+
+\tolerant\def\starthawkdraw[#1]{%
+    \blank[samepage]%
+    \getparameters[hawkdraw][#1]%
+    \grabbufferdata[hawkdraw][starthawkdraw][stophawkdraw]%
+}
+
+\def\stophawkdraw{%
+    \preprocessbuffer%
+    \runbuffer[hawkdraw][hawkdraw]%
+    \externalfigure[\lasttypesetbuffer]%
+    \blank[preference]%
+}
+
+\starttext
+    \starthawkdraw
+        \path[stroke] (0cm,0cm) -- (2cm,1cm) ;
+    \stophawkdraw
+\stoptext
+\end{codeexample}
+
 % =====
 
 \printchanges
