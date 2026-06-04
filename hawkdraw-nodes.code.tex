@@ -30,18 +30,38 @@
 
 \NewTaggingSocket { hawkdraw / node / begin } { 0 }
 \NewTaggingSocket { hawkdraw / node / end } { 0 }
+\NewTaggingSocket { hawkdraw / node / contents / begin } { 0 }
+\NewTaggingSocket { hawkdraw / node / contents / end } { 0 }
+\NewTaggingSocket { hawkdraw / node / frame / begin } { 0 }
+\NewTaggingSocket { hawkdraw / node / frame / end } { 0 }
 
 \NewTaggingSocketPlug { hawkdraw / node / begin } { default } {
     \tag_mc_end:
-    \tag_mc_begin:n { }
 }
 \NewTaggingSocketPlug { hawkdraw / node / end }{ default } {
-    \tag_mc_end:
     \tag_mc_begin:n { artifact }
+}
+
+\NewTaggingSocketPlug { hawkdraw / node / contents / begin } { default } {
+    \tag_mc_begin:n { }
+}
+\NewTaggingSocketPlug { hawkdraw / node / contents / end }{ default } {
+    \tag_mc_end:
+}
+
+\NewTaggingSocketPlug { hawkdraw / node / frame / begin } { default } {
+    \tag_mc_begin:n { artifact }
+}
+\NewTaggingSocketPlug { hawkdraw / node / frame / end }{ default } {
+    \tag_mc_end:
 }
 
 \AssignTaggingSocketPlug { hawkdraw / node / begin } { default}
 \AssignTaggingSocketPlug { hawkdraw / node / end } { default}
+\AssignTaggingSocketPlug { hawkdraw / node / contents / begin } { default}
+\AssignTaggingSocketPlug { hawkdraw / node / contents / end } { default}
+\AssignTaggingSocketPlug { hawkdraw / node / frame / begin } { default}
+\AssignTaggingSocketPlug { hawkdraw / node / frame / end } { default}
 
 \hook_new_pair:nn { hawkdraw / node / begin } { hawkdraw / node / end }
 
@@ -91,6 +111,7 @@
 \hawkdraw_operator_construct_arg:nN { node } \hawkdraw_node:nn
 
 \cs_new_protected:Npn \hawkdraw_node_contents:n #1 {
+    \tag_socket_use:n { hawkdraw / node / contents / begin }
     \cctab_select:N \c_document_cctab
     \bool_if:NT \l_hawkdraw_node_rescan_bool {
         \seq_map_inline:Nn \l__hawkdraw_chars_active_seq {
@@ -107,6 +128,7 @@
     }
     \hook_use:n { hawkdraw / node / end }
     \skip_horizontal:n { 0pt plus 1fil minus 1fil }
+    \tag_socket_use:n { hawkdraw / node / contents / end }
 }
 
 \cs_new_protected:Npn \hawkdraw_node:nn #1#2 {
@@ -165,6 +187,10 @@
             \keys_set_known:nVN { hawkdraw / tag }
                 \l__hawkdraw_keys_unprocessed_clist
                 \l__hawkdraw_keys_unprocessed_clist
+            \str_if_eq:VnT \l_hawkdraw_tag_mode_tl { text } {
+                \tag_resume:n { hawkdraw / node }
+            }
+            \tag_socket_use:n { hawkdraw / node / begin }
             \keys_set_known:nVN { hawkdraw / path / node }
                 \l__hawkdraw_keys_unprocessed_clist
                 \l__hawkdraw_keys_unprocessed_clist
@@ -245,10 +271,6 @@
                     }
                 }
             }
-            \str_if_eq:VnT \l_hawkdraw_tag_mode_tl { text } {
-                \tag_resume:n { hawkdraw / picture }
-            }
-            \tag_socket_use:n { hawkdraw / node / begin }
             \draw_coffin_use:NeeV \l_hawkdraw_node_frame_coffin {
                 \clist_item:Nn \l_hawkdraw_node_anchor_clist { 1 }
             } {
@@ -378,6 +400,7 @@
 \cs_new_protected:Npn \__hawkdraw_node_set_frame:n #1 {
     \hcoffin_set:Nn \l_hawkdraw_node_frame_coffin {
         \draw_suspend_begin:
+            \tag_socket_use:n { hawkdraw / node / frame / begin }
             \draw_begin:
                 \keys_set_exclude_groups:nnn { hawkdraw / path } { tag }
                     {#1}
@@ -396,6 +419,7 @@
                 \clist_remove_duplicates:N \l_hawkdraw_path_use_clist
                 \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }
             \draw_end:
+            \tag_socket_use:n { hawkdraw / node / frame / end }
         \draw_suspend_end:
     }
 }
