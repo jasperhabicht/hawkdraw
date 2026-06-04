@@ -10,8 +10,8 @@
 %
 % This work has the LPPL maintenance status `maintained'.
 %
-\ProvidesExplPackage {hawkdraw} {2026-06-03} {0.1.1}
-    {An experimental package for drawing vector graphics with the l3draw package and a TikZ-like syntax.}
+\ProvidesExplPackage {hawkdraw} {2026-06-05} {0.1.1}
+    {A package for drawing vector graphics with the l3draw package and a TikZ-like syntax.}
 
 \msg_new:nnn { hawkdraw } { old-kernel } {
     LaTeX ~ kernel ~ too ~ old. \iow_newline:
@@ -1674,6 +1674,9 @@
             \clist_set:Nn \l_hawkdraw_picture_bb_clist {#1}
         }
     } ,
+    overlay                 .meta:n         = {
+        bounding ~ box = { zero }
+    }
 }
 
 \keys_define:nn { hawkdraw / scope } {

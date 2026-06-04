@@ -13,7 +13,7 @@
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
 \def\hawkdrawfileversion{0.1.1}
-\def\hawkdrawfiledate{3 June 2026}
+\def\hawkdrawfiledate{5 June 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -287,6 +287,7 @@
 \changes{v0.0.7}{2026/05/25}{Adding patterns; adding \titlemacro{at part} option.}
 \changes{v0.0.8}{2026/05/30}{Improving mapping functionality; adding mechanism to place arrow heads on paths; adding \titlemacro{at part} option for circles, ellipses and rectangles; adding \titlemacro{sloped} option for nodes; adding support for referencing anchors of nodes; adding possibility to reference points in calculations.}
 \changes{v0.1.0}{2026/06/03}{Adding tagging support; adding basic intersection commands; adding plot functions; fixing node baseline anchors and slopes.}
+\changes{v0.1.1}{2026/06/05}{Fixing bug in arrow tip slopes; fixing bug in tagging support; improving option setting; adding option to set bounding box; adding ConTeXt module.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -384,8 +385,11 @@ The option \macro{layers} sets the layers for the environment as a comma-separat
 !picture/!|bounding box|={auto}
 !picture/!|bounding box|={zero}
 !picture/!|bounding box|={<clist>}
+!picture/!|overlay|
 \end{macrodef}
 The option \macro{bounding box} sets the environment to have a custom bounding box. It can take the value \macro{auto} which sets the bounding box to the default bounding box of the drawing. It can take the value \macro{zero} to set a zero-sized bounding box. It can also take as value a comma-separated list of four dimensions that define the lower left x- and y-coordinate as well as the upper right x- and y-coordinate of a rectangle that describes the bounding box of the drawing.
+
+The option \macro{overlay} is an alias for \macro{bounding box={zero}}.
 
 \begin{codeexamplecolumns}
 foo

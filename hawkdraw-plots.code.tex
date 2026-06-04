@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.1.1 2026-06-03
+% v0.1.1 2026-06-05
 
 \msg_new:nnn { hawkdraw } { plot-unknown } {
     Plot ~ function ~ `#1` ~ unknown.
@@ -116,13 +116,7 @@
         \draw_path_moveto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 1 } }
         \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 1 } {
             \int_step_inline:nnn { 2 } { \seq_count:N \g__hawkdraw_path_plot_points_seq } {
-                \fp_if_nan:nTF {
-                    \hawkdraw_tuple_use_ii:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1} }
-                } {
-                    \draw_path_moveto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1} }
-                } {
-                    \draw_path_lineto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1} }
-                }
+                \draw_path_lineto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1} }
             }
         }
     }
