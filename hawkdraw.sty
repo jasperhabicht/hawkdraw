@@ -183,6 +183,7 @@
 \NewTaggingSocket { hawkdraw / picture / end } { 1 }
 
 \NewTaggingSocketPlug { hawkdraw / picture / init } { default } {
+    \tl_set:Nn \l_hawkdraw_tag_mode_tl { text }
     \keys_set:nn { hawkdraw / tag } {#1}
     \exp_args:NnV \AssignTaggingSocketPlug { hawkdraw / picture / begin }
         \l_hawkdraw_tag_mode_tl
@@ -245,14 +246,13 @@
 \NewTaggingSocketPlug { hawkdraw / picture / begin } { off } { }
 \NewTaggingSocketPlug { hawkdraw / picture / end } { off } { }
 
-\AssignTaggingSocketPlug { hawkdraw / picture / begin } { off }
-\AssignTaggingSocketPlug { hawkdraw / picture / end } { off }
+\AssignTaggingSocketPlug { hawkdraw / picture / begin } { text }
+\AssignTaggingSocketPlug { hawkdraw / picture / end } { text }
 
 \keys_define:nn { hawkdraw / tag } {
     mode                    .code:n         = {
         \tl_set:Ne \l_tag_graphic_mode_tl {#1}
     } ,
-    mode                    .initial:n      = { off } ,
     alt                     .code:n         = {
         \pdf_purify:nN {#1} \l_hawkdraw_tag_alt_tl
         \tl_set:Nn \l_hawkdraw_tag_mode_tl { alt }
