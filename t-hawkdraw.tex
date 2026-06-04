@@ -1,0 +1,75 @@
+% File: t-hawkdraw.tex
+% Copyright 2026 Jasper Habicht (mail(at)jasperhabicht.de).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License version 1.3c,
+% available at http://www.latex-project.org/lppl/.
+%
+% This file is part of the `hawkdraw' package (The Work in LPPL)
+% and all files in that bundle must be distributed together.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+\writestatus{loading}{ConTeXt User Module / hawkdraw}
+
+\unprotect
+\startmodule[hawkdraw]
+
+\startluacode
+interfaces.implement {
+    name = "hawkdrawpreprocessbuffer",
+    public = true,
+    actions = function()
+        local hawkdraw = buffers.raw("hawkdraw")
+        local hawkdrawstart = buffers.raw("hawkdrawstart")
+        local hawkdrawend = buffers.raw("hawkdrawend")
+        buffers.assign("hawkdraw", table.concat({
+            hawkdrawstart,
+            hawkdraw,
+            hawkdrawend,
+        }, "\n"))
+    end,
+}
+
+sandbox.registerrunner {
+    name     = "hawkdraw",
+    program  = "pdflatex",
+    template = "%filename%",
+    checkers = {
+        filename = "readable",
+        path     = "string",
+    }
+}
+\stopluacode
+
+\startbuffer[hawkdrawstart]
+    \documentclass{standalone}
+    \usepackage{hawkdraw}
+    \begin{document}
+    \begin{hawkdraw}
+\stopbuffer
+
+\startbuffer[hawkdrawend]
+    \end{hawkdraw}
+    \end{document}
+\stopbuffer
+
+\tolerant\def\starthawkdraw[#1]{%
+    \blank[samepage]%
+    \getparameters[hawkdraw][#1]%
+    \grabbufferdata[hawkdraw][starthawkdraw][stophawkdraw]%
+}
+
+\def\stophawkdraw{%
+    \hawkdrawpreprocessbuffer%
+    \runbuffer[hawkdraw][hawkdraw]%
+    \externalfigure[\lasttypesetbuffer]%
+    \blank[preference]%
+}
+
+\stopmodule
+
+\protect
+\endinput
+
+% EOF
