@@ -1,0 +1,33 @@
+\usemodule[hawkdraw]
+
+\starttext
+    \startTEXpage
+        \starthawkdraw
+            \path[stroke] (0cm, 0cm) -- (1cm, 1cm) ;
+        \stophawkdraw
+    \stopTEXpage
+
+    \setuphawkdraw[
+        background=color,
+        backgroundcolor=red,
+    ]
+
+    \startTEXpage
+        \starthawkdraw
+            \path[stroke] (0cm, 0cm) -- (1cm, 1cm) ;
+        \stophawkdraw
+    \stopTEXpage
+
+    \startTEXpage
+        \starthawkdraw[
+            width=5cm,
+            height=1cm,
+            options={layers={background,main}},
+        ]
+            \fill[fill color={blue}] (0cm, 0cm) circle[radius={0.5cm}] ;
+            \begin{scope}[layer={background}]
+                \fill (0.5cm, 0cm) circle[radius={0.5cm}] ;
+            \end{scope}
+        \stophawkdraw
+    \stopTEXpage
+\stoptext
