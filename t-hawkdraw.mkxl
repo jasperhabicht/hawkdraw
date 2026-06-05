@@ -1,4 +1,4 @@
-% File: t-hawkdraw.tex
+% File: t-hawkdraw.mkxl
 % Copyright 2026 Jasper Habicht (mail(at)jasperhabicht.de).
 %
 % This work may be distributed and/or modified under the
@@ -11,16 +11,17 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 %% Standard ConTeXt module header:
-%D \module
-%D   [     file=t-hawkdraw,
+%D \module[
+%D         file=t-hawkdraw,
 %D      version=0.1.1,
-%D        title=HawkDraw,
+%D        title=hawkdraw,
 %D     subtitle=A package for drawing vector graphics with the l3draw package and a TikZ-like syntax,
 %D       author=Jasper Habicht,
 %D         date=2026-06-05,
 %D    copyright=Jasper Habicht,
 %D      license=LPPL-1.3c,
-%D          url=https://github.com/jasperhabicht/hawkdraw]
+%D          url=https://github.com/jasperhabicht/hawkdraw
+%D ]
 
 \unprotect %% Make "?" and "_" letters (like \ExplSyntaxOn)
 \startmodule[hawkdraw]  %% Initialize the module (prints a loading message)
