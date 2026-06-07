@@ -100,8 +100,7 @@
     \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
     \keys_set_known:nnN { hawkdraw / path / tip } {#1}
         \l__hawkdraw_keys_unprocessed_clist
-    \exp_args:NNe
-    \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
+    \tl_put_right:Ne \l_hawkdraw_path_postactions_tl {
         \exp_not:N
         \hawkdraw_arrow:nnnn {#2} {
             \use:c { __hawkdraw_point_part_ \l__hawkdraw_path_type_tl :V }

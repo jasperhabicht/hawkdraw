@@ -132,173 +132,171 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_node:nn #1#2 {
-    \bool_if:NF \g__hawkdraw_path_use_clip_bool {
-        \draw_scope_begin:
-            \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_last_point_fp
-            \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_last_slope_fp
-            \fp_set:Nn \l_hawkdraw_point_at_part_fp { nan }
-            \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
-            \keys_set_known:nnN { hawkdraw / path / point } {#1}
-                \l__hawkdraw_keys_unprocessed_clist
-            \fp_if_nan:nF { \l_hawkdraw_point_at_part_fp } {
-                \fp_set:Nn \l_hawkdraw_point_at_fp {
-                    \cs_if_exist_use:cTF {
-                        __hawkdraw_point_part_ \l__hawkdraw_path_type_tl :V
-                    } {
-                        \l_hawkdraw_point_at_part_fp
-                    } {
-                        0pt , 0pt
-                    }
-                }
-                \fp_set:Nn \l_hawkdraw_point_slope_fp {
-                    \cs_if_exist_use:cTF {
-                        __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_tl :V
-                    } {
-                        \l_hawkdraw_point_at_part_fp
-                    } {
-                        0
-                    }
-                }
-            }
-            \tl_if_blank:VF \l_hawkdraw_point_at_name_tl {
-                \prop_if_exist:cT {
-                    g__hawkdraw_point_ \l_hawkdraw_point_at_name_tl _prop
+    \draw_scope_begin:
+        \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_last_point_fp
+        \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_last_slope_fp
+        \fp_set:Nn \l_hawkdraw_point_at_part_fp { nan }
+        \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
+        \keys_set_known:nnN { hawkdraw / path / point } {#1}
+            \l__hawkdraw_keys_unprocessed_clist
+        \fp_if_nan:nF { \l_hawkdraw_point_at_part_fp } {
+            \fp_set:Nn \l_hawkdraw_point_at_fp {
+                \cs_if_exist_use:cTF {
+                    __hawkdraw_point_part_ \l__hawkdraw_path_type_tl :V
                 } {
-                    \fp_set:Nn \l_hawkdraw_point_slope_fp {
-                        \prop_item:cn {
-                            g__hawkdraw_point_ \l_hawkdraw_point_at_name_tl _prop
-                        } { slope }
-                    }
-                }
-            }
-            \tl_if_blank:VF \l_hawkdraw_point_name_tl {
-                \prop_if_exist:cF {
-                    g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
+                    \l_hawkdraw_point_at_part_fp
                 } {
-                    \prop_new_linked:c {
-                        g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
-                    }
+                    0pt , 0pt
                 }
-                \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
-                    { point } \l_hawkdraw_point_at_fp
-                \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
-                    { slope } \l_hawkdraw_point_slope_fp
             }
-            \keys_set_known:nVN { hawkdraw / tag }
-                \l__hawkdraw_keys_unprocessed_clist
-                \l__hawkdraw_keys_unprocessed_clist
-            \str_if_eq:VnT \l_hawkdraw_tag_mode_tl { text } {
-                \tag_resume:n { hawkdraw / node }
-            }
-            \tag_socket_use:n { hawkdraw / node / begin }
-            \keys_set_known:nVN { hawkdraw / path / node }
-                \l__hawkdraw_keys_unprocessed_clist
-                \l__hawkdraw_keys_unprocessed_clist
-            \bool_if:NTF \l__hawkdraw_node_vbox_bool {
-                \vcoffin_set:Nnn \l_hawkdraw_node_coffin {
-                    \l_hawkdraw_node_width_dim
+            \fp_set:Nn \l_hawkdraw_point_slope_fp {
+                \cs_if_exist_use:cTF {
+                    __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_tl :V
                 } {
-                    \hawkdraw_node_contents:n {#2}
+                    \l_hawkdraw_point_at_part_fp
+                } {
+                    0
                 }
+            }
+        }
+        \tl_if_blank:VF \l_hawkdraw_point_at_name_tl {
+            \prop_if_exist:cT {
+                g__hawkdraw_point_ \l_hawkdraw_point_at_name_tl _prop
             } {
-                \hcoffin_set:Nn \l_hawkdraw_node_coffin {
-                    \hawkdraw_node_contents:n {#2}
+                \fp_set:Nn \l_hawkdraw_point_slope_fp {
+                    \prop_item:cn {
+                        g__hawkdraw_point_ \l_hawkdraw_point_at_name_tl _prop
+                    } { slope }
                 }
             }
-            \__hawkdraw_node_set_padding:
-            \__hawkdraw_node_set_frame:V \l__hawkdraw_keys_unprocessed_clist
-            \coffin_attach:NnnNnnnn
-                \l_hawkdraw_node_frame_coffin { hc } { vc }
-                \l_hawkdraw_node_coffin { hc } { vc }
-                { 0.5 \l_hawkdraw_node_padding_left_dim - 0.5 \l_hawkdraw_node_padding_right_dim }
-                { 0.5 \l_hawkdraw_node_padding_bottom_dim - 0.5 \l_hawkdraw_node_padding_top_dim }
+        }
+        \tl_if_blank:VF \l_hawkdraw_point_name_tl {
+            \prop_if_exist:cF {
+                g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
+            } {
+                \prop_new_linked:c {
+                    g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
+                }
+            }
+            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+                { point } \l_hawkdraw_point_at_fp
+            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+                { slope } \l_hawkdraw_point_slope_fp
+        }
+        \keys_set_known:nVN { hawkdraw / tag }
+            \l__hawkdraw_keys_unprocessed_clist
+            \l__hawkdraw_keys_unprocessed_clist
+        \str_if_eq:VnT \l_hawkdraw_tag_mode_tl { text } {
+            \tag_resume:n { hawkdraw / node }
+        }
+        \tag_socket_use:n { hawkdraw / node / begin }
+        \keys_set_known:nVN { hawkdraw / path / node }
+            \l__hawkdraw_keys_unprocessed_clist
+            \l__hawkdraw_keys_unprocessed_clist
+        \bool_if:NTF \l__hawkdraw_node_vbox_bool {
+            \vcoffin_set:Nnn \l_hawkdraw_node_coffin {
+                \l_hawkdraw_node_width_dim
+            } {
+                \hawkdraw_node_contents:n {#2}
+            }
+        } {
+            \hcoffin_set:Nn \l_hawkdraw_node_coffin {
+                \hawkdraw_node_contents:n {#2}
+            }
+        }
+        \__hawkdraw_node_set_padding:
+        \__hawkdraw_node_set_frame:V \l__hawkdraw_keys_unprocessed_clist
+        \coffin_attach:NnnNnnnn
+            \l_hawkdraw_node_frame_coffin { hc } { vc }
+            \l_hawkdraw_node_coffin { hc } { vc }
+            { 0.5 \l_hawkdraw_node_padding_left_dim - 0.5 \l_hawkdraw_node_padding_right_dim }
+            { 0.5 \l_hawkdraw_node_padding_bottom_dim - 0.5 \l_hawkdraw_node_padding_top_dim }
+        \coffin_set_horizontal_pole:Nnn
+            \l_hawkdraw_node_frame_coffin { H } {
+                \l_hawkdraw_node_padding_bottom_dim -
+                \exp_last_unbraced:Ne \use_ii:nnnn {
+                    \coffin_pole:Nn \l_hawkdraw_node_coffin { b }
+                } -
+                \coffin_dp:N \l_hawkdraw_node_frame_coffin
+            }
+        \bool_if:NT \l__hawkdraw_node_vbox_bool {
             \coffin_set_horizontal_pole:Nnn
-                \l_hawkdraw_node_frame_coffin { H } {
+                \l_hawkdraw_node_frame_coffin { T } {
                     \l_hawkdraw_node_padding_bottom_dim -
                     \exp_last_unbraced:Ne \use_ii:nnnn {
                         \coffin_pole:Nn \l_hawkdraw_node_coffin { b }
+                    } +
+                    \exp_last_unbraced:Ne \use_ii:nnnn {
+                        \coffin_pole:Nn \l_hawkdraw_node_coffin { T }
                     } -
                     \coffin_dp:N \l_hawkdraw_node_frame_coffin
                 }
-            \bool_if:NT \l__hawkdraw_node_vbox_bool {
-                \coffin_set_horizontal_pole:Nnn
-                    \l_hawkdraw_node_frame_coffin { T } {
-                        \l_hawkdraw_node_padding_bottom_dim -
-                        \exp_last_unbraced:Ne \use_ii:nnnn {
-                            \coffin_pole:Nn \l_hawkdraw_node_coffin { b }
-                        } +
-                        \exp_last_unbraced:Ne \use_ii:nnnn {
-                            \coffin_pole:Nn \l_hawkdraw_node_coffin { T }
-                        } -
-                        \coffin_dp:N \l_hawkdraw_node_frame_coffin
-                    }
-                \coffin_set_horizontal_pole:Nnn
-                    \l_hawkdraw_node_frame_coffin { B } {
-                        \l_hawkdraw_node_padding_bottom_dim -
-                        \exp_last_unbraced:Ne \use_ii:nnnn {
-                            \coffin_pole:Nn \l_hawkdraw_node_coffin { b }
-                        } +
-                        \exp_last_unbraced:Ne \use_ii:nnnn {
-                            \coffin_pole:Nn \l_hawkdraw_node_coffin { B }
-                        } -
-                        \coffin_dp:N \l_hawkdraw_node_frame_coffin
-                    }
-            }
-            \bool_if:NT \l_hawkdraw_node_sloped_bool {
-                \coffin_rotate:Nn \l_hawkdraw_node_frame_coffin {
-                    \l_hawkdraw_point_slope_fp
-                    \bool_if:NT \l_hawkdraw_node_flipped_bool { + 180 }
+            \coffin_set_horizontal_pole:Nnn
+                \l_hawkdraw_node_frame_coffin { B } {
+                    \l_hawkdraw_node_padding_bottom_dim -
+                    \exp_last_unbraced:Ne \use_ii:nnnn {
+                        \coffin_pole:Nn \l_hawkdraw_node_coffin { b }
+                    } +
+                    \exp_last_unbraced:Ne \use_ii:nnnn {
+                        \coffin_pole:Nn \l_hawkdraw_node_coffin { B }
+                    } -
+                    \coffin_dp:N \l_hawkdraw_node_frame_coffin
                 }
+        }
+        \bool_if:NT \l_hawkdraw_node_sloped_bool {
+            \coffin_rotate:Nn \l_hawkdraw_node_frame_coffin {
+                \l_hawkdraw_point_slope_fp
+                \bool_if:NT \l_hawkdraw_node_flipped_bool { + 180 }
             }
-            \tl_if_blank:VF \l_hawkdraw_point_name_tl {
-                \clist_map_inline:Nn \c__hawkdraw_node_vpoles_clist {
-                    \bool_if:NTF \l__hawkdraw_node_vbox_bool {
-                        \clist_map_inline:Nn \c__hawkdraw_node_vhpoles_clist {
-                            \__hawkdraw_node_anchors_gset:NVnnnN
-                                \l_hawkdraw_node_frame_coffin
-                                \l_hawkdraw_point_name_tl {##1} {####1}
-                                { \l_hawkdraw_point_at_fp }
-                                \l_hawkdraw_node_anchor_clist
-                        }
-                    } {
-                        \clist_map_inline:Nn \c__hawkdraw_node_hhpoles_clist {
-                            \__hawkdraw_node_anchors_gset:NVnnnN
-                                \l_hawkdraw_node_frame_coffin
-                                \l_hawkdraw_point_name_tl {##1} {####1}
-                                { \l_hawkdraw_point_at_fp }
-                                \l_hawkdraw_node_anchor_clist
-                        }
+        }
+        \tl_if_blank:VF \l_hawkdraw_point_name_tl {
+            \clist_map_inline:Nn \c__hawkdraw_node_vpoles_clist {
+                \bool_if:NTF \l__hawkdraw_node_vbox_bool {
+                    \clist_map_inline:Nn \c__hawkdraw_node_vhpoles_clist {
+                        \__hawkdraw_node_anchors_gset:NVnnnN
+                            \l_hawkdraw_node_frame_coffin
+                            \l_hawkdraw_point_name_tl {##1} {####1}
+                            { \l_hawkdraw_point_at_fp }
+                            \l_hawkdraw_node_anchor_clist
+                    }
+                } {
+                    \clist_map_inline:Nn \c__hawkdraw_node_hhpoles_clist {
+                        \__hawkdraw_node_anchors_gset:NVnnnN
+                            \l_hawkdraw_node_frame_coffin
+                            \l_hawkdraw_point_name_tl {##1} {####1}
+                            { \l_hawkdraw_point_at_fp }
+                            \l_hawkdraw_node_anchor_clist
                     }
                 }
             }
-            \draw_coffin_use:NeeV \l_hawkdraw_node_frame_coffin {
-                \clist_item:Nn \l_hawkdraw_node_anchor_clist { 1 }
-            } {
-                \clist_item:Nn \l_hawkdraw_node_anchor_clist { 2 }
-            } \l_hawkdraw_point_at_fp
-            \tag_socket_use:n { hawkdraw / node / end }
-        \draw_scope_end:
-    }
+        }
+        \draw_coffin_use:NeeV \l_hawkdraw_node_frame_coffin {
+            \clist_item:Nn \l_hawkdraw_node_anchor_clist { 1 }
+        } {
+            \clist_item:Nn \l_hawkdraw_node_anchor_clist { 2 }
+        } \l_hawkdraw_point_at_fp
+        \tag_socket_use:n { hawkdraw / node / end }
+    \draw_scope_end:
 }
 
 % ===
 
 \cs_new_protected:Npn \__hawkdraw_node_anchors_gset:NnnnnN #1#2#3#4#5#6 {
     \prop_if_exist:cF {
-        g__hawkdraw_point_ #2 . #3 - #4 _prop
+        g__hawkdraw_point_ #2 [ #3 , #4 ] _prop
     } {
         \prop_new_linked:c {
-            g__hawkdraw_point_ #2 . #3 - #4 _prop
+            g__hawkdraw_point_ #2 [ #3 , #4 ] _prop
         }
     }
     \prop_if_exist:cF {
-        g__hawkdraw_point_ #2 . #4 - #3 _prop
+        g__hawkdraw_point_ #2 [ #4 , #3 ] _prop
     } {
         \prop_new_linked:c {
-            g__hawkdraw_point_ #2 . #4 - #3 _prop
+            g__hawkdraw_point_ #2 [ #4 , #3 ] _prop
         }
     }
-    \prop_gput:cne { g__hawkdraw_point_ #2 . #3 - #4 _prop }
+    \prop_gput:cne { g__hawkdraw_point_ #2 [ #3 , #4 ] _prop }
         { point } {
             \fp_eval:n {
                 ( #5 ) +
@@ -315,7 +313,7 @@
                     #1 #6
             }
         }
-    \prop_gput:cne { g__hawkdraw_point_ #2 . #4 - #3 _prop }
+    \prop_gput:cne { g__hawkdraw_point_ #2 [ #4 , #3 ] _prop }
         { point } {
             \fp_eval:n {
                 ( #5 ) +

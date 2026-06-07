@@ -325,7 +325,6 @@
 
 \clist_new:N \l_hawkdraw_path_use_clist
 \bool_new:N \g__hawkdraw_path_use_clip_bool
-\bool_new:N \l__hawkdraw_path_ignore_keys_bool
 \tl_new:N \l_hawkdraw_path_stroke_color_tl
 \tl_new:N \l_hawkdraw_path_fill_color_tl
 \fp_new:N \l_hawkdraw_path_stroke_opacity_fp
@@ -837,14 +836,19 @@
 
 % ===
 
+\hook_new_pair:nn { hawkdraw / path / begin } { hawkdraw / path / end }
+
 \cs_new_protected:Npn \hawkdraw_path:w #1 ; {
+    \tl_gclear:N \g_hawkdraw_path_current_tl
     \draw_scope_begin:
-        \tl_gset:Nn \g_hawkdraw_path_current_tl {#1}
+        \hook_use:n { hawkdraw / path / begin }
         \tl_use:N \l_hawkdraw_path_preactions_tl
         \tl_trim_spaces_apply:nN { #1 \s__hawkdraw_path_end } \__hawkdraw_path_process:n
+        \tl_use:N \g_hawkdraw_path_current_tl
         \clist_remove_duplicates:N \l_hawkdraw_path_use_clist
         \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }
         \tl_use:N \l_hawkdraw_path_postactions_tl
+        \hook_use:n { hawkdraw / path / end }
     \draw_scope_end:
     \bool_if:NT \g__hawkdraw_path_use_clip_bool {
         \__hawkdraw_path_process_clip:V \g_hawkdraw_path_current_tl
@@ -861,10 +865,9 @@
 \cs_generate_variant:Nn \__hawkdraw_path_process:n { o }
 
 \cs_new_protected:Npn \__hawkdraw_path_process_clip:n #1 {
-    \bool_set_true:N \l__hawkdraw_path_ignore_keys_bool
-    \tl_trim_spaces_apply:nN {#1} \__hawkdraw_path_process:n
+    \tl_analysis_log:n {#1}
+    #1
     \draw_path_use_clear:n { clip }
-    \bool_set_false:N \l__hawkdraw_path_ignore_keys_bool
     \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
 }
 \cs_generate_variant:Nn \__hawkdraw_path_process_clip:n { V }
@@ -876,18 +879,13 @@
 }
 
 \cs_new_protected:cpn { __hawkdraw_path_process_ [ :w } [ #1 ] #2 \s__hawkdraw_stop {
-    \bool_if:NF \l__hawkdraw_path_ignore_keys_bool {
-        \keys_set:nn { hawkdraw / path } {#1}
-        \hawkdraw_path_set_options:
-    }
+    \keys_set:nn { hawkdraw / path } {#1}
+    \hawkdraw_path_set_options:
     \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_continue:n
 }
 
 \cs_new_protected:cpn { __hawkdraw_path_process_ ( :w } ( #1 ) #2 \s__hawkdraw_stop {
     \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_a_fp {#1}
-    \draw_path_moveto:n {
-        \l__hawkdraw_point_a_fp
-    }
     \fp_gset_eq:NN \g_hawkdraw_path_first_point_fp \l__hawkdraw_point_a_fp
     \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
     \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_continue:n
@@ -949,10 +947,10 @@
 \cs_generate_variant:Nn \__hawkdraw_point_part_slope_line_orthogonal:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_curve_quadratic:n #1 {
-    \draw_point_interpolate_curve:nVVV {#1}
-        \l__hawkdraw_point_o_fp
-        \l__hawkdraw_point_a_fp
-        \l__hawkdraw_point_b_fp
+    \draw_point_interpolate_curve:nnnn {#1}
+        { \l__hawkdraw_point_o_fp }
+        { \l__hawkdraw_point_a_fp }
+        { \l__hawkdraw_point_b_fp }
 }
 \cs_generate_variant:Nn \__hawkdraw_point_part_curve_quadratic:n { V }
 
@@ -986,11 +984,11 @@
 \cs_generate_variant:Nn \__hawkdraw_point_part_slope_curve_quadratic:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_curve_cubic:n #1 {
-    \draw_point_interpolate_curve:nVVVV {#1}
-        \l__hawkdraw_point_o_fp
-        \l__hawkdraw_point_a_fp
-        \l__hawkdraw_point_b_fp
-        \l__hawkdraw_point_c_fp
+    \draw_point_interpolate_curve:nnnnn {#1}
+        { \l__hawkdraw_point_o_fp }
+        { \l__hawkdraw_point_a_fp }
+        { \l__hawkdraw_point_b_fp }
+        { \l__hawkdraw_point_c_fp }
 }
 \cs_generate_variant:Nn \__hawkdraw_point_part_curve_cubic:n { V }
 
@@ -1042,10 +1040,10 @@
 \cs_generate_variant:Nn \__hawkdraw_point_part_slope_circle:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_ellipse:n #1 {
-    \draw_point_interpolate_arc_axes:nVVVnn {#1}
-        \l__hawkdraw_point_o_fp
-        \l_hawkdraw_path_ellipse_vector_a_fp
-        \l_hawkdraw_path_ellipse_vector_b_fp
+    \draw_point_interpolate_arc_axes:nnnnnn {#1}
+        { \l__hawkdraw_point_o_fp }
+        { \l_hawkdraw_path_ellipse_vector_a_fp }
+        { \l_hawkdraw_path_ellipse_vector_b_fp }
         { 0 }
         { 360 }
 }
@@ -1070,7 +1068,7 @@
 
 \cs_new:Npn \__hawkdraw_point_part_arc:n #1 {
     \bool_if:NTF \l_hawkdraw_path_arc_axes_bool {
-        \draw_point_interpolate_arc_axes:nnVVVV {#1}
+        \draw_point_interpolate_arc_axes:nnnnnn {#1}
             {
                 (
                     \hawkdraw_tuple_use_i:V \l_hawkdraw_path_arc_vector_a_fp *
@@ -1084,10 +1082,10 @@
                     sind( \l_hawkdraw_path_arc_angle_start_fp )
                 ) * -1
             }
-            \l_hawkdraw_path_arc_vector_a_fp
-            \l_hawkdraw_path_arc_vector_b_fp
-            \l_hawkdraw_path_arc_angle_start_fp
-            \l_hawkdraw_path_arc_angle_end_fp
+            { \l_hawkdraw_path_arc_vector_a_fp }
+            { \l_hawkdraw_path_arc_vector_b_fp }
+            { \l_hawkdraw_path_arc_angle_start_fp }
+            { \l_hawkdraw_path_arc_angle_end_fp }
     } {
         \fp_eval:n {
             (
@@ -1213,6 +1211,35 @@
 
 % ===
 
+\cs_new_protected:Npn \hawkdraw_moveto:nn #1#2 {
+    \draw_path_moveto:n {#1}
+}
+\cs_new_protected:Npn \hawkdraw_lineto:nn #1#2 {
+    \draw_path_lineto:n {#1}
+}
+\cs_new_protected:Npn \hawkdraw_curveto:nnn #1#2#3 {
+    \draw_path_curveto:nn {#1} {#2}
+}
+\cs_new_protected:Npn \hawkdraw_curveto:nnnn #1#2#3#4 {
+    \draw_path_curveto:nnn {#1} {#2} {#3}
+}
+\cs_new_protected:Npn \hawkdraw_arc:nnnn #1#2#3#4 {
+    \draw_path_arc:nnn {#1} {#2} {#3}
+}
+\cs_new_protected:Npn \hawkdraw_arc:nnnnnn #1#2#3#4#5#6 {
+    \draw_path_arc:nnnn {#1} {#2} {#3} {#4}
+}
+\cs_new_protected:Npn \hawkdraw_arc_axes:nnnnnn #1#2#3#4#5#6 {
+    \draw_path_arc_axes:nnnn {#1} {#2} {#3} {#4}
+}
+\cs_set_eq:NN \hawkdraw_circle:nn \draw_path_circle:nn
+\cs_set_eq:NN \hawkdraw_ellipse:nnn \draw_path_ellipse:nnn
+\cs_set_eq:NN \hawkdraw_rectangle:nn \draw_path_rectangle:nn
+\cs_set_eq:NN \hawkdraw_grid:nnnn \draw_path_grid:nnnn
+\cs_set_eq:NN \hawkdraw_close: \draw_path_close:
+
+% ===
+
 \cs_new:Npn \__hawkdraw_path_process_line:n #1 {
     \__hawkdraw_cs_if_exist_use_secure:nnT {#1} {
         __hawkdraw_path_process_line_ \tl_head:n {#1} :w
@@ -1230,16 +1257,25 @@
     \str_set:Nn \l__hawkdraw_path_type_tl { line }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
     \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_a_fp {#2}
-    \draw_path_lineto:n {
-        \l__hawkdraw_point_a_fp
-    }
     \fp_if_nan:nT { \g_hawkdraw_path_first_slope_fp } {
         \fp_gset:Nn \g_hawkdraw_path_first_slope_fp {
             \__hawkdraw_calculate_slope:VV \l__hawkdraw_point_o_fp \l__hawkdraw_point_a_fp
         }
+        \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+            \exp_not:N
+            \hawkdraw_moveto:nn
+                { \fp_use:N \l__hawkdraw_point_o_fp }
+                { \fp_use:N \g_hawkdraw_path_first_slope_fp }
+        }
     }
     \fp_gset:Nn \g_hawkdraw_path_last_slope_fp {
         \__hawkdraw_calculate_slope:VV \l__hawkdraw_point_o_fp \l__hawkdraw_point_a_fp
+    }
+    \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+        \exp_not:N
+        \hawkdraw_lineto:nn
+            { \fp_use:N \l__hawkdraw_point_a_fp }
+            { \fp_use:N \g_hawkdraw_path_last_slope_fp }
     }
     \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
     \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
@@ -1257,19 +1293,33 @@
             \hawkdraw_tuple_use_ii:V \l__hawkdraw_point_o_fp
         )
     }
-    \draw_path_lineto:n {
-        \l__hawkdraw_point_b_fp
-    }
-    \draw_path_lineto:n {
-        \l__hawkdraw_point_a_fp
-    }
     \fp_if_nan:nT { \g_hawkdraw_path_first_slope_fp } {
         \fp_gset:Nn \g_hawkdraw_path_first_slope_fp {
             \__hawkdraw_calculate_slope:VV \l__hawkdraw_point_o_fp \l__hawkdraw_point_b_fp
         }
+        \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+            \exp_not:N
+            \hawkdraw_moveto:nn
+                { \fp_use:N \l__hawkdraw_point_o_fp }
+                { \fp_use:N \g_hawkdraw_path_first_slope_fp }
+        }
     }
     \fp_gset:Nn \g_hawkdraw_path_last_slope_fp {
         \__hawkdraw_calculate_slope:VV \l__hawkdraw_point_b_fp \l__hawkdraw_point_a_fp
+    }
+    \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+        \exp_not:N
+        \hawkdraw_lineto:nn
+            { \fp_use:N \l__hawkdraw_point_b_fp }
+            { \fp_to_decimal:n {
+                \__hawkdraw_calculate_slope:VV
+                    \l__hawkdraw_point_o_fp
+                    \l__hawkdraw_point_b_fp
+            } }
+        \exp_not:N
+        \hawkdraw_lineto:nn
+            { \fp_use:N \l__hawkdraw_point_a_fp }
+            { \fp_use:N \g_hawkdraw_path_last_slope_fp }
     }
     \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
     \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
@@ -1287,19 +1337,33 @@
             \hawkdraw_tuple_use_ii:V \l__hawkdraw_point_a_fp
         )
     }
-    \draw_path_lineto:n {
-        \l__hawkdraw_point_b_fp
-    }
-    \draw_path_lineto:n {
-        \l__hawkdraw_point_a_fp
-    }
     \fp_if_nan:nT { \g_hawkdraw_path_first_slope_fp } {
         \fp_gset:Nn \g_hawkdraw_path_first_slope_fp {
             \__hawkdraw_calculate_slope:VV \l__hawkdraw_point_o_fp \l__hawkdraw_point_b_fp
         }
+        \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+            \exp_not:N
+            \hawkdraw_moveto:nn
+                { \fp_use:N \l__hawkdraw_point_o_fp }
+                { \fp_use:N \g_hawkdraw_path_first_slope_fp }
+        }
     }
     \fp_gset:Nn \g_hawkdraw_path_last_slope_fp {
         \__hawkdraw_calculate_slope:VV \l__hawkdraw_point_b_fp \l__hawkdraw_point_a_fp
+    }
+    \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+        \exp_not:N
+        \hawkdraw_lineto:nn
+            { \fp_use:N \l__hawkdraw_point_b_fp }
+            { \fp_to_decimal:n {
+                \__hawkdraw_calculate_slope:VV
+                    \l__hawkdraw_point_o_fp
+                    \l__hawkdraw_point_b_fp
+            } }
+        \exp_not:N
+        \hawkdraw_lineto:nn
+            { \fp_use:N \l__hawkdraw_point_a_fp }
+            { \fp_use:N \g_hawkdraw_path_last_slope_fp }
     }
     \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
     \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
@@ -1326,18 +1390,26 @@
     % what do we do with #1?
     \str_set:Nn \l__hawkdraw_path_type_tl { curve_quadratic }
     \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_b_fp {#2}
-    \draw_path_curveto:nn {
-        \l__hawkdraw_point_a_fp
-    } {
-        \l__hawkdraw_point_b_fp
-    }
     \fp_if_nan:nT { \g_hawkdraw_path_first_slope_fp } {
         \fp_gset:Nn \g_hawkdraw_path_first_slope_fp {
             \__hawkdraw_calculate_slope:VV \l__hawkdraw_point_o_fp \l__hawkdraw_point_a_fp
         }
+        \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+            \exp_not:N
+            \hawkdraw_moveto:nn
+                { \fp_use:N \l__hawkdraw_point_o_fp }
+                { \fp_use:N \g_hawkdraw_path_first_slope_fp }
+        }
     }
     \fp_gset:Nn \g_hawkdraw_path_last_slope_fp {
         \__hawkdraw_calculate_slope:VV \l__hawkdraw_point_a_fp \l__hawkdraw_point_b_fp
+    }
+    \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+        \exp_not:N
+        \hawkdraw_curveto:nnn
+            { \fp_use:N \l__hawkdraw_point_a_fp }
+            { \fp_use:N \l__hawkdraw_point_b_fp }
+            { \fp_use:N \g_hawkdraw_path_last_slope_fp }
     }
     \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_b_fp
     \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_continue:n
@@ -1348,27 +1420,36 @@
     \str_set:Nn \l__hawkdraw_path_type_tl { curve_cubic }
     \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_b_fp {#2}
     \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_c_fp {#5}
-    \draw_path_curveto:nnn {
-        \l__hawkdraw_point_a_fp
-    } {
-        \l__hawkdraw_point_b_fp
-    } {
-        \l__hawkdraw_point_c_fp
-    }
     \fp_if_nan:nT { \g_hawkdraw_path_first_slope_fp } {
         \fp_gset:Nn \g_hawkdraw_path_first_slope_fp {
             \__hawkdraw_calculate_slope:VV \l__hawkdraw_point_o_fp \l__hawkdraw_point_a_fp
         }
+        \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+            \exp_not:N
+            \hawkdraw_moveto:nn
+                { \fp_use:N \l__hawkdraw_point_o_fp }
+                { \fp_use:N \g_hawkdraw_path_first_slope_fp }
+        }
     }
     \fp_gset:Nn \g_hawkdraw_path_last_slope_fp {
         \__hawkdraw_calculate_slope:VV \l__hawkdraw_point_b_fp \l__hawkdraw_point_c_fp
+    }
+    \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+        \exp_not:N
+        \hawkdraw_curveto:nnnn
+            { \fp_use:N \l__hawkdraw_point_a_fp }
+            { \fp_use:N \l__hawkdraw_point_b_fp }
+            { \fp_use:N \l__hawkdraw_point_c_fp }
+            { \fp_use:N \g_hawkdraw_path_last_slope_fp }
     }
     \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_c_fp
     \tl_trim_spaces_apply:nN {#6} \__hawkdraw_path_process_continue:n
 }
 
 \cs_new_protected:cpn { __hawkdraw_path_process_ ! :w } ! #1 \s__hawkdraw_stop {
-    \draw_path_close:
+    \tl_gput_right:Nn \g_hawkdraw_path_current_tl {
+        \hawkdraw_close:
+    }
     \fp_gset:Nn \g_hawkdraw_path_first_slope_fp { nan }
     \fp_gset:Nn \g_hawkdraw_path_last_slope_fp { nan }
     \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \g_hawkdraw_path_first_point_fp
@@ -1377,54 +1458,6 @@
 
 % ===
 
-\dim_new:N \l_hawkdraw_path_circle_radius_dim
-
-\cs_generate_variant:Nn \draw_path_circle:nn { VV }
-
-\keys_define:nn { hawkdraw / path / circle } {
-    radius                  .dim_set:N      = \l_hawkdraw_path_circle_radius_dim ,
-    radius                  .initial:n      = { 1cm } ,
-}
-
-\hawkdraw_operator_construct:nN { circle } \hawkdraw_path_circle:n
-
-\cs_new_protected:Npn \hawkdraw_path_circle:n #1 {
-    \str_set:Nn \l__hawkdraw_path_type_tl { circle }
-    \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
-    \keys_set:nn { hawkdraw / path / circle } {#1}
-    \draw_path_circle:VV \g_hawkdraw_path_last_point_fp
-        \l_hawkdraw_path_circle_radius_dim
-}
-
-\fp_new:N \l_hawkdraw_path_ellipse_vector_a_fp
-\fp_new:N \l_hawkdraw_path_ellipse_vector_b_fp
-
-\cs_generate_variant:Nn \draw_path_ellipse:nnn { VVV }
-
-\keys_define:nn { hawkdraw / path / ellipse } {
-    vector ~ a              .fp_set:N       = \l_hawkdraw_path_ellipse_vector_a_fp ,
-    vector ~ a              .initial:n      = { ( 1cm , 0pt ) } ,
-    vector ~ b              .fp_set:N       = \l_hawkdraw_path_ellipse_vector_b_fp ,
-    vector ~ b              .initial:n      = { ( 0pt , 1cm ) } ,
-    radius ~ x              .code:n         = {
-        \fp_set:Nn \l_hawkdraw_path_ellipse_vector_a_fp { ( #1 , 0pt ) }
-    } ,
-    radius ~ y              .code:n         = {
-        \fp_set:Nn \l_hawkdraw_path_ellipse_vector_b_fp { ( 0pt , #1 ) }
-    } ,
-}
-
-\hawkdraw_operator_construct:nN { ellipse } \hawkdraw_path_ellipse:n
-
-\cs_new_protected:Npn \hawkdraw_path_ellipse:n #1 {
-    \str_set:Nn \l__hawkdraw_path_type_tl { ellipse }
-    \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
-    \keys_set:nn { hawkdraw / path / ellipse } {#1}
-    \draw_path_ellipse:VVV \g_hawkdraw_path_last_point_fp
-        \l_hawkdraw_path_ellipse_vector_a_fp
-        \l_hawkdraw_path_ellipse_vector_b_fp
-}
-
 \bool_new:N \l_hawkdraw_path_arc_axes_bool
 \dim_new:N \l_hawkdraw_path_arc_radius_x_dim
 \dim_new:N \l_hawkdraw_path_arc_radius_y_dim
@@ -1432,9 +1465,6 @@
 \fp_new:N \l_hawkdraw_path_arc_vector_b_fp
 \fp_new:N \l_hawkdraw_path_arc_angle_start_fp
 \fp_new:N \l_hawkdraw_path_arc_angle_end_fp
-
-\cs_generate_variant:Nn \draw_path_arc:nnnn { VVVV }
-\cs_generate_variant:Nn \draw_path_arc_axes:nnnn { VVVV }
 
 \keys_define:nn { hawkdraw / path / arc } {
     radius ~ x              .code:n         = {
@@ -1449,8 +1479,17 @@
     radius ~ y              .initial:n      = { 1cm } ,
     radius                  .code:n         = {
         \bool_set_false:N \l_hawkdraw_path_arc_axes_bool
-        \dim_set:Nn \l_hawkdraw_path_arc_radius_x_dim {#1}
-        \dim_set:Nn \l_hawkdraw_path_arc_radius_y_dim {#1}
+        \int_compare:nNnTF { \clist_count:n {#1} } > { 1 } {
+            \dim_set:Nn \l_hawkdraw_path_arc_radius_x_dim {
+                \clist_item:nn {#1} { 1 }
+            }
+            \dim_set:Nn \l_hawkdraw_path_arc_radius_y_dim {
+                \clist_item:nn {#1} { 2 }
+            }
+        } {
+            \dim_set:Nn \l_hawkdraw_path_arc_radius_x_dim {#1}
+            \dim_set:Nn \l_hawkdraw_path_arc_radius_y_dim {#1}
+        }
     } ,
     vector ~ a              .code:n         = {
         \bool_set_true:N \l_hawkdraw_path_arc_axes_bool
@@ -1477,35 +1516,102 @@
     \str_set:Nn \l__hawkdraw_path_type_tl { arc }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
     \keys_set:nn { hawkdraw / path / arc } {#1}
-    \bool_if:NTF \l_hawkdraw_path_arc_axes_bool {
-        \draw_path_arc_axes:VVVV \l_hawkdraw_path_arc_vector_a_fp
-            \l_hawkdraw_path_arc_vector_b_fp
-            \l_hawkdraw_path_arc_angle_start_fp
-            \l_hawkdraw_path_arc_angle_end_fp
-    } {
-         \draw_path_arc:VVVV \l_hawkdraw_path_arc_radius_x_dim
-            \l_hawkdraw_path_arc_radius_y_dim
-            \l_hawkdraw_path_arc_angle_start_fp
-            \l_hawkdraw_path_arc_angle_end_fp
-    }
     \fp_if_nan:nT { \g_hawkdraw_path_first_slope_fp } {
         \fp_gset:Nn \g_hawkdraw_path_first_slope_fp {
             \__hawkdraw_point_part_slope_arc:n { 0 }
         }
+        \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+            \exp_not:N
+            \hawkdraw_moveto:nn
+                { \fp_use:N \l__hawkdraw_point_o_fp }
+                { \fp_use:N \g_hawkdraw_path_first_slope_fp }
+        }
+    }
+    \fp_gset:Nn \g_hawkdraw_path_last_point_fp {
+        \__hawkdraw_point_part_arc:n { 1 }
     }
     \fp_gset:Nn \g_hawkdraw_path_last_slope_fp {
         \__hawkdraw_point_part_slope_arc:n { 1 }
     }
-    \fp_gset:Nn \g_hawkdraw_path_last_point_fp {
-        \__hawkdraw_point_part_arc:n { 1 }
+    \bool_if:NTF \l_hawkdraw_path_arc_axes_bool {
+        \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+            \exp_not:N
+            \hawkdraw_arc_axes:nnnnnn
+                { \fp_use:N \l_hawkdraw_path_arc_vector_a_fp }
+                { \fp_use:N \l_hawkdraw_path_arc_vector_b_fp }
+                { \fp_use:N \l_hawkdraw_path_arc_angle_start_fp }
+                { \fp_use:N \l_hawkdraw_path_arc_angle_end_fp }
+                { \fp_use:N \g_hawkdraw_path_last_point_fp }
+                { \fp_use:N \g_hawkdraw_path_last_slope_fp }
+        }
+    } {
+        \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+            \exp_not:N
+            \hawkdraw_arc:nnnnnn
+                { \dim_use:N \l_hawkdraw_path_arc_radius_x_dim }
+                { \dim_use:N \l_hawkdraw_path_arc_radius_y_dim }
+                {\fp_use:N  \l_hawkdraw_path_arc_angle_start_fp }
+                {\fp_use:N  \l_hawkdraw_path_arc_angle_end_fp }
+                { \fp_use:N \g_hawkdraw_path_last_point_fp }
+                { \fp_use:N \g_hawkdraw_path_last_slope_fp }
+        }
+    }
+}
+
+\dim_new:N \l_hawkdraw_path_circle_radius_dim
+
+\keys_define:nn { hawkdraw / path / circle } {
+    radius                  .dim_set:N      = \l_hawkdraw_path_circle_radius_dim ,
+    radius                  .initial:n      = { 1cm } ,
+}
+
+\hawkdraw_operator_construct:nN { circle } \hawkdraw_path_circle:n
+
+\cs_new_protected:Npn \hawkdraw_path_circle:n #1 {
+    \str_set:Nn \l__hawkdraw_path_type_tl { circle }
+    \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
+    \keys_set:nn { hawkdraw / path / circle } {#1}
+    \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+        \exp_not:N
+        \hawkdraw_circle:nn
+            { \fp_use:N \l__hawkdraw_point_o_fp }
+            { \dim_use:N \l_hawkdraw_path_circle_radius_dim }
+    }
+}
+
+\fp_new:N \l_hawkdraw_path_ellipse_vector_a_fp
+\fp_new:N \l_hawkdraw_path_ellipse_vector_b_fp
+
+\keys_define:nn { hawkdraw / path / ellipse } {
+    vector ~ a              .fp_set:N       = \l_hawkdraw_path_ellipse_vector_a_fp ,
+    vector ~ a              .initial:n      = { ( 1cm , 0pt ) } ,
+    vector ~ b              .fp_set:N       = \l_hawkdraw_path_ellipse_vector_b_fp ,
+    vector ~ b              .initial:n      = { ( 0pt , 1cm ) } ,
+    radius ~ x              .code:n         = {
+        \fp_set:Nn \l_hawkdraw_path_ellipse_vector_a_fp { ( #1 , 0pt ) }
+    } ,
+    radius ~ y              .code:n         = {
+        \fp_set:Nn \l_hawkdraw_path_ellipse_vector_b_fp { ( 0pt , #1 ) }
+    } ,
+}
+
+\hawkdraw_operator_construct:nN { ellipse } \hawkdraw_path_ellipse:n
+
+\cs_new_protected:Npn \hawkdraw_path_ellipse:n #1 {
+    \str_set:Nn \l__hawkdraw_path_type_tl { ellipse }
+    \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
+    \keys_set:nn { hawkdraw / path / ellipse } {#1}
+    \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+        \exp_not:N
+        \hawkdraw_ellipse:nnn
+            { \fp_use:N \l__hawkdraw_point_o_fp }
+            { \fp_use:N \l_hawkdraw_path_ellipse_vector_a_fp }
+            { \fp_use:N \l_hawkdraw_path_ellipse_vector_b_fp }
     }
 }
 
 \bool_new:N \l_hawkdraw_path_rectangle_relative_bool
 \fp_new:N \l_hawkdraw_path_rectangle_corner_fp
-
-\cs_generate_variant:Nn \draw_path_rectangle:nn { ee , VV }
-\cs_generate_variant:Nn \draw_path_rectangle_corners:nn { VV }
 
 \keys_define:nn { hawkdraw / path / rectangle } {
     relative                .bool_set:N     = \l_hawkdraw_path_rectangle_relative_bool ,
@@ -1527,12 +1633,14 @@
         \fp_set:Nn \l__hawkdraw_point_a_fp {
             \l__hawkdraw_point_o_fp + \l_hawkdraw_path_rectangle_corner_fp
         }
-        \draw_path_rectangle:VV \l__hawkdraw_point_o_fp
-            \l_hawkdraw_path_rectangle_corner_fp
     } {
         \fp_set_eq:NN \l__hawkdraw_point_a_fp \l_hawkdraw_path_rectangle_corner_fp
-        \draw_path_rectangle_corners:VV \l__hawkdraw_point_o_fp
-            \l_hawkdraw_path_rectangle_corner_fp
+    }
+    \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+        \exp_not:N
+        \hawkdraw_rectangle:nn
+            { \fp_use:N \l__hawkdraw_point_o_fp }
+            { \fp_use:N \l__hawkdraw_point_a_fp }
     }
     \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
 }
@@ -1541,7 +1649,7 @@
 \bool_new:N \l_hawkdraw_path_grid_relative_bool
 \fp_new:N \l_hawkdraw_path_grid_corner_fp
 
-\cs_generate_variant:Nn \draw_path_grid:nnnn { eeVV }
+\cs_generate_variant:Nn \draw_path_grid:nnnn { ee }
 
 \keys_define:nn { hawkdraw / path / grid } {
     step                    .clist_set:N    = \l_hawkdraw_path_grid_step_clist ,
@@ -1569,21 +1677,23 @@
         \fp_set_eq:NN \l__hawkdraw_point_a_fp \l_hawkdraw_path_grid_corner_fp
     }
     \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_grid_step_clist } > { 1 } {
-        \draw_path_grid:eeVV {
-            \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 1 }
-        } {
-            \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 2 }
+        \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+            \exp_not:N
+            \hawkdraw_grid:nnnn {
+                \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 1 }
+            } {
+                \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 2 }
+            } { \fp_use:N \l__hawkdraw_point_o_fp } { \fp_use:N \l__hawkdraw_point_a_fp }
         }
-            \l__hawkdraw_point_o_fp
-            \l__hawkdraw_point_a_fp
     } {
-        \draw_path_grid:eeVV {
-            \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 1 }
-        } {
-            \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 1 }
+        \tl_gput_right:Ne \g_hawkdraw_path_current_tl {
+            \exp_not:N
+            \hawkdraw_grid:nnnn {
+                \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 1 }
+            } {
+                \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 1 }
+            } { \fp_use:N \l__hawkdraw_point_o_fp } { \fp_use:N \l__hawkdraw_point_a_fp }
         }
-            \l__hawkdraw_point_o_fp
-            \l__hawkdraw_point_a_fp
     }
     \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
 }

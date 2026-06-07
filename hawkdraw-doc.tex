@@ -1026,7 +1026,7 @@ Using the \macro{rescan} option, the node's contents are rescanned using the cur
 \end{macrodef}
 The node can be named by setting the \macro{name} option which can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}). Node names should not contain dots or dashes as these are reserved for referencing anchors. The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{H} (which refers to the baseline of the node's contents), \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. Nodes where the width is set additionally provide the poles \macro{T} and \macro{B} that refer to the top and bottom baseline of the node's contents respectively.
 
-It is possible to reference a point where two poles of the node intersect by appending the node name with the relevant poles concatenated with a dash and separated by a dot from the node name. For example, if a node is named \macro{foo}, the point where the top and left pole of the node intersect can be referenced by \macro{(foo.t-l)}.
+It is possible to reference a point where two poles of the node intersect by appending the node name with the relevant poles concatenated with a dash and separated by a dot from the node name. For example, if a node is named \macro{foo}, the point where the top and left pole of the node intersect can be referenced by \macro{(foo[t,l])}.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -1037,8 +1037,8 @@ It is possible to reference a point where two poles of the node intersect by app
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \node[stroke, name={A}] {foo} ;
-  \fill[fill color=red] (A.b-l) circle[radius={2pt}] ;
-  \fill[fill color=red] (A.t-r) circle[radius={2pt}] ;
+  \fill[fill color=red] (A[b,l]) circle[radius={2pt}] ;
+  \fill[fill color=red] (A[t,r]) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
