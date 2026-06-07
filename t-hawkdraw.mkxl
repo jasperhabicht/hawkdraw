@@ -1,0 +1,161 @@
+% File: t-hawkdraw.mkxl
+% Copyright 2026 Jasper Habicht (mail(at)jasperhabicht.de).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License version 1.3c,
+% available at http://www.latex-project.org/lppl/.
+%
+% This file is part of the `hawkdraw' package (The Work in LPPL)
+% and all files in that bundle must be distributed together.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+%% Standard ConTeXt module header:
+%D \module[
+%D         file=t-hawkdraw,
+%D      version=0.1.1,
+%D        title=hawkdraw,
+%D     subtitle=A package for drawing vector graphics with the l3draw package and a TikZ-like syntax,
+%D       author=Jasper Habicht,
+%D         date=2026-06-05,
+%D    copyright=Jasper Habicht,
+%D      license=LPPL-1.3c,
+%D          url=https://github.com/jasperhabicht/hawkdraw
+%D ]
+
+\unprotect %% Make "?" and "_" letters (like \ExplSyntaxOn)
+\startmodule[hawkdraw]  %% Initialize the module (prints a loading message)
+
+%% Define the "\setuphawkdraw", "\hawkdrawparameter", and associated commands.
+\installnamespace{hawkdraw}
+\installsimpleframedcommandhandler \????hawkdraw {hawkdraw} \????hawkdraw
+
+%% Set the default settings.
+\setuphawkdraw[
+    \c!frame=off,
+    \c!before=\blank[samepage],
+    \c!after=\blank[preference],
+    \c!width=,
+    \c!height=,
+    options=,
+]
+
+\startluacode
+    -- Let us access the "\setuphawkdraw" parameters from Lua. With this,
+    -- running the following code:
+    --
+    --     print(variables.frame)
+    --
+    -- should give us the following output:
+    --
+    --     off
+    local variables do
+        local namespace = tokens.getters.macro("????hawkdraw") .. ":"
+        variables = table.setmetatableindex({}, function(t, k)
+            return tokens.getters.macro(namespace .. k)
+        end)
+    end
+
+    -- Define the "\\hawkdraw_preprocessbuffer" macro. Much like expl3, ConTeXt
+    -- macros with underscores in their name are considered to be private, and
+    -- the component before the first underscore is considered to be the
+    -- namespace.
+    interfaces.implement {
+        name = "hawkdraw_preprocessbuffer",
+        public = true, -- Don't add a "clf_" prefix to the macro name.
+        protected = true,
+        actions = function()
+            -- Join the before and after buffers to the main content buffer.
+            buffers.prepend("hawkdraw_content", buffers.raw("hawkdraw_before"))
+            buffers.append("hawkdraw_content", buffers.raw("hawkdraw_after"))
+
+            -- Replace "%variable%" placeholders in the buffer with their
+            -- corresponding values from the "\setuphawkdraw" parameters.
+            local content = buffers.raw("hawkdraw_content")
+            content = utilities.templates.replace(content, variables)
+
+            -- Write the processed content back to the buffer.
+            buffers.assign("hawkdraw_content", content)
+        end,
+    }
+
+    -- Define a new "hawkdraw" runner that compiles the provided buffer with
+    -- pdfLaTeX. This function is smart and only recompiles the code if the
+    -- buffer's content has changed; otherwise, it uses the cached PDF.
+    sandbox.registerrunner {
+        name     = "hawkdraw",
+        program  = "pdflatex",
+        template = "%filename%",
+        checkers = {
+            filename = "readable",
+            path     = "string",
+        }
+    }
+\stopluacode
+
+%% The code that we will prepend and append to the user-provided content. Once
+%% again, we use an underscore in the name to mark it as private.
+\startbuffer[hawkdraw_before]
+    \documentclass{standalone}
+    \usepackage{hawkdraw}
+    \begin{document}
+    \begin{hawkdraw}[%options%]
+\stopbuffer
+
+\startbuffer[hawkdraw_after]
+    \end{hawkdraw}
+    \end{document}
+\stopbuffer
+
+%% Define the public "\starthawkdraw" macro that we use to begin the
+%% environment. "\starttexdefinition" is like "\def", except it ignores spaces,
+%% so we don't need to add "%" after each line. "tolerant" (usually written
+%% "\tolerant\def") is a LuaMetaTeX engine feature that natively supports
+%% optional arguments, so both "\starthawkdraw" and "\starthawkdraw[options]"
+%% will work without needing to manually scan ahead. (This is why this file has
+%% a ".mkxl" extension, because this \tolerant is incompatible with all other
+%% engines.)
+\starttexdefinition tolerant protected starthawkdraw[#1]
+    %% Save any provided options in the "hawkdraw" parameters. We do this inside
+    %% of a new group so that the options only apply to the current environment.
+    \bgroup
+    \setuphawkdraw[#1]
+
+    %% Run the contents of the "before=" parameter. We could equivalently
+    %% replace "\c!before" with "{before}"; however, ConTeXt has a multilingual
+    %% interface, so if we use the "\c!before" form, it will automatically be
+    %% translated into the appropriate language.
+    \hawkdrawparameter\c!before
+
+    %% The "\grabbufferdata" collects the text between the #2 csname and the
+    %% #3 csname as verbatim content, and stores it in a buffer named #1.
+    \grabbufferdata[hawkdraw_content][starthawkdraw][stophawkdraw]
+\stoptexdefinition
+
+%% The \grabbufferdata macro will automatically run the stop csname if it's
+%% defined.
+\starttexdefinition protected stophawkdraw
+    %% Run the Lua function that we defined above to process the buffer's text
+    %% into a form that can be compiled by pdfLaTeX.
+    \hawkdraw_preprocessbuffer
+
+    %% Compile the processed buffer with pdfLaTeX.
+    \runbuffer[hawkdraw_content][hawkdraw]
+
+    %% "\inheritedhawkdrawframed" is like the normal ConTeXt "\framed" command,
+    %% except it automatically inherits all options from "\setuphawkdraw".
+    \inheritedhawkdrawframed{
+        %% "\externalfigure" is ConTeXt's equivalent of LaTeX's
+        %% "\includegraphics" command. "\lasttypesetbuffer" holds the filename
+        %% of the result of the last "\runbuffer" command.
+        \externalfigure[\lasttypesetbuffer][
+            \c!width=\hawkdrawparameter\c!width,
+            \c!height=\hawkdrawparameter\c!height,
+        ]
+    }
+    \hawkdrawparameter\c!after
+    \egroup
+\stoptexdefinition
+
+\stopmodule
+\protect
