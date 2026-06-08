@@ -15,6 +15,8 @@
 \def\hawkdrawfileversion{0.1.1}
 \def\hawkdrawfiledate{5 June 2026}
 
+\errorcontextlines=300
+
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
 \usepackage{AlegreyaSans}
@@ -396,7 +398,7 @@ foo
 \begin{hawkdraw}[
   bounding box={zero},
   baseline={0pt}
-] \stroke[stroke color={blue}]
+] \stroke[color stroke={blue}]
     (0cm,0cm) circle[radius={0.5cm}] ;
 \end{hawkdraw}
 bar
@@ -413,9 +415,9 @@ Note that the \macro{hawkdraw} environment sets all category codes to the defaul
 The \macro{scope} environment is only available inside the \macro{hawkdraw} environment. It can be used to create scopes for the localization of path states, style settings and clipping regions. As for options, the \macro{scope} environment accepts the \macro{scope/} set, the \macro{path/} set and the \macro{tag/} set.
 
 \begin{codeexamplecolumns}
-\begin{hawkdraw}[fill color={blue}]
+\begin{hawkdraw}[color fill={blue}]
   \fill (0cm,0cm) circle[radius={5pt}] ;
-  \begin{scope}[fill color={black}]
+  \begin{scope}[color fill={black}]
     \fill (1cm,0cm) circle[radius={5pt}] ;
   \end{scope}
   \fill (2cm,0cm) circle[radius={5pt}] ;
@@ -429,7 +431,7 @@ The option \macro{layer} sets the scope to be placed on the relevant layer. The 
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[layers={background,main}]
-  \fill[fill color={blue}]
+  \fill[color fill={blue}]
     (0cm,0cm) circle[radius={0.5cm}] ;
   \begin{scope}[layer={background}]
     \fill (0.5cm,0cm) circle[radius={0.5cm}] ;
@@ -813,9 +815,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius={2pt}] ;
-  \fill[fill color=blue] (B) circle[radius={2pt}] ;
-  \fill[fill color=green] (C) circle[radius={2pt}] ;
+  \fill[color fill=red] (A) circle[radius={2pt}] ;
+  \fill[color fill=blue] (B) circle[radius={2pt}] ;
+  \fill[color fill=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -826,9 +828,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius={2pt}] ;
-  \fill[fill color=blue] (B) circle[radius={2pt}] ;
-  \fill[fill color=green] (C) circle[radius={2pt}] ;
+  \fill[color fill=red] (A) circle[radius={2pt}] ;
+  \fill[color fill=blue] (B) circle[radius={2pt}] ;
+  \fill[color fill=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -840,9 +842,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius={2pt}] ;
-  \fill[fill color=blue] (B) circle[radius={2pt}] ;
-  \fill[fill color=green] (C) circle[radius={2pt}] ;
+  \fill[color fill=red] (A) circle[radius={2pt}] ;
+  \fill[color fill=blue] (B) circle[radius={2pt}] ;
+  \fill[color fill=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -854,9 +856,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius={2pt}] ;
-  \fill[fill color=blue] (B) circle[radius={2pt}] ;
-  \fill[fill color=green] (C) circle[radius={2pt}] ;
+  \fill[color fill=red] (A) circle[radius={2pt}] ;
+  \fill[color fill=blue] (B) circle[radius={2pt}] ;
+  \fill[color fill=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -868,13 +870,12 @@ The position of a point can also be adjusted using the \macro{at part} option wh
       angle start={45},
       angle end={135}
     ]
-    tip[at part=0.125] {default}
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius={2pt}] ;
-  \fill[fill color=blue] (B) circle[radius={2pt}] ;
-  \fill[fill color=green] (C) circle[radius={2pt}] ;
+  \fill[color fill=red] (A) circle[radius={2pt}] ;
+  \fill[color fill=blue] (B) circle[radius={2pt}] ;
+  \fill[color fill=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -887,13 +888,12 @@ The position of a point can also be adjusted using the \macro{at part} option wh
       angle start={45},
       angle end={135}
     ]
-    tip[at part=0.125] {default}
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius={2pt}] ;
-  \fill[fill color=blue] (B) circle[radius={2pt}] ;
-  \fill[fill color=green] (C) circle[radius={2pt}] ;
+  \fill[color fill=red] (A) circle[radius={2pt}] ;
+  \fill[color fill=blue] (B) circle[radius={2pt}] ;
+  \fill[color fill=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -903,13 +903,12 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     circle[
       radius={1cm}
     ]
-    tip[at part=0.125] {default}
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius={2pt}] ;
-  \fill[fill color=blue] (B) circle[radius={2pt}] ;
-  \fill[fill color=green] (C) circle[radius={2pt}] ;
+  \fill[color fill=red] (A) circle[radius={2pt}] ;
+  \fill[color fill=blue] (B) circle[radius={2pt}] ;
+  \fill[color fill=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -920,13 +919,12 @@ The position of a point can also be adjusted using the \macro{at part} option wh
       vector a={(0.5cm,1cm)},
       vector b={(0.75cm,0cm)}
     ]
-    tip[at part=0.125] {default}
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius={2pt}] ;
-  \fill[fill color=blue] (B) circle[radius={2pt}] ;
-  \fill[fill color=green] (C) circle[radius={2pt}] ;
+  \fill[color fill=red] (A) circle[radius={2pt}] ;
+  \fill[color fill=blue] (B) circle[radius={2pt}] ;
+  \fill[color fill=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -939,9 +937,9 @@ The position of a point can also be adjusted using the \macro{at part} option wh
     point[name={A}, at part={0}]
     point[name={B}, at part={0.5}]
     point[name={C}, at part={0.9}] ;
-  \fill[fill color=red] (A) circle[radius={2pt}] ;
-  \fill[fill color=blue] (B) circle[radius={2pt}] ;
-  \fill[fill color=green] (C) circle[radius={2pt}] ;
+  \fill[color fill=red] (A) circle[radius={2pt}] ;
+  \fill[color fill=blue] (B) circle[radius={2pt}] ;
+  \fill[color fill=green] (C) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -953,7 +951,7 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \point[name={A}, at={(1cm,1cm)}] ;
-  \stroke[stroke color={blue}]
+  \stroke[color stroke={blue}]
      (0cm,0cm) rectangle[corner={(A)}] ;
   \stroke (0cm,0cm)
     -- ({\getpoint{A} + (1cm,0cm)}) ;
@@ -963,7 +961,7 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \point[name={A}, at={(1cm,0.5cm)}] ;
-  \stroke[stroke color={blue}]
+  \stroke[color stroke={blue}]
      (0cm,0cm) rectangle[corner={(A)}] ;
   \stroke (0cm,0cm)
     -- ({\getpoint{A} * 2}) ;
@@ -1041,8 +1039,8 @@ It is possible to reference a point where two poles of the node intersect by app
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \node[stroke, name={A}] {foo} ;
-  \fill[fill color=red] (A[b,l]) circle[radius={2pt}] ;
-  \fill[fill color=red] (A[t,r]) circle[radius={2pt}] ;
+  \fill[color fill=red] (A[b,l]) circle[radius={2pt}] ;
+  \fill[color fill=red] (A[t,r]) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1117,10 +1115,10 @@ Using the \macro{padding} option, the padding between the border of the node and
 \end{codeexamplecolumns}
 
 \begin{macrodef}
-!path/node/!|text color|={<color>}
-!path/node/!|text opacity|={<float>}
+!path/node/!|color text|={<color>}
+!path/node/!|opacity text|={<float>}
 \end{macrodef}
-Using the \macro{text color} option, the color of the node contents is set. The default text color is the current (text) color. The option \macro{text opacity} sets the text opacity. The floating-point number should be in the range of \num{0} and \num{1}. The default text opacity is \num{1} (fully opaque).
+Using the \macro{color text} option, the color of the node contents is set. The default text color is the current (text) color. The option \macro{text opacity} sets the text opacity. The floating-point number should be in the range of \num{0} and \num{1}. The default text opacity is \num{1} (fully opaque).
 
 Note that \macro{\DocumentMetadata{}} needs to be set in order to activate support for PDF transparency.
 
@@ -1133,8 +1131,8 @@ Using the \macro{frame} command, the frame surrounding the node text can be sele
 \begin{hawkdraw}
   \stroke (0cm,0cm) -- (1cm,0.5cm)
     node[
-      fill, fill color={yellow},
-      text color={blue},
+      fill, color fill={yellow},
+      color text={blue},
       frame={ellipse}
     ] {foo} ;
 \end{hawkdraw}
@@ -1217,7 +1215,7 @@ The command \macro{\map} is a shortcut for \macro{\path (0pt,0pt) map}
     map[end={10}] {
         tip[
           at part={0.095 * #1},
-          fill color=blue! #1 0!red
+          color fill=blue! #1 0!red
         ] {stealth}
     } ;
 \end{hawkdraw}
@@ -1253,7 +1251,7 @@ The command \macro{\hawkdrawarrayitem} can be used to reference items in an arra
     } ;
   \hawkdrawmap[list={A,B,C}] {
     \fill[
-      fill color={\hawkdrawarrayitem{mycolors}{#2}}
+      color fill={\hawkdrawarrayitem{mycolors}{#2}}
     ] (#1) circle[radius={2pt}] ;
   }
 \end{hawkdraw}
@@ -1263,7 +1261,7 @@ The command \macro{\hawkdrawarrayitem} can be used to reference items in an arra
 
 The following options can be set for the path:
 
-\subsection{Stroke and fill color, opacity, clipping}
+\subsection{Stroke and color fill, opacity, clipping}
 
 \begin{macrodef}
 !path/!|stroke|
@@ -1288,18 +1286,18 @@ The command \macro{\clip} is a shortcut for \macro{\path [clip]}.
 \end{codeexamplecolumns}
 
 \begin{macrodef}
-!path/!|stroke color|={<color>}
-!path/!|fill color|={<color>}
-!path/!|stroke opacity|={<float>}
-!path/!|fill opacity|={<float>}
+!path/!|color stroke|={<color>}
+!path/!|color fill|={<color>}
+!path/!|opacity stroke|={<float>}
+!path/!|opacity fill|={<float>}
 \end{macrodef}
-The options \macro{stroke color} and \macro{fill color} set the stroke color and the fill color for the path. The default stroke color and fill color is the current (text) color.
+The options \macro{color stroke} and \macro{color fill} set the color stroke and the color fill for the path. The default color stroke and color fill is the current (text) color.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[line width={5pt}]
   \path[
-    fill, fill color={yellow},
-    stroke, stroke color={blue}
+    fill, color fill={yellow},
+    stroke, color stroke={blue}
   ] (0cm,0cm)
     rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
@@ -1308,14 +1306,14 @@ The options \macro{stroke color} and \macro{fill color} set the stroke color and
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[line width={5pt}]
   \path[
-    fill, fill opacity={0.25},
-    stroke, stroke opacity={0.5}
+    fill, opacity fill={0.25},
+    stroke, opacity stroke={0.5}
   ] (0cm,0cm)
     rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-The options \macro{stroke opacity} and \macro{fill opacity} set the stroke opacity and the fill opacity for the path. The floating-point number should be in the range of \num{0} and \num{1}. The default stroke opacity and fill opacity is \num{1} (fully opaque).
+The options \macro{opacity stroke} and \macro{opacity fill} set the opacity stroke and the opacity fill for the path. The floating-point number should be in the range of \num{0} and \num{1}. The default opacity stroke and opacity fill is \num{1} (fully opaque).
 
 Note that \macro{\DocumentMetadata{}} needs to be set in order to activate support for PDF transparency.
 
@@ -1423,7 +1421,7 @@ The option \macro{shift} sets the shift for the path as a tuple of dimensions. T
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[stroke color={blue}]
+  \stroke[color stroke={blue}]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
   \stroke[shift={(5pt,10pt)}]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
@@ -1471,7 +1469,7 @@ The key \macro{style set} defines custom keys and sets their values. The key \ma
 \begin{hawkdraw}[
   style set={
     mystyle={
-      stroke, stroke color={blue},
+      stroke, color stroke={blue},
       line width={5pt}
     }
   }
@@ -1491,8 +1489,8 @@ The command \macro{\hawkdrawsetcolor} is used to define colors using the \macro{
 \hawkdrawsetcolor{colorB}{named}{yellow!90!red}
 \begin{hawkdraw}[line width={5pt}]
   \path[
-    stroke, stroke color={colorA},
-    fill, fill color={colorB}
+    stroke, color stroke={colorA},
+    fill, color fill={colorB}
   ] (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -1530,7 +1528,7 @@ The options \macro{arrow start style add}, \macro{arrow end style add} and \macr
 \begin{hawkdraw}
   \stroke[
     arrow end,
-    arrow style set={fill, fill color=blue}
+    arrow style set={fill, color fill=blue}
   ]
     (0cm,0cm) -- (2cm,1cm) ;
 \end{hawkdraw}
@@ -1616,7 +1614,7 @@ The options \macro{pattern x} and \macro{pattern y} set the dimensions of the pa
 \begin{hawkdraw}
   \path[
     fill pattern={dots},
-    pattern style set={fill color=blue}
+    pattern style set={color fill=blue}
   ]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
