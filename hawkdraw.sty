@@ -1403,10 +1403,10 @@
     } {
         \fp_set_eq:NN \l__hawkdraw_point_a_fp \l_hawkdraw_path_grid_corner_fp
     }
-    \dim_set:Ne \l__hawkdraw_path_grid_xstep_dim {
+    \dim_set:Nn \l__hawkdraw_path_grid_xstep_dim {
         \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 1 }
     }
-    \dim_set:Ne \l__hawkdraw_path_grid_ystep_dim {
+    \dim_set:Nn \l__hawkdraw_path_grid_ystep_dim {
         \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_grid_step_clist } > { 1 } {
             \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 2 }
         } {

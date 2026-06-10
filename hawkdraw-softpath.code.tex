@@ -65,7 +65,7 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_softpath_arc_axes_opi:nn #1#2 {
-    \hawkdraw_softpath_arc_op:nnNnnNnn {#1} {#2}
+    \hawkdraw_softpath_arc_axes_op:nnNnnNnn {#1} {#2}
 }
 
 \cs_new_protected:Npn \hawkdraw_softpath_arc_axes_opii:nn #1#2 {
@@ -116,7 +116,7 @@
     \hawkdraw_softpath_rectangle_opii:nn
 }
 
-\cs_new_protected:Npn \hawkdraw_softpath_grid_op:nnNnn #1#2#3#4#5#6#7#8 {
+\cs_new_protected:Npn \hawkdraw_softpath_grid_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
     \draw_path_grid:nnnn {#1} {#2} { #4 , #5 } { #7 , #8 }
 }
 
