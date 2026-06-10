@@ -25,10 +25,10 @@
 \keys_define:nn { hawkdraw / path } {
     arrow ~ start           .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
-            \fp_if_nan:nF { \g_hawkdraw_path_first_slope_fp } {
+            \fp_if_nan:nF { \g_hawkdraw_path_slope_first_fp } {
                 \hawkdraw_arrow:nVnV {#1}
-                    \g_hawkdraw_path_first_point_fp
-                    { \g_hawkdraw_path_first_slope_fp + 90 }
+                    \g_hawkdraw_path_point_first_fp
+                    { \g_hawkdraw_path_slope_first_fp + 90 }
                     \l_hawkdraw_arrow_start_keys_clist
             }
         }
@@ -36,10 +36,10 @@
     arrow ~ start           .default:n      = { default } ,
     arrow ~ end             .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
-            \fp_if_nan:nF { \g_hawkdraw_path_last_slope_fp } {
+            \fp_if_nan:nF { \g_hawkdraw_path_slope_last_fp } {
                 \hawkdraw_arrow:nVnV {#1}
-                    \g_hawkdraw_path_last_point_fp
-                    { \g_hawkdraw_path_last_slope_fp - 90 }
+                    \g_hawkdraw_path_point_last_fp
+                    { \g_hawkdraw_path_slope_last_fp - 90 }
                     \l_hawkdraw_arrow_end_keys_clist
             }
         }

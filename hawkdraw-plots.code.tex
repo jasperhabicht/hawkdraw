@@ -34,7 +34,7 @@
 
 \cs_new_protected:Npn \hawkdraw_path_plot:nn #1#2 {
     \str_set:Nn \l__hawkdraw_path_type_tl { plot }
-    \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_last_point_fp
+    \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_point_last_fp
     \keys_set:nn { hawkdraw / path / plot } {#1}
     \seq_gclear:N \g__hawkdraw_path_plot_points_seq
     \seq_gput_right:Ne \g__hawkdraw_path_plot_points_seq {
@@ -59,7 +59,7 @@
     \seq_gput_right:Ne \g__hawkdraw_path_plot_points_seq {
         \fp_to_decimal:N \l__hawkdraw_point_a_fp
     }
-    \fp_gset_eq:NN \g_hawkdraw_path_last_point_fp \l__hawkdraw_point_a_fp
+    \fp_gset_eq:NN \g_hawkdraw_path_point_last_fp \l__hawkdraw_point_a_fp
     \tl_trim_spaces_apply:nN {#2} \__hawkdraw_path_process_plot:n
 }
 

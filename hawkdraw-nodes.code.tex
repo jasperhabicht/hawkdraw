@@ -137,8 +137,8 @@
 
 \cs_new_protected:Npn \hawkdraw_node:nn #1#2 {
     \draw_scope_begin:
-        \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_last_point_fp
-        \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_last_slope_fp
+        \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_point_last_fp
+        \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_slope_last_fp
         \fp_set:Nn \l_hawkdraw_point_at_part_fp { nan }
         \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
         \keys_set_known:nnN { hawkdraw / path / point } {#1}
