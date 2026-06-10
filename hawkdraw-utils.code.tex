@@ -14,126 +14,11 @@
 
 % v0.1.1 2026-06-05
 
-\tl_new:N \g_hawkdraw_softpath_original_tl
+% =====
 
-\cs_new_protected:Npn \hawkdraw_softpath_close_op:nn #1#2 {
-    \draw_path_close:
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_moveto_op:nn #1#2 {
-    \draw_path_moveto:n { #1 , #2 }
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_lineto_op:nn #1#2 {
-    \draw_path_lineto:n { #1 , #2 }
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_curveto_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
-    \tl_if_empty:nTF {#7} {
-        \draw_path_curveto:nn { #1 , #2 } { #4 , #5 }
-    } {
-        \draw_path_curveto:nnn { #1 , #2 } { #4 , #5 } { #7 , #8 }
-    }
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_curveto_opi:nn #1#2 {
-    \hawkdraw_softpath_curveto_op:nnNnnNnn {#1} {#2}
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_curveto_opii:nn #1#2 {
-    \hawkdraw_softpath_curveto_opii:nn
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_curveto_opiii:nn #1#2 {
-    \hawkdraw_softpath_curveto_opiii:nn
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_arc_op:nnNnn #1#2#3#4#5 {
-    \draw_path_arc:nnnn {#1} {#2} {#4} {#5}
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_arc_opi:nn #1#2 {
-    \hawkdraw_softpath_arc_op:nnNnn {#1} {#2}
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_arc_opii:nn #1#2 {
-    \hawkdraw_softpath_arc_opii:nn
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_arc_axes_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
-    \draw_path_arc_axes:nnnn { #1 , #2 } { #4 , #5 } {#7} {#8}
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_arc_axes_opi:nn #1#2 {
-    \hawkdraw_softpath_arc_axes_op:nnNnnNnn {#1} {#2}
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_arc_axes_opii:nn #1#2 {
-    \hawkdraw_softpath_arc_opii:nn
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_arc_axes_opiii:nn #1#2 {
-    \hawkdraw_softpath_arc_opiii:nn
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_circle_op:nnNnn #1#2#3#4#5 {
-    \draw_path_circle:nn { #1 , #2 } {#4}
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_circle_opi:nn #1#2 {
-    \hawkdraw_softpath_circle_op:nnNnn {#1} {#2}
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_circle_opii:nn #1#2 {
-    \hawkdraw_softpath_circle_opii:nn
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_ellipse_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
-    \draw_path_ellipse:nnn { #1 , #2 } { #4 , #5 } { #7 , #8 }
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_ellipse_opi:nn #1#2 {
-    \hawkdraw_softpath_ellipse_op:nnNnnNnn {#1} {#2}
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_ellipse_opii:nn #1#2 {
-    \hawkdraw_softpath_ellipse_opii:nn
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_ellipse_opiii:nn #1#2 {
-    \hawkdraw_softpath_ellipse_opiii:nn
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_rectangle_op:nnNnn #1#2#3#4#5 {
-    \draw_path_rectangle:nn { #1 , #2 } { #4 , #5 }
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_rectangle_opi:nn #1#2 {
-    \hawkdraw_softpath_rectangle_op:nnNnn {#1} {#2}
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_rectangle_opii:nn #1#2 {
-    \hawkdraw_softpath_rectangle_opii:nn
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_grid_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
-    \draw_path_grid:nnnn {#1} {#2} { #4 , #5 } { #7 , #8 }
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_grid_opi:nn #1#2 {
-    \hawkdraw_softpath_grid_op:nnNnnNnn {#1} {#2}
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_grid_opii:nn #1#2 {
-    \hawkdraw_softpath_grid_opii:nn
-}
-
-\cs_new_protected:Npn \hawkdraw_softpath_grid_opiii:nn #1#2 {
-    \hawkdraw_softpath_grid_opiii:nn
-}
+% Calculation of slopes and points on path segments
 
 % ===
-
 
 \cs_new:Npn \__hawkdraw_calculate_slope:nn #1#2 {
     \fp_eval:n {
@@ -571,6 +456,134 @@
 \cs_set_eq:NN \__hawkdraw_point_part_slope_grid:nnn \__hawkdraw_point_part_slope_rectangle:nnn
 \cs_set_eq:NN \__hawkdraw_point_part_slope_grid:n \__hawkdraw_point_part_slope_rectangle:n
 \cs_generate_variant:Nn \__hawkdraw_point_part_slope_grid:n { V }
+
+% =====
+
+% Softpath mechanism
+
+% ===
+
+\tl_new:N \g_hawkdraw_softpath_original_tl
+
+\cs_new_protected:Npn \hawkdraw_softpath_close_op:nn #1#2 {
+    \draw_path_close:
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_moveto_op:nn #1#2 {
+    \draw_path_moveto:n { #1 , #2 }
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_lineto_op:nn #1#2 {
+    \draw_path_lineto:n { #1 , #2 }
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_curveto_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
+    \tl_if_empty:nTF {#7} {
+        \draw_path_curveto:nn { #1 , #2 } { #4 , #5 }
+    } {
+        \draw_path_curveto:nnn { #1 , #2 } { #4 , #5 } { #7 , #8 }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_curveto_opi:nn #1#2 {
+    \hawkdraw_softpath_curveto_op:nnNnnNnn {#1} {#2}
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_curveto_opii:nn #1#2 {
+    \hawkdraw_softpath_curveto_opii:nn
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_curveto_opiii:nn #1#2 {
+    \hawkdraw_softpath_curveto_opiii:nn
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_arc_op:nnNnn #1#2#3#4#5 {
+    \draw_path_arc:nnnn {#1} {#2} {#4} {#5}
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_arc_opi:nn #1#2 {
+    \hawkdraw_softpath_arc_op:nnNnn {#1} {#2}
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_arc_opii:nn #1#2 {
+    \hawkdraw_softpath_arc_opii:nn
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_arc_axes_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
+    \draw_path_arc_axes:nnnn { #1 , #2 } { #4 , #5 } {#7} {#8}
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_arc_axes_opi:nn #1#2 {
+    \hawkdraw_softpath_arc_axes_op:nnNnnNnn {#1} {#2}
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_arc_axes_opii:nn #1#2 {
+    \hawkdraw_softpath_arc_opii:nn
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_arc_axes_opiii:nn #1#2 {
+    \hawkdraw_softpath_arc_opiii:nn
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_circle_op:nnNnn #1#2#3#4#5 {
+    \draw_path_circle:nn { #1 , #2 } {#4}
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_circle_opi:nn #1#2 {
+    \hawkdraw_softpath_circle_op:nnNnn {#1} {#2}
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_circle_opii:nn #1#2 {
+    \hawkdraw_softpath_circle_opii:nn
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_ellipse_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
+    \draw_path_ellipse:nnn { #1 , #2 } { #4 , #5 } { #7 , #8 }
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_ellipse_opi:nn #1#2 {
+    \hawkdraw_softpath_ellipse_op:nnNnnNnn {#1} {#2}
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_ellipse_opii:nn #1#2 {
+    \hawkdraw_softpath_ellipse_opii:nn
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_ellipse_opiii:nn #1#2 {
+    \hawkdraw_softpath_ellipse_opiii:nn
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_rectangle_op:nnNnn #1#2#3#4#5 {
+    \draw_path_rectangle:nn { #1 , #2 } { #4 , #5 }
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_rectangle_opi:nn #1#2 {
+    \hawkdraw_softpath_rectangle_op:nnNnn {#1} {#2}
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_rectangle_opii:nn #1#2 {
+    \hawkdraw_softpath_rectangle_opii:nn
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_grid_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
+    \draw_path_grid:nnnn {#1} {#2} { #4 , #5 } { #7 , #8 }
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_grid_opi:nn #1#2 {
+    \hawkdraw_softpath_grid_op:nnNnnNnn {#1} {#2}
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_grid_opii:nn #1#2 {
+    \hawkdraw_softpath_grid_opii:nn
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_grid_opiii:nn #1#2 {
+    \hawkdraw_softpath_grid_opiii:nn
+}
+
+% =====
+
+% Calculation of path length
 
 % ===
 
