@@ -714,11 +714,11 @@
 
 \tl_new:N \l_hawkdraw_softpath_intermediate_tl
 \fp_new:N \l_hawkdraw_softpath_point_last_fp
-\fp_new:N \l_hawkdraw_softpath_path_length_fp
+\fp_new:N \l_hawkdraw_path_length_fp
 
-\cs_new_protected:Npn \hawkdraw_softpath_get_path_length: {
+\cs_new_protected:Npn \hawkdraw_path_get_length: {
     \group_begin:
-        \fp_zero:N \l_hawkdraw_softpath_path_length_fp
+        \fp_zero:N \l_hawkdraw_path_length_fp
         \fp_set:Nn \l_hawkdraw_softpath_point_last_fp { 0pt , 0pt }
         \tl_build_get_intermediate:NN \g_hawkdraw_softpath_original_tl
             \l_hawkdraw_softpath_intermediate_tl
@@ -731,24 +731,16 @@
             \cs_set_eq:cc {
                 hawkdraw_softpath_ ##1
             } {
-                __hawkdraw_softpath_path_length_ ##1
+                __hawkdraw_path_get_length_ ##1
             }
         }
         \tl_use:N \l_hawkdraw_softpath_intermediate_tl
-        \fp_gset_eq:NN \g_hawkdraw_path_length_fp \l_hawkdraw_softpath_path_length_fp
+        \fp_gset_eq:NN \g_hawkdraw_path_length_fp \l_hawkdraw_path_length_fp
     \group_end:
 }
 
-\cs_new_protected:Npn \__hawkdraw_softpath_path_length_close_op:nn #1#2 {
-    \draw_path_moveto:n { #1 , #2 }
-}
-
-\cs_new_protected:Npn \__hawkdraw_softpath_path_length_moveto_op:nn #1#2 {
-    \fp_set:Nn \l_hawkdraw_softpath_point_last_fp { #1 , #2 }
-}
-
-\cs_new_protected:Npn \__hawkdraw_softpath_path_length_lineto_op:nn #1#2 {
-    \fp_add:Nn \l_hawkdraw_softpath_path_length_fp {
+\cs_new_protected:Npn \__hawkdraw_path_get_length_close_op:nn #1#2 {
+    \fp_add:Nn \l_hawkdraw_path_length_fp {
         \__hawkdraw_path_length_line:nn {
             \l_hawkdraw_softpath_point_last_fp
         } { #1 , #2 }
@@ -756,15 +748,28 @@
     \fp_set:Nn \l_hawkdraw_softpath_point_last_fp { #1 , #2 }
 }
 
-\cs_new_protected:Npn \__hawkdraw_softpath_path_length_curveto_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
+\cs_new_protected:Npn \__hawkdraw_path_get_length_moveto_op:nn #1#2 {
+    \fp_set:Nn \l_hawkdraw_softpath_point_last_fp { #1 , #2 }
+}
+
+\cs_new_protected:Npn \__hawkdraw_path_get_length_lineto_op:nn #1#2 {
+    \fp_add:Nn \l_hawkdraw_path_length_fp {
+        \__hawkdraw_path_length_line:nn {
+            \l_hawkdraw_softpath_point_last_fp
+        } { #1 , #2 }
+    }
+    \fp_set:Nn \l_hawkdraw_softpath_point_last_fp { #1 , #2 }
+}
+
+\cs_new_protected:Npn \__hawkdraw_path_get_length_curveto_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
     \tl_if_empty:nTF {#7} {
-        \fp_add:Nn \l_hawkdraw_softpath_path_length_fp {
+        \fp_add:Nn \l_hawkdraw_path_length_fp {
             \__hawkdraw_path_length_curve_quadratic:nnn {
                 \l_hawkdraw_softpath_point_last_fp
             } { #1 , #2 } { #4 , #5 }
         }
     } {
-        \fp_add:Nn \l_hawkdraw_softpath_path_length_fp {
+        \fp_add:Nn \l_hawkdraw_path_length_fp {
             \__hawkdraw_path_length_curve_cubic:nnnn {
                 \l_hawkdraw_softpath_point_last_fp
             } { #1 , #2 } { #4 , #5 } { #7 , #8 }
@@ -773,21 +778,21 @@
     \fp_set:Nn \l_hawkdraw_softpath_point_last_fp { #1 , #2 }
 }
 
-\cs_new_protected:Npn \hawkdraw_softpath_path_length_arc_op:nnNnn #1#2#3#4#5 {
-    \fp_add:Nn \l_hawkdraw_softpath_path_length_fp {
+\cs_new_protected:Npn \__hawkdraw_path_get_length_arc_op:nnNnn #1#2#3#4#5 {
+    \fp_add:Nn \l_hawkdraw_path_length_fp {
         \__hawkdraw_path_length_arc:nnnn
-            {#1} {#2} {#3} {#4}
+            {#1} {#2} {#4} {#5}
     }
     \fp_set:Nn \l_hawkdraw_softpath_point_last_fp {
         \l_hawkdraw_softpath_point_last_fp + (
             \__hawkdraw_point_part_arc:nnnnn
-                { 1 } {#1} {#2} {#3} {#4}
+                { 1 } {#1} {#2} {#4} {#5}
         )
     }
 }
 
-\cs_new_protected:Npn \hawkdraw_softpath_path_length_arc_axes_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
-    \fp_add:Nn \l_hawkdraw_softpath_path_length_fp {
+\cs_new_protected:Npn \__hawkdraw_path_get_length_arc_axes_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
+    \fp_add:Nn \l_hawkdraw_path_length_fp {
         \__hawkdraw_path_length_arc_axes:nnnn
             { #1 , #2 } { #4 , #5 } {#7} {#8}
     }
@@ -799,27 +804,27 @@
     }
 }
 
-\cs_new_protected:Npn \hawkdraw_softpath_path_length_circle_op:nnNnn #1#2#3#4#5 {
-    \fp_add:Nn \l_hawkdraw_softpath_path_length_fp {
+\cs_new_protected:Npn \__hawkdraw_path_get_length_circle_op:nnNnn #1#2#3#4#5 {
+    \fp_add:Nn \l_hawkdraw_path_length_fp {
         \__hawkdraw_path_length_circle:n {#4}
     }
 }
 
-\cs_new_protected:Npn \hawkdraw_softpath_path_length_ellipse_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
-    \fp_add:Nn \l_hawkdraw_softpath_path_length_fp {
+\cs_new_protected:Npn \__hawkdraw_path_get_length_ellipse_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
+    \fp_add:Nn \l_hawkdraw_path_length_fp {
         \__hawkdraw_path_length_ellipse:nnn { #1 , #2 } { #4 , #5 } { #7 , #8 }
     }
 }
 
-\cs_new_protected:Npn \hawkdraw_softpath_path_length_rectangle_op:nnNnn #1#2#3#4#5 {
-    \fp_add:Nn \l_hawkdraw_softpath_path_length_fp {
+\cs_new_protected:Npn \__hawkdraw_path_get_length_rectangle_op:nnNnn #1#2#3#4#5 {
+    \fp_add:Nn \l_hawkdraw_path_length_fp {
         \__hawkdraw_path_length_rectangle:nn { #1 , #2 } { #4 , #5 }
     }
     \fp_set:Nn \l_hawkdraw_softpath_point_last_fp { #4 , #5 }
 }
 
-\cs_new_protected:Npn \hawkdraw_softpath_path_length_grid_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
-    \fp_add:Nn \l_hawkdraw_softpath_path_length_fp {
+\cs_new_protected:Npn \__hawkdraw_path_get_length_grid_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
+    \fp_add:Nn \l_hawkdraw_path_length_fp {
         \__hawkdraw_path_length_grid:nn { #4 , #5 } { #7 , #8 }
     }
     \fp_set:Nn \l_hawkdraw_softpath_point_last_fp { #7 , #8 }
