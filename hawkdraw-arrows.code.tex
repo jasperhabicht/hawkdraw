@@ -26,8 +26,8 @@
     arrow ~ start           .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
             \fp_if_nan:nF { \g_hawkdraw_path_slope_first_fp } {
-                \hawkdraw_arrow:nVnV {#1}
-                    \g_hawkdraw_path_point_first_fp
+                \hawkdraw_arrow:nnnV {#1}
+                    { \g_hawkdraw_path_point_first_fp }
                     { \g_hawkdraw_path_slope_first_fp + 90 }
                     \l_hawkdraw_arrow_start_keys_clist
             }
@@ -37,8 +37,8 @@
     arrow ~ end             .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
             \fp_if_nan:nF { \g_hawkdraw_path_slope_last_fp } {
-                \hawkdraw_arrow:nVnV {#1}
-                    \g_hawkdraw_path_point_last_fp
+                \hawkdraw_arrow:nnnV {#1}
+                    { \g_hawkdraw_path_point_last_fp }
                     { \g_hawkdraw_path_slope_last_fp - 90 }
                     \l_hawkdraw_arrow_end_keys_clist
             }
@@ -83,7 +83,7 @@
         \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }
     \draw_scope_end:
 }
-\cs_generate_variant:Nn \hawkdraw_arrow:nnnn { nVVV , nVnV }
+\cs_generate_variant:Nn \hawkdraw_arrow:nnnn { nnnV }
 
 \cs_new_protected:Npn \hawkdraw_arrow_create:nnn #1#2#3 {
     \prop_gput:Nnn \g_hawkdraw_arrow_default_keys_prop {#1} {#2}
@@ -124,11 +124,15 @@
 \keys_define:nn { hawkdraw / path / tip } {
     at ~ part               .fp_set:N       = \l_hawkdraw_tip_at_part_fp ,
     at ~ part               .initial:n      = { 1 } ,
+    at ~ distance           .code:n         = {
+        \hawkdraw_softpath_get_path_length:
+        \fp_set:Nn \l_hawkdraw_tip_at_part_fp {
+            #1 / \g_hawkdraw_path_length_fp
+        }
+    } ,
     flipped                 .bool_set:N     = \l_hawkdraw_tip_flipped_bool ,
     flipped                 .default:n      = { true } ,
 }
-
-
 
 \cs_new_protected:cpn { __hawkdraw_path_process_tip_ [ :w } [ #1 ] #2#3 \s__hawkdraw_stop {
     

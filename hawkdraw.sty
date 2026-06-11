@@ -694,6 +694,12 @@
     } ,
     name                    .tl_set:N       = \l_hawkdraw_point_name_tl ,
     at ~ part               .fp_set:N       = \l_hawkdraw_point_at_part_fp ,
+    at ~ distance           .code:n         = {
+        \hawkdraw_softpath_get_path_length:
+        \fp_set:Nn \l_hawkdraw_tip_at_part_fp {
+            #1 / \g_hawkdraw_path_length_fp
+        }
+    } ,
 }
 
 % point , plot
