@@ -16,18 +16,26 @@
 
 \tl_new:N \g_hawkdraw_softpath_original_tl
 
+% #1 , #2: x and y coordinate of first point of path
 \cs_new_protected:Npn \hawkdraw_softpath_close_op:nn #1#2 {
     \draw_path_close:
 }
 
+% #1 , #2: x and y coordinate of point
 \cs_new_protected:Npn \hawkdraw_softpath_moveto_op:nn #1#2 {
     \draw_path_moveto:n { #1 , #2 }
 }
 
+% #1 , #2: x and y coordinate of end point
 \cs_new_protected:Npn \hawkdraw_softpath_lineto_op:nn #1#2 {
     \draw_path_lineto:n { #1 , #2 }
 }
 
+% #1 , #2: x and y coordinate of control point
+% #3     : \hawkdraw_softpath_curveto_opii:nn
+% #4 , #5: x and y coordinate of end point (quadratic) or second control point (cubic)
+% #6     : \hawkdraw_softpath_curveto_opiii:nn
+% #7 , #8: empty (quadratic) or x and y coordinate of end point (cubic)
 \cs_new_protected:Npn \hawkdraw_softpath_curveto_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
     \tl_if_empty:nTF {#7} {
         \draw_path_curveto:nn { #1 , #2 } { #4 , #5 }
@@ -48,6 +56,9 @@
     \hawkdraw_softpath_curveto_opiii:nn
 }
 
+% #1 , #2: lengths of x and y radius
+% #3     : \hawkdraw_softpath_arc_opii:nn
+% #4 , #5: start and end angle
 \cs_new_protected:Npn \hawkdraw_softpath_arc_op:nnNnn #1#2#3#4#5 {
     \draw_path_arc:nnnn {#1} {#2} {#4} {#5}
 }
@@ -60,6 +71,11 @@
     \hawkdraw_softpath_arc_opii:nn
 }
 
+% #1 , #2: x and y coordinate of vector a
+% #3     : \hawkdraw_softpath_arc_axes_opii:nn
+% #4 , #5: x and y coordinate of value b
+% #6     : \hawkdraw_softpath_arc_axes_opiii:nn
+% #7 , #8: start and end angle
 \cs_new_protected:Npn \hawkdraw_softpath_arc_axes_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
     \draw_path_arc_axes:nnnn { #1 , #2 } { #4 , #5 } {#7} {#8}
 }
@@ -76,6 +92,10 @@
     \hawkdraw_softpath_arc_opiii:nn
 }
 
+% #1 , #2: x and y coordinate of center
+% #3     : \hawkdraw_softpath_circle_opii:nn
+% #4     : length of radius
+% #5     : empty
 \cs_new_protected:Npn \hawkdraw_softpath_circle_op:nnNnn #1#2#3#4#5 {
     \draw_path_circle:nn { #1 , #2 } {#4}
 }
@@ -88,6 +108,11 @@
     \hawkdraw_softpath_circle_opii:nn
 }
 
+% #1 , #2: x and y coordinate of center
+% #3     : \hawkdraw_softpath_ellipse_opii:nn
+% #4 , #5: x and y coordinate of vector a
+% #6     : \hawkdraw_softpath_ellipse_opiii:nn
+% #7 , #8: x and y coordinate of vector b
 \cs_new_protected:Npn \hawkdraw_softpath_ellipse_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
     \draw_path_ellipse:nnn { #1 , #2 } { #4 , #5 } { #7 , #8 }
 }
@@ -103,7 +128,9 @@
 \cs_new_protected:Npn \hawkdraw_softpath_ellipse_opiii:nn #1#2 {
     \hawkdraw_softpath_ellipse_opiii:nn
 }
-
+% #1 , #2: x and y coordinate of corner a
+% #3     : \hawkdraw_softpath_rectangle_opii:nn
+% #4 , #5: x and y coordinate of corner b
 \cs_new_protected:Npn \hawkdraw_softpath_rectangle_op:nnNnn #1#2#3#4#5 {
     \draw_path_rectangle:nn { #1 , #2 } { #4 , #5 }
 }
@@ -116,6 +143,11 @@
     \hawkdraw_softpath_rectangle_opii:nn
 }
 
+% #1 , #2: lengths of x and y step
+% #3     : \hawkdraw_softpath_grid_opii:nn
+% #4 , #5: x and y coordinate of corner a
+% #6     : \hawkdraw_softpath_grid_opiii:nn
+% #7 , #8: x and y coordinate of corner b
 \cs_new_protected:Npn \hawkdraw_softpath_grid_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
     \draw_path_grid:nnnn {#1} {#2} { #4 , #5 } { #7 , #8 }
 }
