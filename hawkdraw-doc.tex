@@ -355,7 +355,7 @@ For example keys of the \macro{picture/} set can be called using \macro{\hawkdra
 
 The package has only very few main user commands that can be used almost everywhere in the document body. Among these, the \macro{hawkdraw} environment is the most important as it is used to define a drawing and most other commands are only defined inside this environment.
 
-\begin{macrodef}
+\begin{macrodef}[env:hawkdraw]
 \\\begin{|hawkdraw|}[<options>]
 \end{|hawkdraw|}
 \end{macrodef}
@@ -1672,19 +1672,42 @@ For example, the setting \macro{tagging-setup={alt={Water (H20)}, tag={Formula}}
 
 \section{Use with ConTeXt}
 
-The package provides a ConTeXt module that acts as a wrapper around the LaTeX package. The module loads PDFLaTeX from within ConTeXt to create a stand-alone PDF file from the relevant drawing that is then included into the ConTeXt document.
+The package provides a ConTeXt module that acts as a wrapper around the LaTeX package. The module loads PDFLaTeX from within ConTeXt to create a stand-alone PDF file from the relevant drawing that is then included into the ConTeXt document. To load the module in ConTeXt, call \macro{\usemodule[hawkdraw]}. 
 
-To load the module in ConTeXt, call \macro{\usemodule[hawkdraw]}. The drawing code can the be used between the commands \macro{\starthawkdraw} and \macro{\stophawkdraw}.
+\begin{macrodef}
+|\starthawkdraw|[<options>]
+|\stophawkdraw|
+\end{macrodef}
+
+The drawing code can the be used between the commands \macro{\starthawkdraw} and \macro{\stophawkdraw}.
 
 \begin{codeexample}
 \usemodule[hawkdraw]
 
 \starttext
-    \starthawkdraw
-        \path[stroke] (0cm,0cm) -- (2cm,1cm) ;
-    \stophawkdraw
+  \starthawkdraw
+    \path[stroke] (0cm,0cm) -- (2cm,1cm) ;
+  \stophawkdraw
 \stoptext
 \end{codeexample}
+
+The \macro{\starthawkdraw} command can take options as argument. All options that are allowed for \macro{\setupframed} can be used. Also, the option \macro{options} can be used to pass options as described \hyperlink{env:hawkdraw}{above} for the \macro{hawkdraw} environment. For example, the below code can be used to set layers:
+
+\begin{codeexample}
+\starthawkdraw[options={layers={background,main}}]
+  \fill[color fill={blue}]
+    (0cm,0cm) circle[radius={0.5cm}] ;
+  \begin{scope}[layer={background}]
+    \fill (0.5cm,0cm) circle[radius={0.5cm}] ;
+  \end{scope}
+\stophawkdraw
+\end{codeexample}
+
+\begin{macrodef}
+|\setuphawkdraw|[<options>]
+\end{macrodef}
+
+Instead of locally passing options to the \macro{\starthawkdraw} command, it is also possible to pass options to the \macro{\setuphawkdraw} command.
 
 % =====
 
