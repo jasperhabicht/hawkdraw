@@ -333,6 +333,19 @@
     }
 }
 
+\fp_new_function:n { hawkdrawlerp }
+\fp_set_function:nnn { hawkdrawlerp } { p , q , t } {
+    ( 1 - t ) * p + t * q
+}
+
+\fp_new_function:n { hawkdrawremapt }
+\fp_set_function:nnn { hawkdrawremapt } { t , u } {
+    ( t - u ) / ( 1 - u )
+}
+
+\fp_new:N \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
+\fp_new:N \l__hawkdraw_softpath_shorten_curve_point_tmpb_fp
+
 \cs_new_protected:Npn \hawkdraw_softpath_shorten_curveto_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
     \fp_set_eq:NN \l_hawkdraw_path_shorten_point_last_fp \l_hawkdraw_softpath_point_last_fp
     \__hawkdraaw_softpath_shorten_lookahead:nN {
@@ -380,14 +393,26 @@
                     {#1} {#2} {#3}
             }
             \fp_set:Nn \l__hawkdraw_path_shorten_start_end_curve_part_fp {
-                ( \l__hawkdraw_path_shorten_end_curve_part_fp -
-                \l__hawkdraw_path_shorten_start_curve_part_fp ) / 
-                ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp )
+                hawkdrawremapt (
+                    \l__hawkdraw_path_shorten_start_curve_part_fp ,
+                    \l__hawkdraw_path_shorten_end_curve_part_fp
+                )
             }
             \fp_gset:Nn \g_hawkdraw_path_point_first_fp {
                 \__hawkdraw_point_part_curve_quadratic:nnnn {
                     \l__hawkdraw_path_shorten_start_curve_part_fp
                 } {#1} {#2} {#3}
+            }
+            \fp_set:Nn \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp {
+                hawkdrawlerp (
+                    \g_hawkdraw_path_point_first_fp ,
+                    hawkdrawlerp (
+                        ( #2 ) ,
+                        ( #3 ) ,
+                        \l__hawkdraw_path_shorten_start_curve_part_fp
+                    ) ,
+                    \l__hawkdraw_path_shorten_start_end_curve_part_fp
+                )
             }
             % quadratic curve: shorten start, shorten end
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
@@ -396,13 +421,7 @@
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opi:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_start_end_curve_part_fp ) * (
-                        \g_hawkdraw_path_point_first_fp
-                    ) +
-                    \l__hawkdraw_path_shorten_start_end_curve_part_fp * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                        \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
-                    )
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opii:n {
@@ -414,34 +433,28 @@
                 \__hawkdraw_calculate_slope:nn {
                     \g_hawkdraw_path_point_first_fp
                 } {
-                    ( 1 - \l__hawkdraw_path_shorten_start_end_curve_part_fp ) * (
-                        \g_hawkdraw_path_point_fist_fp
-                    ) +
-                    \l__hawkdraw_path_shorten_start_end_curve_part_fp * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                        \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
-                    )
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 }
             }
             \fp_gset:Nn \g_hawkdraw_path_slope_last_fp {
                 \__hawkdraw_calculate_slope:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_start_end_curve_part_fp ) * (
-                        \g_hawkdraw_path_point_fist_fp
-                    ) +
-                    \l__hawkdraw_path_shorten_start_end_curve_part_fp * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                        \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
-                    )
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 } {
                     \g_hawkdraw_path_point_last_fp
                 }
             }
         } {
+            \fp_set:Nn \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp {
+                hawkdrawlerp (
+                    ( #1 ) ,
+                    ( #2 ) ,
+                    \l__hawkdraw_path_shorten_end_curve_part_fp
+                )
+            }
             % quadratic curve: shorten end
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opi:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_end_curve_part_fp ) * (#1) +
-                    \l__hawkdraw_path_shorten_end_curve_part_fp * (#2)
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opii:nn {
@@ -451,8 +464,7 @@
                 \hawkdraw_softpath_curveto_opiii:nn { } { }
             \fp_gset:Nn \g_hawkdraw_path_slope_last_fp {
                 \__hawkdraw_calculate_slope:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_end_curve_part_fp ) * (#1) +
-                    \l__hawkdraw_path_shorten_end_curve_part_fp * (#2)
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 } { \g_hawkdraw_path_point_last_fp }
             }
         }
@@ -473,6 +485,13 @@
                     \l__hawkdraw_path_shorten_start_curve_part_fp
                 } {#1} {#2} {#3}
             }
+            \fp_set:Nn \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp {
+                hawkdrawlerp (
+                    ( #1 ) ,
+                    ( #2 ) ,
+                    \l__hawkdraw_path_shorten_start_curve_part_fp
+                )
+            }
             % quadratic curve: shorten start
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_moveto_op:nn {
@@ -480,8 +499,7 @@
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opi:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                    \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opii:nn {#3}
@@ -491,8 +509,7 @@
                 \__hawkdraw_calculate_slope:nn {
                     \g_hawkdraw_path_point_first_fp
                 } {
-                    ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                    \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 }
             }
         } {
@@ -538,14 +555,77 @@
                     {#1} {#2} {#3} {#4}
             }
             \fp_set:Nn \l__hawkdraw_path_shorten_start_end_curve_part_fp {
-                ( \l__hawkdraw_path_shorten_end_curve_part_fp -
-                \l__hawkdraw_path_shorten_start_curve_part_fp ) / 
-                ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp )
+                hawkdrawremapt (
+                    \l__hawkdraw_path_shorten_start_curve_part_fp ,
+                    \l__hawkdraw_path_shorten_end_curve_part_fp
+                )
             }
             \fp_gset:Nn \g_hawkdraw_path_point_first_fp {
                 \__hawkdraw_point_part_curve_cubic:nnnnn {
                     \l__hawkdraw_path_shorten_start_curve_part_fp
                 } {#1} {#2} {#3} {#4}
+            }
+            \fp_set:Nn \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp {
+                hawkdrawlerp (
+                    \g_hawkdraw_path_point_first_fp ,
+                    hawkdrawlerp (
+                        hawkdrawlerp (
+                            ( #2 ) ,
+                            ( #3 ) ,
+                            \l__hawkdraw_path_shorten_start_curve_part_fp
+                        ) ,
+                        hawkdrawlerp (
+                            ( #3 ) ,
+                            ( #4 ) ,
+                            \l__hawkdraw_path_shorten_start_curve_part_fp
+                        )
+                        \l__hawkdraw_path_shorten_start_curve_part_fp
+                    ) ,
+                    \l__hawkdraw_path_shorten_start_end_curve_part_fp
+                )
+            }
+            \fp_set:Nn \l__hawkdraw_softpath_shorten_curve_point_tmpb_fp {
+                hawkdrawlerp (
+                    hawkdrawlerp (
+                        \g_hawkdraw_path_point_first_fp ,
+                        hawkdrawlerp (
+                            hawkdrawlerp (
+                                ( #2 ) ,
+                                ( #3 ) ,
+                                \l__hawkdraw_path_shorten_start_curve_part_fp
+                            ) ,
+                            hawkdrawlerp (
+                                ( #3 ) ,
+                                ( #4 ) ,
+                                \l__hawkdraw_path_shorten_start_curve_part_fp
+                            ) ,
+                            \l__hawkdraw_path_shorten_start_curve_part_fp
+                        ) ,
+                        \l__hawkdraw_path_shorten_start_end_curve_part_fp
+                    ) ,
+                    hawkdrawlerp (
+                        hawkdrawlerp (
+                            hawkdrawlerp (
+                                ( #2 ) ,
+                                ( #3 ) ,
+                                \l__hawkdraw_path_shorten_start_curve_part_fp
+                            ) ,
+                            hawkdrawlerp (
+                                ( #3 ) ,
+                                ( #4 ) ,
+                                \l__hawkdraw_path_shorten_start_curve_part_fp
+                            ) ,
+                            \l__hawkdraw_path_shorten_start_curve_part_fp
+                        ) ,
+                        hawkdrawlerp (
+                            ( #3 ) ,
+                            ( #4 ) ,
+                            \l__hawkdraw_path_shorten_start_curve_part_fp
+                        ) ,
+                        \l__hawkdraw_path_shorten_start_end_curve_part_fp
+                    ) ,
+                    \l__hawkdraw_path_shorten_start_end_curve_part_fp
+                )
             }
             % cubic curve: shorten start, shorten end
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
@@ -554,53 +634,11 @@
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opi:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_start_end_curve_part_fp ) * (
-                        \g_hawkdraw_path_point_first_fp
-                    ) +
-                    \l__hawkdraw_path_shorten_start_end_curve_part_fp * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (
-                            ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                            \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
-                        ) +
-                        \l__hawkdraw_path_shorten_start_curve_part_fp * (
-                            ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#3) +
-                            \l__hawkdraw_path_shorten_start_curve_part_fp * (#4)
-                        )
-                    )
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opii:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_start_end_curve_part_fp ) * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_end_curve_part_fp ) * (
-                            \g_hawkdraw_path_point_first_fp
-                        ) +
-                        \l__hawkdraw_path_shorten_start_end_curve_part_fp * (
-                            ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (
-                                ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                                \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
-                            ) +
-                            \l__hawkdraw_path_shorten_start_curve_part_fp * (
-                                ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#3) +
-                                \l__hawkdraw_path_shorten_start_curve_part_fp * (#4)
-                            )
-                        )
-                    ) +
-                    \l__hawkdraw_path_shorten_start_end_curve_part_fp * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_end_curve_part_fp ) * (
-                            ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (
-                                ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                                \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
-                            ) +
-                            \l__hawkdraw_path_shorten_start_curve_part_fp * (
-                                ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#3) +
-                                \l__hawkdraw_path_shorten_start_curve_part_fp * (#4)
-                            )
-                        ) +
-                        \l__hawkdraw_path_shorten_start_end_curve_part_fp * (
-                            ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#3) +
-                            \l__hawkdraw_path_shorten_start_curve_part_fp * (#4)
-                        )
-                    )
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpb_fp
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opiii:nn {
@@ -610,75 +648,47 @@
                 \__hawkdraw_calculate_slope:nn {
                     \g_hawkdraw_path_point_first_fp
                 } {
-                    ( 1 - \l__hawkdraw_path_shorten_start_end_curve_part_fp ) * (
-                        \g_hawkdraw_path_point_first_fp
-                    ) +
-                    \l__hawkdraw_path_shorten_start_end_curve_part_fp * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (
-                            ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                            \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
-                        ) +
-                        \l__hawkdraw_path_shorten_start_curve_part_fp * (
-                            ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#3) +
-                            \l__hawkdraw_path_shorten_start_curve_part_fp * (#4)
-                        )
-                    )
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 }
             }
             \fp_gset:Nn \g_hawkdraw_path_slope_last_fp {
                 \__hawkdraw_calculate_slope:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_start_end_curve_part_fp ) * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_end_curve_part_fp ) * (
-                            \g_hawkdraw_path_point_first_fp
-                        ) +
-                        \l__hawkdraw_path_shorten_start_end_curve_part_fp * (
-                            ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (
-                                ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                                \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
-                            ) +
-                            \l__hawkdraw_path_shorten_start_curve_part_fp * (
-                                ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#3) +
-                                \l__hawkdraw_path_shorten_start_curve_part_fp * (#4)
-                            )
-                        )
-                    ) +
-                    \l__hawkdraw_path_shorten_start_end_curve_part_fp * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_end_curve_part_fp ) * (
-                            ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (
-                                ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                                \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
-                            ) +
-                            \l__hawkdraw_path_shorten_start_curve_part_fp * (
-                                ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#3) +
-                                \l__hawkdraw_path_shorten_start_curve_part_fp * (#4)
-                            )
-                        ) +
-                        \l__hawkdraw_path_shorten_start_end_curve_part_fp * (
-                            ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#3) +
-                            \l__hawkdraw_path_shorten_start_curve_part_fp * (#4)
-                        )
-                    )
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpb_fp
                 } {
                     \g_hawkdraw_path_point_last_fp
                 }
             }
         } {
+            \fp_set:Nn \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp {
+                hawkdrawlerp (
+                    ( #1 ) ,
+                    ( #2 ) ,
+                    \l__hawkdraw_path_shorten_end_curve_part_fp
+                )
+            }
+            \fp_set:Nn \l__hawkdraw_softpath_shorten_curve_point_tmpb_fp {
+                hawkdrawlerp (
+                    hawkdrawlerp (
+                        ( #1 ) ,
+                        ( #2 ) ,
+                        \l__hawkdraw_path_shorten_end_curve_part_fp
+                    ) ,
+                    hawkdrawlerp (
+                        ( #2 ) ,
+                        ( #3 ) ,
+                        \l__hawkdraw_path_shorten_end_curve_part_fp
+                    )
+                    \l__hawkdraw_path_shorten_end_curve_part_fp
+                )
+            }
             % cubic curve: shorten end
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opi:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_end_curve_part_fp ) * (#1) +
-                    \l__hawkdraw_path_shorten_end_curve_part_fp * (#2)
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opii:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_end_curve_part_fp ) * (
-                        ( 1 - \l__hawkdraw_path_shorten_end_curve_part_fp ) * (#1) +
-                        \l__hawkdraw_path_shorten_end_curve_part_fp * (#2)
-                    ) +
-                    \l__hawkdraw_path_shorten_end_curve_part_fp * (
-                        ( 1 - \l__hawkdraw_path_shorten_end_curve_part_fp ) * (#2) +
-                        \l__hawkdraw_path_shorten_end_curve_part_fp * (#3)
-                    )
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpb_fp
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opiii:nn {
@@ -686,14 +696,7 @@
                 }
             \fp_gset:Nn \g_hawkdraw_path_slope_last_fp {
                 \__hawkdraw_calculate_slope:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_end_curve_part_fp ) * (
-                        ( 1 - \l__hawkdraw_path_shorten_end_curve_part_fp ) * (#1) +
-                        \l__hawkdraw_path_shorten_end_curve_part_fp * (#2)
-                    ) +
-                    \l__hawkdraw_path_shorten_end_curve_part_fp * (
-                        ( 1 - \l__hawkdraw_path_shorten_end_curve_part_fp ) * (#2) +
-                        \l__hawkdraw_path_shorten_end_curve_part_fp * (#3)
-                    )
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpb_fp
                 } {
                     \g_hawkdraw_path_point_last_fp
                 }
@@ -716,6 +719,28 @@
                     \l__hawkdraw_path_shorten_start_curve_part_fp
                 } {#1} {#2} {#3} {#4}
             }
+            \fp_set:Nn \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp {
+                hawkdrawlerp (
+                    hawkdrawlerp (
+                        ( #2 ) ,
+                        ( #3 ) ,
+                        \l__hawkdraw_path_shorten_start_curve_part_fp
+                    ) ,
+                    hawkdrawlerp (
+                        ( #3 ) ,
+                        ( #4 ) ,
+                        \l__hawkdraw_path_shorten_start_curve_part_fp
+                    ) ,
+                    \l__hawkdraw_path_shorten_end_curve_part_fp
+                )
+            }
+            \fp_set:Nn \l__hawkdraw_softpath_shorten_curve_point_tmpb_fp {
+                hawkdrawlerp (
+                    ( #3 ) ,
+                    ( #4 ) ,
+                    \l__hawkdraw_path_shorten_start_curve_part_fp
+                )
+            }
             % cubic curve: shorten start
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_moveto_op:nn {
@@ -723,19 +748,11 @@
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opi:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                        \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
-                    ) +
-                    \l__hawkdraw_path_shorten_start_curve_part_fp * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#3) +
-                        \l__hawkdraw_path_shorten_start_curve_part_fp * (#4)
-                    )
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opii:nn {
-                    ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#3) +
-                    \l__hawkdraw_path_shorten_start_curve_part_fp * (#4)
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpb_fp
                 }
             \hawkdraw_softpath_update_gadd_split_tuple:Nn
                 \hawkdraw_softpath_curveto_opiii:nn {#4}
@@ -743,14 +760,7 @@
                 \__hawkdraw_calculate_slope:nn {
                     \g_hawkdraw_path_point_first_fp
                 } {
-                    ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#2) +
-                        \l__hawkdraw_path_shorten_start_curve_part_fp * (#3)
-                    ) +
-                    \l__hawkdraw_path_shorten_start_curve_part_fp * (
-                        ( 1 - \l__hawkdraw_path_shorten_start_curve_part_fp ) * (#3) +
-                        \l__hawkdraw_path_shorten_start_curve_part_fp * (#4)
-                    )
+                    \l__hawkdraw_softpath_shorten_curve_point_tmpa_fp
                 }
             }
         } {
