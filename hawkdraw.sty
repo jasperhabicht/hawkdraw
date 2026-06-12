@@ -660,7 +660,7 @@
     }
 }
 
-\hawkdraw_modules_load:n { utils , nodes , arrows , plots }
+\hawkdraw_modules_load:n { utils , softpath , nodes , arrows , plots }
 
 \IfPDFManagementActiveTF {
     \hawkdraw_modules_load:n { patterns }
@@ -694,6 +694,12 @@
     } ,
     name                    .tl_set:N       = \l_hawkdraw_point_name_tl ,
     at ~ part               .fp_set:N       = \l_hawkdraw_point_at_part_fp ,
+    at ~ distance           .code:n         = {
+        \hawkdraw_softpath_get_path_length:
+        \fp_set:Nn \l_hawkdraw_tip_at_part_fp {
+            #1 / \g_hawkdraw_path_length_fp
+        }
+    } ,
 }
 
 % point , plot
@@ -850,6 +856,7 @@
         \tl_trim_spaces_apply:nN { #1 \s__hawkdraw_path_end } \__hawkdraw_path_process:n
         \tl_build_gput_right:Nn \g_hawkdraw_softpath_original_tl { \s__hawkdraw_softpath_end }
         \tl_build_gend:N \g_hawkdraw_softpath_original_tl
+        \hawkdraw_softpath_update:NV \g_hawkdraw_softpath_original_tl \l_hawkdraw_softpath_update_clist
         \tl_use:N \g_hawkdraw_softpath_original_tl
         \clist_remove_duplicates:N \l_hawkdraw_path_use_clist
         \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }
