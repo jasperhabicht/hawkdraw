@@ -12,8 +12,8 @@
 %
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
-\def\hawkdrawfileversion{0.1.1}
-\def\hawkdrawfiledate{5 June 2026}
+\def\hawkdrawfileversion{0.2.0}
+\def\hawkdrawfiledate{12 June 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -288,6 +288,7 @@
 \changes{v0.0.8}{2026/05/30}{Improving mapping functionality; adding mechanism to place arrow heads on paths; adding \titlemacro{at part} option for circles, ellipses and rectangles; adding \titlemacro{sloped} option for nodes; adding support for referencing anchors of nodes; adding possibility to reference points in calculations.}
 \changes{v0.1.0}{2026/06/03}{Adding tagging support; adding basic intersection commands; adding plot functions; fixing node baseline anchors and slopes.}
 \changes{v0.1.1}{2026/06/05}{Fixing bug in arrow tip slopes; fixing bugs in tagging support; improving option setting; adding option to set bounding box; adding ConTeXt module.}
+\changes{v0.2.0}{2026/06/12}{Adding softpath system; improving ConTeXt module.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -801,10 +802,31 @@ The command \macro{\point} is a shortcut for \macro{\path (0pt,0pt) point}
 \begin{macrodef}[key:atpart]
 !path/point/!|at|={<tuple>}
 !path/point/!|at part|={<float>}
+!path/point/!|at distance|={<dimension>}
 \end{macrodef}
 The position of the point can be adjusted with the \macro{at} option which accepts a point (a tuple).
 
-The position of a point can also be adjusted using the \macro{at part} option which accespts a floating-point number that defines the position on the last path segment with \num{0} being the previous and \num{1} being the current point.
+The position of a point can also be adjusted using the \macro{at part} option which accepts a floating-point number that defines the position on the last path segment with \num{0} being the previous and \num{1} being the current point. If the value given is negative or larger than \num{1}, the position of the point is interpolated according to the slope at the start or end of the path.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \stroke (0cm,0cm) -- (2cm,1cm)
+    point[name={A}, at part={0.25}] ;
+  \fill[color fill=red] (A) circle[radius={2pt}] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+Finally, the position of a point can be adjusted using the \macro{at distance} option which accepts a dimension that defines the position on the last path segment starting from the previous point. If the distance is negative or larger than the length of the path, the position of the point is interpolated according to the slope at the start or end of the path.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \stroke (0cm,0cm) -- (2cm,1cm)
+    point[name={A}, at distance={25pt}] ;
+  \fill[color fill=red] (A) circle[radius={2pt}] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+The position on a path using these options depend on the type of the path. For straight and curved lines as well as for circles and circular arcs, the distances are exact relative to the length of the path. For ellipses and elliptical arcs, the distances are distorted relative to the angle. For orthogonal lines, the distances are calculated such that half of the distance lies at the corner. For rectangles, the distances are calculated such that each side takes a quarter of the distance. The following examples show the output of different types of paths:
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -1027,9 +1049,10 @@ Using the \macro{rescan} option, the node's contents are rescanned using the cur
 !path/node/!|name|={<string>}
 !path/node/!|at|={<tuple>}
 !path/node/!|at part|={<float>}
+!path/node/!|at distance|={<dimension>}
 !path/node/!|anchor|={<clist>}
 \end{macrodef}
-The node can be named by setting the \macro{name} option which can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}). Node names should not contain dots or dashes as these are reserved for referencing anchors. The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{H} (which refers to the baseline of the node's contents), \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. Nodes where the width is set additionally provide the poles \macro{T} and \macro{B} that refer to the top and bottom baseline of the node's contents respectively.
+The node can be named by setting the \macro{name} option which can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}). Node names should not contain dots or dashes as these are reserved for referencing anchors. The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the options \macro{at part} or \macro{at distance} (see \hyperlink{key:atpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{H} (which refers to the baseline of the node's contents), \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. Nodes where the width is set additionally provide the poles \macro{T} and \macro{B} that refer to the top and bottom baseline of the node's contents respectively.
 
 It is possible to reference a point where two poles of the node intersect by appending the node name with the relevant poles concatenated with a dash and separated by a dot from the node name. For example, if a node is named \macro{foo}, the point where the top and left pole of the node intersect can be referenced by \macro{(foo[t,l])}.
 
@@ -1570,8 +1593,9 @@ Using the \macro{tip} operation, an arrow head is drawn at the current point on 
 
 \begin{macrodef}
 !path/tip/!|at part|={<float>}
+!path/tip/!|at distance|={<dimension>}
 \end{macrodef}
-The position of the arrow head can be adjusted with the \macro{at part} option which accespts a floating-point number (see \hyperlink{key:atpart}{above}).
+The position of the arrow head can be adjusted with the \macro{at part} option which accepts a unit-less floating-point number between \num{0} and \num{1} representing the position on the path or with the \macro{at distance} option which accepts a dimension (see \hyperlink{key:atpart}{above}).
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}

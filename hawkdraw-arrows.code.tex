@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.1.1 2026-06-05
+% v0.2.0 2026-06-12
 
 \msg_new:nnn { hawkdraw } { arrow-unknown } {
     Arrow ~ tip ~ `#1` ~ unknown.
@@ -125,7 +125,7 @@
     at ~ part               .fp_set:N       = \l_hawkdraw_tip_at_part_fp ,
     at ~ part               .initial:n      = { 1 } ,
     at ~ distance           .code:n         = {
-        \hawkdraw_softpath_get_path_length:
+        \hawkdraw_path_get_length:
         \fp_set:Nn \l_hawkdraw_tip_at_part_fp {
             #1 / \g_hawkdraw_path_length_fp
         }
