@@ -113,10 +113,14 @@
 
 \hawkdraw_plot_create:nn { sharp } { } {
     \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 0 } {
-        \draw_path_moveto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 1 } }
+        \hawkdraw_softpath_build_moveto:n {
+            \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 1 }
+        }
         \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 1 } {
             \int_step_inline:nnn { 2 } { \seq_count:N \g__hawkdraw_path_plot_points_seq } {
-                \draw_path_lineto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1} }
+                \hawkdraw_softpath_build_lineto:n {
+                    \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1}
+                }
             }
         }
     }
@@ -127,14 +131,18 @@
     tension = 0.15
 } {
     \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 0 } {
-        \draw_path_moveto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 1 } }
+        \hawkdraw_softpath_build_moveto:n {
+            \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 1 }
+        }
         \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 1 } {
             \int_compare:nNnTF { \seq_count:N \g__hawkdraw_path_plot_points_seq } < { 3 } {
-                \draw_path_lineto:n { \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 2 } }
+                \hawkdraw_softpath_build_lineto:n {
+                    \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 2 }
+                }
             } {
                 % more than 2 points: calculate slope between P0 and P2 and use it to calculate control points
                 % first segment
-                \draw_path_curveto:nn {
+                \hawkdraw_softpath_build_curveto:nn {
                     \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 2 } -
                     (
                         \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 3 } -
@@ -144,7 +152,7 @@
                     \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 2 }
                 }
                 \int_step_inline:nnn { 3 } { \seq_count:N \g__hawkdraw_path_plot_points_seq - 1 } {
-                    \draw_path_curveto:nnn {
+                    \hawkdraw_softpath_build_curveto:nnn {
                         \seq_item:Nn \g__hawkdraw_path_plot_points_seq { ##1 - 1 } +
                         (
                             \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1} -
@@ -161,7 +169,7 @@
                     }
                 }
                 % last segment
-                \draw_path_curveto:nn {
+                \hawkdraw_softpath_build_curveto:nn {
                     \seq_item:Nn \g__hawkdraw_path_plot_points_seq { -2 } +
                     (
                         \seq_item:Nn \g__hawkdraw_path_plot_points_seq { -1 } -
