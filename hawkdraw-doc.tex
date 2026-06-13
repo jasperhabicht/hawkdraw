@@ -1409,7 +1409,7 @@ The option \macro{dash phase} sets the dash phase for the path as a dimension. T
 
 \subsection{Rounded corners and fill rule}
 
-\begin{macrodef}
+\begin{macrodef}[key:cornerarc]
 !path/!|corner arc|={<clist>}
 \end{macrodef}
 The option \macro{corner arc} the corner arc for the path as a comma-separated list of at most two dimensions. The first applies to the corner formed by the path leading into the corner, and the second applies to the corner formed by the path leading out of the corner. If only one dimension is given, it applies to both corners. The default corner arc is \qty{0}{\point} (sharp corners).
