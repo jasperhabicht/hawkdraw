@@ -1483,10 +1483,14 @@ The option \macro{slant} sets the slant for the path as a comma-separated list o
 
 \section{Path manipulations}
 
-The \macro{hawkdraw} packages makes use of a softpath mechanism that allows for manipulations of points of a paths. The mechanism for rounding path corners via the \macro{corner arc} option relies on a lower-level softpath implementation of \macro{l3draw}. Currently, only a mechanism for shortening paths is provided by the \macro{hawkdraw} which is described below.
+The \macro{hawkdraw} packages makes use of a softpath mechanism that allows for manipulations of points of a paths. The mechanism for rounding path corners via the \macro{corner arc} option (see \hyperlink{key:cornerarc}{above}) relies on a lower-level softpath implementation of \macro{l3draw}. Currently, only a mechanism for shortening paths is provided by the \macro{hawkdraw} which is described below.
 
 \subsection{Shortening paths}
 
+\begin{macrodef}
+!path/!|shorten start|={<dimension>}
+!path/!|shorten end|={<dimension>}
+\end{macrodef}
 TBD
 
 \section{Defining custom styles and colors}
