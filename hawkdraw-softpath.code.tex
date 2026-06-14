@@ -463,7 +463,7 @@
 
 \cs_new_protected:Npn \hawkdraw_softpath_shorten_update_fn: {
     \bool_set_true:N \l__hawkdraw_softpath_shorten_start_bool
-    \fp_set:Nn \l_hawkdraw_softpath_point_last_fp { 0pt , 0pt }
+    \fp_set:Nn \l_hawkdraw_softpath_shorten_point_last_fp { 0pt , 0pt }
     \clist_map_inline:nn {
         moveto_op:nn , lineto_op:nn , 
         curveto_op:nnNnnNnn , arc_op:nnNnn , arc_axes_op:nnNnnNnn ,
