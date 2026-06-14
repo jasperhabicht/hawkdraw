@@ -14,6 +14,38 @@
 
 % v0.2.0 2026-06-12
 
+\cs_new:Npn \__hawkdraw_tuple_use_i:w ( #1 , #2 ) {#1}
+\cs_new:Npn \hawkdraw_tuple_use_i:n #1 {
+    \fp_to_dim:n {
+        \exp_last_unbraced:Ne
+            \__hawkdraw_tuple_use_i:w { \fp_eval:n {#1} }
+    }
+}
+\cs_generate_variant:Nn \hawkdraw_tuple_use_i:n { e , V }
+
+\cs_new:Npn \__hawkdraw_tuple_use_ii:w ( #1 , #2 ) {#2}
+\cs_new:Npn \hawkdraw_tuple_use_ii:n #1 {
+    \fp_to_dim:n {
+        \exp_last_unbraced:Ne
+            \__hawkdraw_tuple_use_ii:w { \fp_eval:n {#1} }
+    }
+}
+\cs_generate_variant:Nn \hawkdraw_tuple_use_ii:n { e , V }
+
+\cs_new:Npn \__hawkdraw_cs_if_exist_use_secure:nnTF #1#2#3#4 {
+    \exp_last_unbraced:Ne
+    \token_if_cs:NTF { \tl_head:n {#1} } {#4} {
+        \cs_if_exist_use:cTF {#2} {#3} {#4}
+    }
+}
+
+\cs_new:Npn \__hawkdraw_cs_if_exist_use_secure:nnT #1#2#3 {
+    \exp_last_unbraced:Ne
+    \token_if_cs:NF { \tl_head:n {#1} } {
+        \cs_if_exist_use:cT {#2} {#3}
+    }
+}
+
 % =====
 
 % Calculation of slopes and points on path segments
