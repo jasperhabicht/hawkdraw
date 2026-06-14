@@ -288,7 +288,7 @@
 \changes{v0.0.8}{2026/05/30}{Improving mapping functionality; adding mechanism to place arrow heads on paths; adding \titlemacro{at part} option for circles, ellipses and rectangles; adding \titlemacro{sloped} option for nodes; adding support for referencing anchors of nodes; adding possibility to reference points in calculations.}
 \changes{v0.1.0}{2026/06/03}{Adding tagging support; adding basic intersection commands; adding plot functions; fixing node baseline anchors and slopes.}
 \changes{v0.1.1}{2026/06/05}{Fixing bug in arrow tip slopes; fixing bugs in tagging support; improving option setting; adding option to set bounding box; adding ConTeXt module.}
-\changes{v0.2.0}{2026/06/12}{Adding softpath system; improving ConTeXt module.}
+\changes{v0.2.0}{2026/06/12}{Adding softpath system; adding option to shorten paths; improving ConTeXt module.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -328,27 +328,27 @@ Similar to Ti\emph{k}Z, the \macro{hawkdraw} package makes use of key-value pair
   \toprule
   \textbf{Data type} & \textbf{Explanation} \\
   \midrule
-  \macro{boolean} & A boolean only allows the values \macro{true} or \macro{false}. If not stated otherwise, setting the key without a value is equivalent with setting the key to \macro{true}. \\
+  \macro{boolean} & A boolean only allows the values \macro{true} or \macro{false}. If not stated otherwise, setting the option without a value is equivalent with setting the value to \macro{true}. \\
   \macro{string} & A string is a concatenation of letters or numbers of any length. Typically, strings do not contain symbols. For example, strings are used for names of points, frames of nodes, patterns or arrow tips. \\
   \macro{float} & A floating-point number is a number without or with unit that uses a colon as decimal separator. \\
   \macro{dimension} & A dimension or length is a typical TeX length consisting of a floating point number and a length unit. \\
   \macro{tuple} & A tuple consists of two floating-point numbers without or with unit that are separated by a comma. A tuple may be enclosed by parenthesis. \\
   \macro{point} & A point is essentially a tuple, but it can also be a reference to a named node or, using a special syntax, denote a point in polar coordinates (see \hyperlink{sec:points}{below}). \\
-  \macro{clist} & A comma-separated list is a list of strings that are separated by commas. Such a list can cosnist of no or only one item as well. If the relevant list can only have a maximum number of items, this is stated in the description of the relevant key. Note that a comma-separated list is typically not surrounded by parenthesis. \\
-  \macro{options} & A key-value list consists of comma separated entities of keys that may be followed by an equals sign and a value. A value can be another key-value list. \\
+  \macro{clist} & A comma-separated list is a list of strings that are separated by commas. Such a list can cosnist of no or only one item as well. If the relevant list can only have a maximum number of items, this is stated in the description of the relevant option. Note that a comma-separated list is typically not surrounded by parenthesis. \\
+  \macro{options} & A key-value list consists of comma separated entities of options that may be followed by an equals sign and a value. A value can be another key-value list. \\
   \macro{color} & This means a color definition as specified by the \macro{l3color} module. Note that colors defined by the \macro{xcolor} package have no effect when using the \macro{hawkdraw} package. \\
-  \emph{none} & Some keys do not accept any data type as they are only executing some function. \\
+  \emph{none} & Some options do not accept any data type as they are only executing some function. \\
   \bottomrule
 \end{longtable}
 
-Keys in the \macro{hawkdraw} package are divided into sets. Depending on where the keys are used in the document, only specific sets can be made use of. If a command or environment accepts specific sets of keys, the relevant prefix should be omitted.
+Options in the \macro{hawkdraw} package are divided into sets. Depending on where the options are used in the document, only specific sets can be made use of. If a command or environment accepts specific sets of options, the relevant prefix should be omitted.
 
 \begin{macrodef}
 |\hawkdrawset|{<options>}
 \end{macrodef}
-The command \macro{\hawkdrawset} is used to set options. It can be used inside or outside of \macro{hawkdraw} environments. It uses the \macro{path/} set of keys. If keys of other sets should be called, they need to be called from the root level.
+The command \macro{\hawkdrawset} is used to set options. It can be used inside or outside of \macro{hawkdraw} environments. It uses the \macro{path/} set of options. If options of other sets should be called, they need to be called from the root level.
 
-For example keys of the \macro{picture/} set can be called using \macro{\hawkdrawset{picture/<key>}}.
+For example options of the \macro{picture/} set can be called using \macro{\hawkdrawset{picture/<option>}}.
 
 \section{Main user environment}
 
@@ -718,7 +718,7 @@ The \macro{plot} operator starts a path segment that uses a function as defined 
 !path/plot/!|function|={<string>}
 \end{macrodef}
 
-The plot function can be selected using the \macro{plot/function} key that expects the name of a plot function as string. Currently, two plot functions are predefined, \macro{sharp} and \macro{smooth}, the latter being selected per default. 
+The plot function can be selected using the \macro{plot/function} option that expects the name of a plot function as string. Currently, two plot functions are predefined, \macro{sharp} and \macro{smooth}, the latter being selected per default. 
 
 It is possible to use the \macro{map} operator inside the argument to the \macro{plot} operator.
 
@@ -753,7 +753,7 @@ The \macro{smooth} plot function uses a simple algorithm to smoothen the curve. 
 !path/plot/!|smooth/tension|={<float>}
 \end{macrodef}
 
-The factor by which the slope vector is scaled can be adjusted using the key \macro{plot/smooth/tension} which is set to \num{0.15} by default
+The factor by which the slope vector is scaled can be adjusted using the option \macro{plot/smooth/tension} which is set to \num{0.15} by default
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -1510,9 +1510,9 @@ The options \macro{shorten start} and \macro{shorten end} each require as argume
 !path/!|style set|={<options>}
 !path/!|style add|={<options>}
 \end{macrodef}
-To simplify styling, custom keys can be defined via the keys \macro{style set} and \macro{style add}. Both keys accept as value a key-value list consisting of one or multiple custom keys whose relevant value consists of another key-value list describing the relevant style. It is possible to use \macro{#1} as placeholder for one argument. It is also possible to reference to an already define custom key in the definition of another custom key.
+To simplify styling, custom options can be defined via the options \macro{style set} and \macro{style add}. Both options accept as value a key-value list consisting of one or multiple custom options whose relevant value consists of another key-value list describing the relevant style. It is possible to use \macro{#1} as placeholder for one argument. It is also possible to reference to an already define custom option in the definition of another custom option.
 
-The key \macro{style set} defines custom keys and sets their values. The key \macro{style add} appends the relevant key-value list to the existing custom key as defined by \macro{style set}. Note that it is not checked whether a custom key already exists and its definition will be overwritten without a warning.
+The option \macro{style set} defines custom options and sets their values. The option \macro{style add} appends the relevant key-value list to the existing custom option as defined by \macro{style set}. Note that it is not checked whether a custom option already exists and its definition will be overwritten without a warning.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[
