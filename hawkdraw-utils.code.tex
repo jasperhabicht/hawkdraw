@@ -495,11 +495,11 @@
 
 % ===
 
-\int_new:N \l_hawkdraw_path_utils_length_precision_int
+\int_new:N \l_hawkdraw_path_utils_precision_length_int
 
 \keys_define:nn { hawkdraw / path / settings } {
-    length ~ precision      .int_set:N  = \l_hawkdraw_path_utils_length_precision_int ,
-    length ~ precision      .initial:n  = { 25 } ,
+    precision ~ length      .int_set:N  = \l_hawkdraw_path_utils_precision_length_int ,
+    precision ~ length      .initial:n  = { 25 } ,
 }
 
 \cs_new:Npn \__hawkdraw_path_length_line:nn #1#2 {
@@ -509,7 +509,7 @@
 \cs_new:Npn \__hawkdraw_path_length_curve_quadratic:nnn #1#2#3 {
     \fp_eval:n {
         0pt
-        \int_step_tokens:nn { \l_hawkdraw_path_utils_length_precision_int } {
+        \int_step_tokens:nn { \l_hawkdraw_path_utils_precision_length_int } {
             \__hawkdraw_path_length_curve_quadratic_aux:nnnn
                 {#1} {#2} {#3}
         }
@@ -519,11 +519,11 @@
     +
     \__hawkdraw_calculate_veclen:nn {
         \__hawkdraw_point_part_curve_quadratic:nnnn
-            { ( #4 - 1 ) / \l_hawkdraw_path_utils_length_precision_int }
+            { ( #4 - 1 ) / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3}
     } {
         \__hawkdraw_point_part_curve_quadratic:nnnn
-            { #4 / \l_hawkdraw_path_utils_length_precision_int }
+            { #4 / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3}
     }
 }
@@ -531,7 +531,7 @@
 \cs_new:Npn \__hawkdraw_path_length_curve_cubic:nnnn #1#2#3#4 {
     \fp_eval:n {
         0pt
-        \int_step_tokens:nn { \l_hawkdraw_path_utils_length_precision_int } {
+        \int_step_tokens:nn { \l_hawkdraw_path_utils_precision_length_int } {
             \__hawkdraw_path_length_curve_cubic_aux:nnnnn
                 {#1} {#2} {#3} {#4}
         }
@@ -541,11 +541,11 @@
     +
     \__hawkdraw_calculate_veclen:nn {
         \__hawkdraw_point_part_curve_cubic:nnnnn
-            { ( #5 - 1 ) / \l_hawkdraw_path_utils_length_precision_int }
+            { ( #5 - 1 ) / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3} {#4}
     } {
         \__hawkdraw_point_part_curve_cubic:nnnnn
-            { #5 / \l_hawkdraw_path_utils_length_precision_int }
+            { #5 / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3} {#4}
     }
 }
@@ -553,7 +553,7 @@
 \cs_new:Npn \__hawkdraw_path_length_arc:nnnn #1#2#3#4 {
     \fp_eval:n {
         0pt
-        \int_step_tokens:nn { \l_hawkdraw_path_utils_length_precision_int } {
+        \int_step_tokens:nn { \l_hawkdraw_path_utils_precision_length_int } {
             \__hawkdraw_path_length_arc_aux:nnnnn
                 {#1} {#2} {#3} {#4}
         }
@@ -563,11 +563,11 @@
     +
     \__hawkdraw_calculate_veclen:nn {
         \__hawkdraw_point_part_arc:nnnnn
-            { ( #5 - 1 ) / \l_hawkdraw_path_utils_length_precision_int }
+            { ( #5 - 1 ) / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3} {#4}
     } {
         \__hawkdraw_point_part_arc:nnnnn
-            { #5 / \l_hawkdraw_path_utils_length_precision_int }
+            { #5 / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3} {#4}
     }
 }
@@ -575,7 +575,7 @@
 \cs_new:Npn \__hawkdraw_path_length_arc_axes:nnnn #1#2#3#4 {
     \fp_eval:n {
         0pt
-        \int_step_tokens:nn { \l_hawkdraw_path_utils_length_precision_int } {
+        \int_step_tokens:nn { \l_hawkdraw_path_utils_precision_length_int } {
             \__hawkdraw_path_length_arc_axes_aux:nnnnn
                 {#1} {#2} {#3} {#4}
         }
@@ -585,11 +585,11 @@
     +
     \__hawkdraw_calculate_veclen:nn {
         \__hawkdraw_point_part_arc_axes:nnnnn
-            { ( #5 - 1 ) / \l_hawkdraw_path_utils_length_precision_int }
+            { ( #5 - 1 ) / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3} {#4}
     } {
         \__hawkdraw_point_part_arc_axes:nnnnn
-            { #5 / \l_hawkdraw_path_utils_length_precision_int }
+            { #5 / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3} {#4}
     }
 }
@@ -601,7 +601,7 @@
 \cs_new:Npn \__hawkdraw_path_length_ellipse:nnn #1#2#3 {
     \fp_eval:n {
         0pt
-        \int_step_tokens:nn { \l_hawkdraw_path_utils_length_precision_int } {
+        \int_step_tokens:nn { \l_hawkdraw_path_utils_precision_length_int } {
             \__hawkdraw_path_length_ellipse_aux:nnnn
                 {#1} {#2} {#3}
         }
@@ -611,11 +611,11 @@
     +
     \__hawkdraw_calculate_veclen:nn {
         \__hawkdraw_point_part_ellipse:nnnn
-            { ( #4 - 1 ) / \l_hawkdraw_path_utils_length_precision_int }
+            { ( #4 - 1 ) / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3}
     } {
         \__hawkdraw_point_part_ellipse:nnnn
-            { #4 / \l_hawkdraw_path_utils_length_precision_int }
+            { #4 / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3}
     }
 }
