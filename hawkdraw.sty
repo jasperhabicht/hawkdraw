@@ -825,6 +825,7 @@
     \fp_gset:Nn \g_hawkdraw_path_point_last_fp { ( 0pt , 0pt ) }
     \fp_gset:Nn \g_hawkdraw_path_slope_first_fp { nan }
     \fp_gset:Nn \g_hawkdraw_path_slope_last_fp { nan }
+    \fp_gzero:N \g_hawkdraw_path_length_fp
     \draw_scope_begin:
         \hook_use:n { hawkdraw / path / begin }
         \tl_use:N \l_hawkdraw_path_preactions_tl
