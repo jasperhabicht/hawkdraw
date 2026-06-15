@@ -318,10 +318,6 @@
 
 \cs_new_protected:Npn \hawkdraw_softpath_update:Nn #1#2 {
     \clist_map_inline:nn {#2} {
-        \fp_gset:Nn \g_hawkdraw_path_point_first_fp { ( 0pt , 0pt ) }
-        \fp_gset:Nn \g_hawkdraw_path_point_last_fp { ( 0pt , 0pt ) }
-        \fp_gset:Nn \g_hawkdraw_path_slope_first_fp { nan }
-        \fp_gset:Nn \g_hawkdraw_path_slope_last_fp { nan }
         \group_begin:
             \tl_build_begin:N \l__hawkdraw_softpath_updated_tl
             \cs_if_exist_use:cF { hawkdraw_softpath_ ##1 _update_fn: } {
