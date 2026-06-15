@@ -1551,6 +1551,142 @@
     }
 }
 
+\cs_new_protected:Npn \__hawkdraw_softpath_offset_curve_quadratic:nnn #1#2#3 {
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpa_fp {
+        hawkdrawlerp ( ( #1 ) , ( #2 ) , 1/3 )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpb_fp {
+        hawkdrawlerp ( 
+            hawkdrawlerp ( ( #1 ) , ( #2 ) , 1/3 ) ,
+            hawkdrawlerp ( ( #2 ) , ( #3 ) , 1/3 ) ,
+            1/3
+        )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpc_fp {
+        hawkdrawlerp ( 
+            hawkdrawlerp ( ( #1 ) , ( #2 ) , 1/3 ) ,
+            hawkdrawlerp ( ( #2 ) , ( #3 ) , 1/3 ) ,
+            2/3
+        )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpd_fp {
+        hawkdrawlerp ( 
+            hawkdrawlerp ( ( #1 ) , ( #2 ) , 2/3 ) ,
+            hawkdrawlerp ( ( #2 ) , ( #3 ) , 2/3 ) ,
+            2/3
+        )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpe_fp {
+        hawkdrawlerp ( ( #2 ) , ( #3 ) , 2/3 )
+    }
+    
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpf_fp {
+        ( #1 ) + ( 
+            \draw_point_polar:nn {
+                \l_hawkdraw_softpath_offset_dim
+            } {
+                \__hawkdraw_calculate_slope:nn {#1} {#2} + 90
+            }
+        )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpg_fp {
+        ( \l__hawkdraw_softpath_offset_curve_point_tmpa_fp ) + ( 
+            \draw_point_polar:nn {
+                \l_hawkdraw_softpath_offset_dim
+            } {
+                \__hawkdraw_calculate_slope:nn {#1} {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpb_fp
+                } + 90
+            }
+        )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmph_fp {
+        ( \l__hawkdraw_softpath_offset_curve_point_tmpb_fp ) + ( 
+            \draw_point_polar:nn {
+                \l_hawkdraw_softpath_offset_dim
+            } {
+                \__hawkdraw_calculate_slope:nn {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpa_fp
+                } {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpc_fp
+                } + 90
+            }
+        )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpj_fp {
+        ( \l__hawkdraw_softpath_offset_curve_point_tmpd_fp ) + ( 
+            \draw_point_polar:nn {
+                \l_hawkdraw_softpath_offset_dim
+            } {
+                \__hawkdraw_calculate_slope:nn {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpc_fp
+                } {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpe_fp
+                } + 90
+            }
+        )
+    }
+   \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpk_fp {
+        ( \l__hawkdraw_softpath_offset_curve_point_tmpe_fp ) + ( 
+            \draw_point_polar:nn {
+                \l_hawkdraw_softpath_offset_dim
+            } {
+                \__hawkdraw_calculate_slope:nn {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpd_fp
+                } {
+                    #3
+                } + 90
+            }
+        )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpl_fp {
+        ( #3 ) + ( 
+            \draw_point_polar:nn {
+                \l_hawkdraw_softpath_offset_dim
+            } {
+                \__hawkdraw_calculate_slope:nn {#2} {#3} + 90
+            }
+        )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpi_fp {
+        \draw_point_intersect_lines:nnnn {
+            \l__hawkdraw_softpath_offset_curve_point_tmpg_fp
+        } {
+            \l__hawkdraw_softpath_offset_curve_point_tmph_fp        
+        } {
+            \l__hawkdraw_softpath_offset_curve_point_tmpj_fp
+        } {
+            \l__hawkdraw_softpath_offset_curve_point_tmpk_fp
+        }
+    }
+    
+    \bool_if:NT \l__hawkdraw_softpath_offset_moveto_bool {
+        \bool_set_false:N \l__hawkdraw_softpath_offset_moveto_bool
+        \hawkdraw_softpath_update_moveto:n {
+            \l__hawkdraw_softpath_offset_curve_point_tmpf_fp
+        }
+    }
+    \fp_gset:Nn \g_hawkdraw_path_point_last_fp {
+        \l__hawkdraw_softpath_offset_curve_point_tmpl_fp %+
+        %\l__hawkdraw_softpath_offset_corner_offset_fp
+    }
+    \hawkdraw_softpath_update_curveto:nn {
+        \l__hawkdraw_softpath_offset_curve_point_tmpg_fp
+    } {
+        \l__hawkdraw_softpath_offset_curve_point_tmph_fp
+    }
+    \hawkdraw_softpath_update_curveto:nn {
+        \l__hawkdraw_softpath_offset_curve_point_tmpi_fp
+    } {
+        \l__hawkdraw_softpath_offset_curve_point_tmpj_fp
+    }
+    \hawkdraw_softpath_update_curveto:nn {
+        \l__hawkdraw_softpath_offset_curve_point_tmpk_fp
+    } {
+        \g_hawkdraw_path_point_last_fp
+    }
+}
+
 \cs_new_protected:Npn \__hawkdraw_softpath_offset_curve_cubic:nnnn #1#2#3#4 {
     \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpa_fp {
         hawkdrawlerp ( ( #1 ) , ( #2 ) , 1/3 )
@@ -1653,30 +1789,57 @@
             }
         )
     }
-    \int_step_inline:nnn { 11 } { 16 } {
-        \fp_set:cn {
-            l__hawkdraw_softpath_offset_curve_point_tmp \int_to_alph:n { ##1 } _fp
-        } {
-            ( 
-                \use:c {
-                    l__hawkdraw_softpath_offset_curve_point_tmp \int_to_alph:n { ##1 - 9 } _fp
-                }
-            ) + ( 
-                \draw_point_polar:nn {
-                    \l_hawkdraw_softpath_offset_dim
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpk_fp {
+        ( \l__hawkdraw_softpath_offset_curve_point_tmpb_fp ) + ( 
+            \draw_point_polar:nn {
+                \l_hawkdraw_softpath_offset_dim
+            } {
+                \__hawkdraw_calculate_slope:nn {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpa_fp
                 } {
-                    \__hawkdraw_calculate_slope:nn {
-                        \use:c {
-                            l__hawkdraw_softpath_offset_curve_point_tmp \int_to_alph:n { ##1 - 10 } _fp
-                        }
-                    } {
-                        \use:c {
-                            l__hawkdraw_softpath_offset_curve_point_tmp \int_to_alph:n { ##1 - 8 } _fp
-                        }
-                    } + 90
-                }
-            )
-        }
+                    \l__hawkdraw_softpath_offset_curve_point_tmpc_fp
+                } + 90
+            }
+        )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpm_fp {
+        ( \l__hawkdraw_softpath_offset_curve_point_tmpd_fp ) + ( 
+            \draw_point_polar:nn {
+                \l_hawkdraw_softpath_offset_dim
+            } {
+                \__hawkdraw_calculate_slope:nn {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpc_fp
+                } {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpe_fp
+                } + 90
+            }
+        )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpn_fp {
+        ( \l__hawkdraw_softpath_offset_curve_point_tmpe_fp ) + ( 
+            \draw_point_polar:nn {
+                \l_hawkdraw_softpath_offset_dim
+            } {
+                \__hawkdraw_calculate_slope:nn {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpd_fp
+                } {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpf_fp
+                } + 90
+            }
+        )
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpp_fp {
+        ( \l__hawkdraw_softpath_offset_curve_point_tmpg_fp ) + ( 
+            \draw_point_polar:nn {
+                \l_hawkdraw_softpath_offset_dim
+            } {
+                \__hawkdraw_calculate_slope:nn {
+                    \l__hawkdraw_softpath_offset_curve_point_tmpf_fp
+                } {
+                    \l__hawkdraw_softpath_offset_curve_point_tmph_fp
+                } + 90
+            }
+        )
     }
     \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpq_fp {
         ( \l__hawkdraw_softpath_offset_curve_point_tmph_fp ) + ( 
@@ -1699,6 +1862,19 @@
         )
     }
 
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpl_fp {
+        (
+            ( \l__hawkdraw_softpath_offset_curve_point_tmpk_fp ) +
+            ( \l__hawkdraw_softpath_offset_curve_point_tmpm_fp )
+        ) / 2
+    }
+    \fp_set:Nn \l__hawkdraw_softpath_offset_curve_point_tmpo_fp {
+        (
+            ( \l__hawkdraw_softpath_offset_curve_point_tmpn_fp ) +
+            ( \l__hawkdraw_softpath_offset_curve_point_tmpp_fp )
+        ) / 2
+    }
+
     \bool_if:NT \l__hawkdraw_softpath_offset_moveto_bool {
         \bool_set_false:N \l__hawkdraw_softpath_offset_moveto_bool
         \hawkdraw_softpath_update_moveto:n {
@@ -1714,14 +1890,14 @@
     } {
         \l__hawkdraw_softpath_offset_curve_point_tmpk_fp
     } {
-        \l__hawkdraw_softpath_offset_curve_point_tmpl_fp
+        \l__hawkdraw_softpath_offset_curve_point_tmpl_fp % <
     }
     \hawkdraw_softpath_update_curveto:nnn {
         \l__hawkdraw_softpath_offset_curve_point_tmpm_fp
     } {
         \l__hawkdraw_softpath_offset_curve_point_tmpn_fp
     } {
-        \l__hawkdraw_softpath_offset_curve_point_tmpo_fp
+        \l__hawkdraw_softpath_offset_curve_point_tmpo_fp % <
     }
     \hawkdraw_softpath_update_curveto:nnn {
         \l__hawkdraw_softpath_offset_curve_point_tmpp_fp
