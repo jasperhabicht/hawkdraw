@@ -1806,11 +1806,6 @@
 
 }
 
-\cs_new_protected:Npn \hawkdraw_softpath_offset_close_op:nn #1#2 {
-    \hawkdraw_softpath_update_gadd:Nnn
-        \hawkdraw_softpath_close_op:nn {#1} {#2}
-}
-
 \cs_new_protected:Npn \hawkdraw_softpath_offset_circle_op:nnNnn #1#2#3#4#5 {
     \hawkdraw_softpath_update_circle:nn {
         #1 , #2
@@ -1982,6 +1977,11 @@
         #7 + 2 * \l_hawkdraw_softpath_offset_dim ,
         #8 + 2 * \l_hawkdraw_softpath_offset_dim
     }
+}
+
+\cs_new_protected:Npn \hawkdraw_softpath_offset_close_op:nn #1#2 {
+    \hawkdraw_softpath_update_gadd:Nnn
+        \hawkdraw_softpath_close_op:nn {#1} {#2}
 }
 
 % EOF
