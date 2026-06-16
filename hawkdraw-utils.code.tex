@@ -52,7 +52,7 @@
 
 % ===
 
-\cs_new:Npn \__hawkdraw_calculate_veclen:nn #1#2 {
+\cs_new:Npn \hawkdraw_calculate_veclen:nn #1#2 {
     \fp_eval:n {
         sqrt (
             (
@@ -67,7 +67,7 @@
     }
 }
 
-\cs_new:Npn \__hawkdraw_calculate_slope:nn #1#2 {
+\cs_new:Npn \hawkdraw_calculate_slope:nn #1#2 {
     \fp_eval:n {
         atand(
             \hawkdraw_tuple_use_ii:n {#2} -
@@ -92,7 +92,7 @@
 \cs_generate_variant:Nn \__hawkdraw_point_part_line:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_line:nnn #1#2#3 {
-    \__hawkdraw_calculate_slope:nn {#2} {#3}
+    \hawkdraw_calculate_slope:nn {#2} {#3}
 }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_line:n #1 {
@@ -126,9 +126,9 @@
 
 \cs_new:Npn \__hawkdraw_point_part_slope_line_orthogonal:nnnn #1#2#3#4 {
     \fp_compare:nNnTF {#1} > { 0.5 } {
-        \__hawkdraw_calculate_slope:nn {#3} {#4}
+        \hawkdraw_calculate_slope:nn {#3} {#4}
     } {
-        \__hawkdraw_calculate_slope:nn {#2} {#3}
+        \hawkdraw_calculate_slope:nn {#2} {#3}
     }
 }
 
@@ -503,7 +503,7 @@
 }
 
 \cs_new:Npn \__hawkdraw_path_length_line:nn #1#2 {
-    \__hawkdraw_calculate_veclen:nn {#1} {#2}
+    \awkdraw_calculate_veclen:nn {#1} {#2}
 }
 
 \cs_new:Npn \__hawkdraw_path_length_curve_quadratic:nnn #1#2#3 {
@@ -517,7 +517,7 @@
 }
 \cs_new:Npn \__hawkdraw_path_length_curve_quadratic_aux:nnnn #1#2#3#4 {
     +
-    \__hawkdraw_calculate_veclen:nn {
+    \hawkdraw_calculate_veclen:nn {
         \__hawkdraw_point_part_curve_quadratic:nnnn
             { ( #4 - 1 ) / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3}
@@ -539,7 +539,7 @@
 }
 \cs_new:Npn \__hawkdraw_path_length_curve_cubic_aux:nnnnn #1#2#3#4#5 {
     +
-    \__hawkdraw_calculate_veclen:nn {
+    \hawkdraw_calculate_veclen:nn {
         \__hawkdraw_point_part_curve_cubic:nnnnn
             { ( #5 - 1 ) / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3} {#4}
@@ -561,7 +561,7 @@
 }
 \cs_new:Npn \__hawkdraw_path_length_arc_aux:nnnnn #1#2#3#4#5 {
     +
-    \__hawkdraw_calculate_veclen:nn {
+    \hawkdraw_calculate_veclen:nn {
         \__hawkdraw_point_part_arc:nnnnn
             { ( #5 - 1 ) / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3} {#4}
@@ -583,7 +583,7 @@
 }
 \cs_new:Npn \__hawkdraw_path_length_arc_axes_aux:nnnnn #1#2#3#4#5 {
     +
-    \__hawkdraw_calculate_veclen:nn {
+    \hawkdraw_calculate_veclen:nn {
         \__hawkdraw_point_part_arc_axes:nnnnn
             { ( #5 - 1 ) / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3} {#4}
@@ -609,7 +609,7 @@
 }
 \cs_new:Npn \__hawkdraw_path_length_ellipse_aux:nnnn #1#2#3#4 {
     +
-    \__hawkdraw_calculate_veclen:nn {
+    \hawkdraw_calculate_veclen:nn {
         \__hawkdraw_point_part_ellipse:nnnn
             { ( #4 - 1 ) / \l_hawkdraw_path_utils_precision_length_int }
             {#1} {#2} {#3}

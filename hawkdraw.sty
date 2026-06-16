@@ -900,11 +900,11 @@
     \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_a_fp {#2}
     \fp_if_nan:nT { \g_hawkdraw_path_slope_first_fp } {
         \fp_gset:Nn \g_hawkdraw_path_slope_first_fp {
-            \__hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
+            \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
         }
     }
     \fp_gset:Nn \g_hawkdraw_path_slope_last_fp {
-        \__hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
+        \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
     }
     \hawkdraw_softpath_build_lineto:n { \l__hawkdraw_point_a_fp }
     \fp_gset_eq:NN \g_hawkdraw_path_point_last_fp \l__hawkdraw_point_a_fp
@@ -926,11 +926,11 @@
     }
     \fp_if_nan:nT { \g_hawkdraw_path_slope_first_fp } {
         \fp_gset:Nn \g_hawkdraw_path_slope_first_fp {
-            \__hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
+            \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
         }
     }
     \fp_gset:Nn \g_hawkdraw_path_slope_last_fp {
-        \__hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
+        \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
     }
     \hawkdraw_softpath_build_lineto:n { \l__hawkdraw_point_a_fp }
     \hawkdraw_softpath_build_lineto:n { \l__hawkdraw_point_b_fp }
@@ -953,11 +953,11 @@
     }
     \fp_if_nan:nT { \g_hawkdraw_path_slope_first_fp } {
         \fp_gset:Nn \g_hawkdraw_path_slope_first_fp {
-            \__hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
+            \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
         }
     }
     \fp_gset:Nn \g_hawkdraw_path_slope_last_fp {
-        \__hawkdraw_calculate_slope:nn { \l__hawkdraw_point_a_fp } { \l__hawkdraw_point_b_fp }
+        \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_a_fp } { \l__hawkdraw_point_b_fp }
     }
     \hawkdraw_softpath_build_lineto:n { \l__hawkdraw_point_a_fp }
     \hawkdraw_softpath_build_lineto:n { \l__hawkdraw_point_b_fp }
@@ -989,11 +989,11 @@
     \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_b_fp {#2}
     \fp_if_nan:nT { \g_hawkdraw_path_slope_first_fp } {
         \fp_gset:Nn \g_hawkdraw_path_slope_first_fp {
-            \__hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
+            \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
         }
     }
     \fp_gset:Nn \g_hawkdraw_path_slope_last_fp {
-        \__hawkdraw_calculate_slope:nn { \l__hawkdraw_point_a_fp } { \l__hawkdraw_point_b_fp }
+        \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_a_fp } { \l__hawkdraw_point_b_fp }
     }
     \hawkdraw_softpath_build_curveto:nn
         { \l__hawkdraw_point_a_fp } { \l__hawkdraw_point_b_fp }
@@ -1008,11 +1008,11 @@
     \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_c_fp {#5}
     \fp_if_nan:nT { \g_hawkdraw_path_slope_first_fp } {
         \fp_gset:Nn \g_hawkdraw_path_slope_first_fp {
-            \__hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
+            \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
         }
     }
     \fp_gset:Nn \g_hawkdraw_path_slope_last_fp {
-        \__hawkdraw_calculate_slope:nn { \l__hawkdraw_point_b_fp } { \l__hawkdraw_point_c_fp }
+        \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_b_fp } { \l__hawkdraw_point_c_fp }
     }
     \hawkdraw_softpath_build_curveto:nnn
         { \l__hawkdraw_point_a_fp } { \l__hawkdraw_point_b_fp } { \l__hawkdraw_point_c_fp }
