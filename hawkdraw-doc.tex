@@ -289,7 +289,7 @@
 \changes{v0.1.0}{2026/06/03}{Adding tagging support; adding basic intersection commands; adding plot functions; fixing node baseline anchors and slopes.}
 \changes{v0.1.1}{2026/06/05}{Fixing bug in arrow tip slopes; fixing bugs in tagging support; improving option setting; adding option to set bounding box; adding ConTeXt module.}
 \changes{v0.2.0}{2026/06/12}{Adding softpath system; adding option to shorten paths; improving ConTeXt module.}
-\changes{v0.3.0}{2026/06/12}{Adding option to offset paths.}
+\changes{v0.3.0}{2026/06/12}{Adding option to offset paths; fixing bug with positioning of points on arcs.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -1514,7 +1514,17 @@ Shortening is not executed on circles, ellipses rectangles and grids.
 \end{macrodef}
 The option \macro{offset} require as argument a dimension representing the length by which the current path should be offset. Arrow tips are positioned at the updated start or end point of the path.
 
-Currently, all path types except for arcs are supported.
+Note that the offset paths for curves, ellipses and arcs are approximated and may result in suboptimal output especially for relatively sharp curves.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \stroke (0cm,0cm) -- (2cm,1cm) ;
+  \stroke[
+    offset={5pt},
+    color stroke={red}
+  ] (0cm,0cm) -- (2cm,1cm) ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
 
 \section{Defining custom styles and colors}
 
