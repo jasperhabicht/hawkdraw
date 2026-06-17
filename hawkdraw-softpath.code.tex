@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.3.0 2026-06-17
+% v0.3.1 2026-06-17
 
 \tl_new:N \g_hawkdraw_softpath_original_tl
 
@@ -319,6 +319,8 @@
 \clist_new:N \l_hawkdraw_softpath_update_clist
 \tl_new:N \l__hawkdraw_softpath_updated_tl
 
+\scan_new:N \s__hawkdraw_softpath_end
+
 \cs_new_protected:Npn \hawkdraw_softpath_update:Nn #1#2 {
     \clist_map_inline:nn {#2} {
         \group_begin:
@@ -326,6 +328,7 @@
             \cs_if_exist_use:cF { hawkdraw_softpath_ ##1 _update_fn: } {
                 \msg_error:nnn { hawkdraw } { softpath-unknown } {##1}
             }
+            \tl_build_put_right:Nn \l__hawkdraw_softpath_updated_tl { \s__hawkdraw_softpath_end }
             \tl_build_end:N \l__hawkdraw_softpath_updated_tl
             \tl_gset_eq:NN #1 \l__hawkdraw_softpath_updated_tl
         \group_end:
@@ -1421,14 +1424,16 @@
         } {
             \l_hawkdraw_softpath_offset_slope_next_fp
         }
-    \fp_set:Nn \l_hawkdraw_softpath_offset_point_last_fp {#1}
-    \fp_gset:Nn \g_hawkdraw_path_point_last_fp {
-        \l_hawkdraw_softpath_offset_point_last_fp +
+    \fp_set:Nn \l_hawkdraw_softpath_point_last_fp {#1}
+    \fp_set:Nn \l_hawkdraw_softpath_offset_point_last_fp {
+        \l_hawkdraw_softpath_point_last_fp +
         \l__hawkdraw_softpath_offset_corner_offset_fp
     }
     \hawkdraw_softpath_update_lineto:n {
-        \g_hawkdraw_path_point_last_fp
+        \l_hawkdraw_softpath_offset_point_last_fp
     }
+    \fp_gset_eq:NN \g_hawkdraw_path_point_last_fp
+        \l_hawkdraw_softpath_offset_point_last_fp
 }
 
 % a to l
@@ -1587,12 +1592,16 @@
 
     \bool_if:NT \l__hawkdraw_softpath_offset_moveto_bool {
         \bool_set_false:N \l__hawkdraw_softpath_offset_moveto_bool
-        \hawkdraw_softpath_update_moveto:n {
+        \fp_gset_eq:NN \g_hawkdraw_path_point_first_fp
             \l__hawkdraw_softpath_offset_curve_point_tmpf_fp
+        \hawkdraw_softpath_update_moveto:n {
+            \g_hawkdraw_path_point_first_fp
         }
     }
-    \fp_gset:Nn \g_hawkdraw_path_point_last_fp {
-        ( #3 ) +
+
+    \fp_set:Nn \l_hawkdraw_softpath_point_last_fp {#3}
+    \fp_set:Nn \l_hawkdraw_softpath_offset_point_last_fp {
+        \l_hawkdraw_softpath_point_last_fp +
         \l__hawkdraw_softpath_offset_corner_offset_fp
     }
     \hawkdraw_softpath_update_curveto:nn {
@@ -1608,8 +1617,10 @@
     \hawkdraw_softpath_update_curveto:nn {
         \l__hawkdraw_softpath_offset_curve_point_tmpk_fp
     } {
-        \g_hawkdraw_path_point_last_fp
+        \l_hawkdraw_softpath_offset_point_last_fp
     }
+    \fp_gset_eq:NN \g_hawkdraw_path_point_last_fp
+        \l_hawkdraw_softpath_offset_point_last_fp
 }
 
 % a to j
@@ -1821,9 +1832,17 @@
 
     \bool_if:NT \l__hawkdraw_softpath_offset_moveto_bool {
         \bool_set_false:N \l__hawkdraw_softpath_offset_moveto_bool
-        \hawkdraw_softpath_update_moveto:n {
+        \fp_gset_eq:NN \g_hawkdraw_path_point_first_fp
             \l__hawkdraw_softpath_offset_arc_construct_point_a_fp
+        \hawkdraw_softpath_update_moveto:n {
+            \g_hawkdraw_path_point_first_fp
         }
+    }
+
+    \fp_set:Nn \l_hawkdraw_softpath_point_last_fp {#4}
+    \fp_set:Nn \l_hawkdraw_softpath_offset_point_last_fp {
+        \l_hawkdraw_softpath_point_last_fp +
+        \l__hawkdraw_softpath_offset_corner_offset_fp
     }
     \fp_gset:Nn \g_hawkdraw_path_point_last_fp {
         ( #4 ) +
@@ -1848,8 +1867,10 @@
     } {
         \l__hawkdraw_softpath_offset_arc_construct_point_i_fp
     } {
-        \g_hawkdraw_path_point_last_fp
+        \l_hawkdraw_softpath_offset_point_last_fp
     }
+    \fp_gset_eq:NN \g_hawkdraw_path_point_last_fp
+        \l_hawkdraw_softpath_offset_point_last_fp
 }
 
 \fp_new_function:n { hawkdrawbezierk }
@@ -1949,8 +1970,10 @@
         }
     \bool_if:NTF \l__hawkdraw_softpath_offset_moveto_bool {
         \bool_set_false:N \l__hawkdraw_softpath_offset_moveto_bool
-        \hawkdraw_softpath_update_moveto:n {
+        \fp_gset_eq:NN \g_hawkdraw_path_point_first_fp
             \l__hawkdraw_softpath_offset_arc_construct_point_a_fp
+        \hawkdraw_softpath_update_moveto:n {
+            \g_hawkdraw_path_point_first_fp
         }
     } {
         \fp_set_eq:NN \l__hawkdraw_softpath_offset_arc_construct_point_a_fp
@@ -2011,14 +2034,16 @@
             }
         \__hawkdraw_softpath_offset_arc_construct:
     }
-    \hawkdraw_softpath_update_lineto:n {
-        \l__hawkdraw_softpath_offset_arc_point_last_fp +
-        \l__hawkdraw_softpath_offset_corner_offset_fp
-    }
+    \fp_set:Nn \l_hawkdraw_softpath_point_last_fp {#1}
     \fp_set:Nn \l_hawkdraw_softpath_offset_point_last_fp {
-        \l__hawkdraw_softpath_offset_arc_point_last_fp +
+        \l_hawkdraw_softpath_point_last_fp +
         \l__hawkdraw_softpath_offset_corner_offset_fp
     }
+    \hawkdraw_softpath_update_lineto:n {
+        \l_hawkdraw_softpath_offset_point_last_fp
+    }
+    \fp_gset_eq:NN \g_hawkdraw_path_point_last_fp
+        \l_hawkdraw_softpath_offset_point_last_fp
 }
 
 \cs_new_protected:Npn \__hawkdraw_softpath_offset_arc_axes_construct_quarter:nnnnn #1#2#3#4#5 {
