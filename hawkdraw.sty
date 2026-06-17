@@ -305,7 +305,7 @@
 
 \seq_new:N \l__hawkdraw_chars_active_seq
 
-\cctab_const:Nn \c_hawkdraw_cctab {
+\cctab_const:Nn \c_hawkdraw_environment_cctab {
     \cctab_select:N \c_document_cctab
     \char_set_catcode_other:n { 126 }
 }
@@ -1388,7 +1388,7 @@
     \seq_if_empty:NF \l__hawkdraw_chars_active_seq {
         \keys_set:nn { hawkdraw / path / node } { rescan }
     }
-    \cctab_select:N \c_hawkdraw_cctab
+    \cctab_select:N \c_hawkdraw_environment_cctab
     \int_gincr:N \g_hawkdraw_picture_id_int
     \cs_set_eq:NN \path \hawkdraw_path:w
     \cs_set_eq:NN \getpoint \hawkdraw_point_parse:n

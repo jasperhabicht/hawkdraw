@@ -719,7 +719,7 @@ The \macro{plot} operator starts a path segment that uses a function as defined 
 !path/plot/!|function|={<string>}
 \end{macrodef}
 
-The plot function can be selected using the \macro{plot/function} option that expects the name of a plot function as string. Currently, two plot functions are predefined, \macro{sharp} and \macro{smooth}, the latter being selected per default. 
+The plot function can be selected using the \macro{plot/function} option that expects the name of a plot function as string. Currently, two plot functions are predefined, \macro{sharp} and \macro{smooth}, the latter being selected per default.
 
 It is possible to use the \macro{map} operator inside the argument to the \macro{plot} operator.
 
@@ -729,7 +729,7 @@ It is possible to use the \macro{map} operator inside the argument to the \macro
     plot {
       map[end=7] {
         ({#1 * 0.25cm},{sin(#1) * 0.25cm})
-      } 
+      }
     }
   -- (1cm,1.5cm);
 \end{hawkdraw}
@@ -741,7 +741,7 @@ The \macro{sharp} plot function results in an output equivalent to the \macro{--
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[plot/function={sharp}] (0cm,0cm) 
+  \stroke[plot/function={sharp}] (0cm,0cm)
     plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) } ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -758,7 +758,7 @@ The factor by which the slope vector is scaled can be adjusted using the option 
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[plot/function={smooth}] (0cm,0cm) 
+  \stroke[plot/function={smooth}] (0cm,0cm)
     plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) } ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -768,7 +768,7 @@ The factor by which the slope vector is scaled can be adjusted using the option 
   \stroke[
     plot/function={smooth},
     plot/smooth/tension={0.25}
-  ] (0cm,0cm) 
+  ] (0cm,0cm)
     plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) } ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -1514,7 +1514,7 @@ Shortening is not executed on circles, ellipses rectangles and grids.
 \end{macrodef}
 The option \macro{offset} require as argument a dimension representing the length by which the current path should be offset. Arrow tips are positioned at the updated start or end point of the path.
 
-Note that the offset paths for curves, ellipses and arcs are approximated and may result in suboptimal output especially for relatively sharp curves.
+Note that the offset paths for curves, ellipses and arcs are approximated mostly by reconstructing the relevant path by three to twelve Bézier curves which may result in suboptimal output especially for relatively sharp curves. Furthermore, the position of the point where two path segmnts meet is approximated for curves and arcs.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -1741,7 +1741,7 @@ For example, the setting \macro{tagging-setup={alt={Water (H20)}, tag={Formula}}
 
 \section{Use with ConTeXt}
 
-The package provides a ConTeXt module that acts as a wrapper around the LaTeX package. The module loads PDFLaTeX from within ConTeXt to create a stand-alone PDF file from the relevant drawing that is then included into the ConTeXt document. To load the module in ConTeXt, call \macro{\usemodule[hawkdraw]}. 
+The package provides a ConTeXt module that acts as a wrapper around the LaTeX package. The module loads PDFLaTeX from within ConTeXt to create a stand-alone PDF file from the relevant drawing that is then included into the ConTeXt document. To load the module in ConTeXt, call \macro{\usemodule[hawkdraw]}.
 
 \begin{macrodef}
 |\starthawkdraw|[<options>]

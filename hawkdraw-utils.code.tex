@@ -253,7 +253,7 @@
 }
 \cs_generate_variant:Nn \__hawkdraw_point_part_slope_curve_cubic:n { V }
 
-% = 
+% =
 
 \cs_new:Npn \__hawkdraw_point_part_arc:nnnnnn #1#2#3#4#5#6 {
     \fp_eval:n {
@@ -349,7 +349,7 @@
 }
 \cs_generate_variant:Nn \__hawkdraw_point_part_slope_arc:n { V }
 
-% = 
+% =
 
 \cs_new:Npn \__hawkdraw_point_part_circle:nn #1#2 {
     \draw_point_polar:nn {#2} { #1 * 360 }
@@ -629,7 +629,7 @@
         2 * (
             \hawkdraw_tuple_use_i:n {#2} -
             \hawkdraw_tuple_use_i:n {#1}
-        ) + 
+        ) +
         2 * (
             \hawkdraw_tuple_use_ii:n {#2} -
             \hawkdraw_tuple_use_ii:n {#1}
@@ -652,7 +652,7 @@
         \tl_build_get_intermediate:NN \g_hawkdraw_softpath_original_tl
             \l_hawkdraw_softpath_intermediate_tl
         \clist_map_inline:nn {
-            close_op:nn , moveto_op:nn , lineto_op:nn , 
+            close_op:nn , moveto_op:nn , lineto_op:nn ,
             curveto_op:nnNnnNnn , arc_op:nnNnn , arc_axes_op:nnNnnNnn ,
             circle_op:nnNnn , ellipse_op:nnNnnNnn ,
             rectangle_op:nnNnn , grid_op:nnNnnNnn
