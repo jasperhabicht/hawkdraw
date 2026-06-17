@@ -1117,9 +1117,9 @@
             { \l_hawkdraw_path_arc_angle_start_fp }
             { \l_hawkdraw_path_arc_angle_end_fp }
     } {
-        \hawkdraw_softpath_build_arc:nnnn
-            { \l_hawkdraw_path_arc_radius_x_dim }
-            { \l_hawkdraw_path_arc_radius_y_dim }
+        \hawkdraw_softpath_build_arc:VVnn
+            \l_hawkdraw_path_arc_radius_x_dim
+            \l_hawkdraw_path_arc_radius_y_dim
             { \l_hawkdraw_path_arc_angle_start_fp }
             { \l_hawkdraw_path_arc_angle_end_fp }
     }
@@ -1138,9 +1138,9 @@
     \str_set:Nn \l__hawkdraw_path_type_tl { circle }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_point_last_fp
     \keys_set:nn { hawkdraw / path / circle } {#1}
-    \hawkdraw_softpath_build_circle:nn
+    \hawkdraw_softpath_build_circle:nV
         { \l__hawkdraw_point_o_fp }
-        { \l_hawkdraw_path_circle_radius_dim }
+        \l_hawkdraw_path_circle_radius_dim
 }
 
 \fp_new:N \l_hawkdraw_path_ellipse_vector_a_fp
@@ -1209,8 +1209,6 @@
 \dim_new:N \l__hawkdraw_path_grid_xstep_dim
 \dim_new:N \l__hawkdraw_path_grid_ystep_dim
 
-\cs_generate_variant:Nn \draw_path_grid:nnnn { ee }
-
 \keys_define:nn { hawkdraw / path / grid } {
     step                    .clist_set:N    = \l_hawkdraw_path_grid_step_clist ,
     step                    .initial:n      = { 1cm } ,
@@ -1246,9 +1244,9 @@
             \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 1 }
         }
     }
-    \hawkdraw_softpath_build_grid:nnnn
-        { \l__hawkdraw_path_grid_xstep_dim }
-        { \l__hawkdraw_path_grid_ystep_dim }
+    \hawkdraw_softpath_build_grid:VVnn
+        \l__hawkdraw_path_grid_xstep_dim
+        \l__hawkdraw_path_grid_ystep_dim
         { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
     \fp_gset_eq:NN \g_hawkdraw_path_point_last_fp \l__hawkdraw_point_a_fp
 }
