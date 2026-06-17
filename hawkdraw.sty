@@ -815,7 +815,6 @@
 \hook_new_pair:nn { hawkdraw / path / begin } { hawkdraw / path / end }
 
 \cs_new_protected:Npn \hawkdraw_path:w #1 ; {
-    \tl_gclear:N \g_hawkdraw_path_clip_tl
     \fp_set:Nn \l__hawkdraw_point_o_fp { ( 0pt , 0pt ) }
     \fp_set:Nn \l__hawkdraw_point_a_fp { ( 0pt , 0pt ) }
     \fp_set:Nn \l__hawkdraw_point_b_fp { ( 0pt , 0pt ) }

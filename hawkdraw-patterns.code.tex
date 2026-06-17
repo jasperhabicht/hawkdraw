@@ -29,11 +29,9 @@
     fill ~ pattern          .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
             \draw_scope_begin:
-                \bool_set_true:N \l__hawkdraw_path_clip_bool
-                \tl_trim_spaces_apply:nN { \g_hawkdraw_path_clip_tl } \__hawkdraw_path_process:o
+                \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
                 \draw_path_use_clear:n { clip }
                 \hawkdraw_pattern_fill:nV {#1} \l_hawkdraw_pattern_keys_clist
-                \bool_set_false:N \l__hawkdraw_path_clip_bool
                 \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
             \draw_scope_end:
         }

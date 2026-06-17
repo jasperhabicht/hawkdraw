@@ -1511,9 +1511,9 @@ Shortening is not executed on circles, ellipses rectangles and grids.
 \subsection{Offsetting paths}
 
 \begin{macrodef}
-!path/!|offset|={<dimension>}
+!path/!|offset|={<clist>}
 \end{macrodef}
-The option \macro{offset} require as argument a dimension representing the length by which the current path should be offset. Arrow tips are positioned at the updated start or end point of the path.
+The option \macro{offset} requires as argument a comma-separated list of dimensions each representing the length by which the current path should be offset. Arrow tips are positioned at the updated start or end point of the path.
 
 Note that the offset paths for curves, ellipses and arcs are approximated mostly by reconstructing the relevant path by three to twelve Bézier curves which may result in suboptimal output especially for relatively sharp curves. Furthermore, the position of the point where two path segmnts meet is approximated for curves and arcs.
 
@@ -1521,7 +1521,7 @@ Note that the offset paths for curves, ellipses and arcs are approximated mostly
 \begin{hawkdraw}
   \stroke (0cm,0cm) -- (2cm,1cm) ;
   \stroke[
-    offset={5pt},
+    offset={2pt,-2pt},
     color stroke={red}
   ] (0cm,0cm) -- (2cm,1cm) ;
 \end{hawkdraw}

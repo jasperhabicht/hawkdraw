@@ -1264,7 +1264,10 @@
 
 % ===
 
+\clist_new:N \l_hawkdraw_softpath_offset_clist
 \dim_new:N \l_hawkdraw_softpath_offset_dim
+\tl_new:N \l_hawkdraw_softpath_offset_updated_tl
+\tl_new:N \l_hawkdraw_softpath_offset_collect_tl
 \bool_new:N \l__hawkdraw_softpath_offset_moveto_bool
 \fp_new:N \l_hawkdraw_softpath_offset_point_first_fp
 \fp_new:N \l_hawkdraw_softpath_offset_point_last_fp
@@ -1274,7 +1277,7 @@
     offset                 .code:n     = {
         \clist_put_right:Nn \l_hawkdraw_softpath_update_clist { offset }
         \clist_remove_duplicates:N \l_hawkdraw_softpath_update_clist
-        \dim_set:Nn \l_hawkdraw_softpath_offset_dim {#1}
+        \clist_set:Nn \l_hawkdraw_softpath_offset_clist {#1}
     } ,
 }
 
@@ -1291,7 +1294,10 @@
             hawkdraw_softpath_offset_ ##1
         }
     }
-    \tl_use:N \g_hawkdraw_softpath_original_tl
+    \clist_map_inline:Nn \l_hawkdraw_softpath_offset_clist {
+        \dim_set:Nn \l_hawkdraw_softpath_offset_dim {##1}
+        \tl_use:N \g_hawkdraw_softpath_original_tl
+    }
 }
 
 \fp_new:N \l__hawkdraw_softpath_offset_corner_offset_fp
