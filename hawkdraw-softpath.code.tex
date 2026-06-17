@@ -1874,8 +1874,7 @@
 
 \cs_new_protected:Npn \hawkdraw_softpath_offset_arc_op:nnNnn #1#2#3#4#5 {
     \__hawkdraw_softpath_offset_get_slope_next:nnN {
-        \__hawkdraw_point_part_slope_arc_axes:nnnnn
-            { 1 } { #1 , 0pt } { 0pt , #2 } {#4} {#5}
+        ( cosd(#5) ,  sind(#5) )
     } {
         \hawkdraw_softpath_offset_calculate_corner_offset:Nnnn
             \l__hawkdraw_softpath_offset_corner_offset_fp {
@@ -1893,8 +1892,13 @@
 
 \cs_new_protected:Npn \hawkdraw_softpath_offset_arc_axes_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
     \__hawkdraw_softpath_offset_get_slope_next:nnN {
-        \__hawkdraw_point_part_slope_arc_axes:nnnnn
-            { 1 } { #1 , #2 } { #4 , #5 } {#7} {#8}
+        (
+            \hawkdraw_tuple_use_i:n {#3} * cosd( #5 ) -
+            \hawkdraw_tuple_use_i:n {#2} * sind( #5 )
+        ,
+            \hawkdraw_tuple_use_ii:n {#3} * cosd( #5 ) -
+            \hawkdraw_tuple_use_ii:n {#2} * sind( #5 )
+        )
     } {
         \hawkdraw_softpath_offset_calculate_corner_offset:Nnnn
             \l__hawkdraw_softpath_offset_corner_offset_fp {
@@ -1922,12 +1926,25 @@
     }
     \__hawkdraw_softpath_offset_arc_axes_construct_quarter:nnnnn
         {#1} {#2} {
-            \l__hawkdraw_softpath_offset_arc_point_last_fp
+            \l_hawkdraw_softpath_offset_point_last_fp
         } {
             \l__hawkdraw_softpath_offset_arc_angle_tmpa_fp
         } {
             \l__hawkdraw_softpath_offset_arc_angle_tmpb_fp
         }
+    \bool_if:NTF \l__hawkdraw_softpath_offset_moveto_bool {
+        \bool_set_false:N \l__hawkdraw_softpath_offset_moveto_bool
+        \hawkdraw_softpath_update_moveto:n {
+            \l__hawkdraw_softpath_offset_arc_construct_point_a_fp
+        }
+    } {
+        \fp_set_eq:NN \l__hawkdraw_softpath_offset_arc_construct_point_a_fp
+            \g_hawkdraw_path_point_last_fp 
+        \hawkdraw_softpath_update_lineto:n {
+            \l__hawkdraw_softpath_offset_arc_construct_point_a_fp
+        }
+    }
+    \__hawkdraw_softpath_offset_arc_construct:
     \fp_compare:nNnT { #4 } > { #3 + 90 } {
         \fp_set:Nn \l__hawkdraw_softpath_offset_arc_angle_tmpa_fp {
             #3 + 90
@@ -1943,6 +1960,7 @@
             } {
                 \l__hawkdraw_softpath_offset_arc_angle_tmpb_fp
             }
+        \__hawkdraw_softpath_offset_arc_construct:
     }
     \fp_compare:nNnT { #4 } > { #3 + 180 } {
         \fp_set:Nn \l__hawkdraw_softpath_offset_arc_angle_tmpa_fp {
@@ -1959,6 +1977,7 @@
             } {
                 \l__hawkdraw_softpath_offset_arc_angle_tmpb_fp
             }
+        \__hawkdraw_softpath_offset_arc_construct:
     }
     \fp_compare:nNnT { #4 } > { #3 + 270 } {
         \fp_set:Nn \l__hawkdraw_softpath_offset_arc_angle_tmpa_fp {
@@ -1975,6 +1994,7 @@
             } {
                 \l__hawkdraw_softpath_offset_arc_angle_tmpb_fp
             }
+        \__hawkdraw_softpath_offset_arc_construct:
     }
     \hawkdraw_softpath_update_lineto:n {
         \l__hawkdraw_softpath_offset_arc_point_last_fp +
@@ -2027,17 +2047,6 @@
     } {
         \l__hawkdraw_softpath_offset_arc_point_tmpd_fp
     }
-    \bool_if:NTF \l__hawkdraw_softpath_offset_moveto_bool {
-        \bool_set_false:N \l__hawkdraw_softpath_offset_moveto_bool
-        \hawkdraw_softpath_update_moveto:n {
-            \l__hawkdraw_softpath_offset_arc_construct_point_a_fp
-        }
-    } {
-        \hawkdraw_softpath_update_lineto:n {
-            \l__hawkdraw_softpath_offset_arc_construct_point_a_fp
-        }
-    }
-    \__hawkdraw_softpath_offset_arc_construct:
 }
 
 \cs_new_protected:Npn \hawkdraw_softpath_offset_circle_op:nnNnn #1#2#3#4#5 {
