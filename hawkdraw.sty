@@ -833,6 +833,7 @@
         \tl_trim_spaces_apply:nN { #1 \s__hawkdraw_path_end } \__hawkdraw_path_process:n
         \tl_build_gput_right:Nn \g_hawkdraw_softpath_original_tl { \s__hawkdraw_softpath_end }
         \tl_build_gend:N \g_hawkdraw_softpath_original_tl
+        \hawkdraw_path_sanitize:N \g_hawkdraw_softpath_original_tl
         \hawkdraw_softpath_update:NV \g_hawkdraw_softpath_original_tl \l_hawkdraw_softpath_update_clist
         \tl_use:N \g_hawkdraw_softpath_original_tl
         \clist_remove_duplicates:N \l_hawkdraw_path_use_clist
@@ -859,6 +860,14 @@
 \cs_new_protected:Npn \__hawkdraw_path_process_continue:n #1 {
     \tl_if_blank:nF {#1} {
         \__hawkdraw_path_process:n {#1}
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_path_sanitize:N #1 {
+    \tl_if_head_eq_meaning:VNF #1 \hawkdraw_softpath_moveto_op:nn {
+        \tl_put_left:Nn #1 {
+            \hawkdraw_softpath_moveto_op:nn { 0pt } { 0pt }
+        }
     }
 }
 
