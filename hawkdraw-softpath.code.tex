@@ -319,9 +319,32 @@
 \clist_new:N \l_hawkdraw_softpath_update_clist
 \tl_new:N \l__hawkdraw_softpath_updated_tl
 
+\bool_new:N \l_hawkdraw_softpath_keep_original_path_info_bool
+\fp_new:N \l__hawkdraw_softpath_point_first_original_fp
+\fp_new:N \l__hawkdraw_softpath_point_last_original_fp
+\fp_new:N \l__hawkdraw_softpath_slope_first_original_fp
+\fp_new:N \l__hawkdraw_softpath_slope_last_original_fp
+
 \scan_new:N \s__hawkdraw_softpath_end
 
+\keys_define:nn { hawkdraw / path } {
+    keep ~ original ~ path ~ info
+                            .bool_set:N = \l_hawkdraw_softpath_keep_original_path_info_bool ,
+    keep ~ original ~ path ~ info
+                            .default:n  = { true } ,
+    keep ~ original ~ path ~ info
+                            .initial:n  = { false } ,
+}
+
 \cs_new_protected:Npn \hawkdraw_softpath_update:Nn #1#2 {
+    \fp_set_eq:NN \l__hawkdraw_softpath_point_first_original_fp
+        \g_hawkdraw_path_point_first_fp
+    \fp_set_eq:NN \l__hawkdraw_softpath_point_last_original_fp
+        \g_hawkdraw_path_point_last_fp
+    \fp_set_eq:NN \l__hawkdraw_softpath_slope_first_original_fp
+        \g_hawkdraw_path_slope_first_fp
+    \fp_set_eq:NN \l__hawkdraw_softpath_slope_last_original_fp
+        \g_hawkdraw_path_slope_last_fp
     \clist_map_inline:nn {#2} {
         \group_begin:
             \tl_build_begin:N \l__hawkdraw_softpath_updated_tl
@@ -332,6 +355,16 @@
             \tl_build_end:N \l__hawkdraw_softpath_updated_tl
             \tl_gset_eq:NN #1 \l__hawkdraw_softpath_updated_tl
         \group_end:
+    }
+    \bool_if:NT \l_hawkdraw_softpath_keep_original_path_info_bool {
+        \fp_gset_eq:NN \g_hawkdraw_path_point_first_fp
+            \l__hawkdraw_softpath_point_first_original_fp
+        \fp_gset_eq:NN \g_hawkdraw_path_point_last_fp
+            \l__hawkdraw_softpath_point_last_original_fp
+        \fp_gset_eq:NN \g_hawkdraw_path_slope_first_fp
+            \l__hawkdraw_softpath_slope_first_original_fp
+        \fp_gset_eq:NN \g_hawkdraw_path_slope_last_fp
+            \l__hawkdraw_softpath_slope_last_original_fp
     }
 }
 \cs_generate_variant:Nn \hawkdraw_softpath_update:Nn { NV }

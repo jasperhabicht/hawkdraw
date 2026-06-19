@@ -1485,7 +1485,14 @@ The option \macro{slant} sets the slant for the path as a comma-separated list o
 
 \section{Path manipulations}
 
-The \macro{hawkdraw} packages makes use of a softpath mechanism that allows for manipulations of points of a paths. The mechanism for rounding path corners via the \macro{corner arc} option (see \hyperlink{key:cornerarc}{above}) relies on a lower-level softpath implementation of \macro{l3draw}. Currently, only a mechanism for shortening paths is provided by the \macro{hawkdraw} which is described below.
+The \macro{hawkdraw} packages makes use of a softpath mechanism that allows for manipulations of points of a paths. The mechanism for rounding path corners via the \macro{corner arc} option (see \hyperlink{key:cornerarc}{above}) relies on a lower-level softpath implementation of \macro{l3draw}. Currently, a mechanism for shortening paths and for offsetting paths are provided by the \macro{hawkdraw} which is described below.
+
+Note that the order of manipulations is executed in the order the relevant options are given to the path. Thus, if a path should be shortenend and also offset using a list (creating essentially two partial paths), the options for shortening should be given before the option for offsetting the path.
+
+\begin{macrodef}
+!path/!|keep original path info|={<boolean>}
+\end{macrodef}
+The option \macro{keep original path info} can be used to restore the information about the position and slope of the first and last point of the path to that of the original path before it has been manipulated. Path manipulations per default change the information about the position and slope of the first and last point of the path, which for example affects where arrow tips are positioned.
 
 \subsection{Shortening paths}
 
@@ -1513,7 +1520,7 @@ Shortening is not executed on circles, ellipses rectangles and grids.
 \begin{macrodef}
 !path/!|offset|={<clist>}
 \end{macrodef}
-The option \macro{offset} requires as argument a comma-separated list of dimensions each representing the length by which the current path should be offset. Arrow tips are positioned at the updated start or end point of the path.
+The option \macro{offset} requires as argument a comma-separated list of dimensions each representing the length by which the current path should be offset. Arrow tips are positioned at the updated start or end point of the last path of the comma-separated list.
 
 Note that the offset paths for curves, ellipses and arcs are approximated mostly by reconstructing the relevant path by three to twelve Bézier curves which may result in suboptimal output especially for relatively sharp curves. Furthermore, the position of the point where two path segmnts meet is approximated for curves and arcs.
 
