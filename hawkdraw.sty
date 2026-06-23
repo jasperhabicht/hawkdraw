@@ -131,6 +131,12 @@
     }
 }
 
+\cs_new:Npn \__hawkdraw_exp_last_unbraced:NeV #1#2#3 {
+    \use:e {
+        \exp_not:N #1 {#2} \exp_not:V #3
+    }
+}
+
 % ===
 
 \cs_new:Npn \hawkdraw_tag_bb_attribute_use: {
