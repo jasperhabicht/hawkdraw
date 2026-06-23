@@ -554,6 +554,11 @@
     }
 }
 
+% chord = (p3-p0).Length;
+% control_net = (p0 - p1).Length + (p2 - p1).Length + (p3 - p2).Length;
+% approx_length = (control_net + chord) / 2;
+% split for more accuracy
+
 \cs_new:Npn \__hawkdraw_path_length_arc:nnnn #1#2#3#4 {
     \fp_eval:n {
         0pt

@@ -1534,6 +1534,18 @@ Note that the offset paths for curves, ellipses and arcs are approximated mostly
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
+\subsection{Softpath related settings}
+
+\begin{macrodef}
+!settings/!|length precision|={<integer>}
+\end{macrodef}
+In order to calculate the path length of curves, a number of points on the curve are identified and the sum of the distances between these points is calculated. The result becomes more precise with a larger number of points. This number can be set via the option \macro{setting/length precision}. The default number is \num{25}.
+
+\begin{macrodef}
+!settings/!|bisection count|={<integer>}
+\end{macrodef}
+In order to create offset paths for Bézier curves, arcs and ellipses, the relevant offset path is approximated using a number of cubic Bézier curves. The default number of curve segments to approximate a Bézier curve or an arc up to \num{90} degrees is \num{3}. Arcs that have a delta angle larger than \num{90} degrees as well as ellipses are split up into parts of at most \num{90} degrees. The number of curve segments can be adjusted using the \macro{setting/length precision} option.
+
 \section{Defining custom styles and colors}
 
 \begin{macrodef}

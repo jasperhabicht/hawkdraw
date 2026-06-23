@@ -1532,9 +1532,6 @@
 \fp_new:N \l__hawkdraw_softpath_offset_construct_cubic_tb_fp
 \fp_new:N \l__hawkdraw_softpath_offset_construct_cubic_tc_fp
 
-\tl_new:N \l__hawkdraw_softpath_offset_construct_cubic_curve_i_tl
-\tl_new:N \l__hawkdraw_softpath_offset_construct_cubic_curve_ii_tl
-
 % tmpa to tmpg
 \int_step_inline:nn { 7 } {
     \fp_new:c {
@@ -1666,6 +1663,11 @@
     }
 }
 
+\tl_new:N \l__hawkdraw_softpath_offset_construct_cubic_curve_i_tl
+\tl_new:N \l__hawkdraw_softpath_offset_construct_cubic_curve_ii_tl
+
+\cs_generate_variant:Nn \seq_set_item:Nnn { Nne }
+
 \cs_new_protected:Npn \hawkdraw_softpath_offset_construct_cubic_set_split:Nnnnnn #1#2#3#4#5#6 {
     \seq_clear:N #1
     \tl_set:Nn \l__hawkdraw_softpath_offset_construct_cubic_previous_tl {
@@ -1694,6 +1696,43 @@
             \l__hawkdraw_softpath_offset_construct_cubic_curve_ii_tl
         \fp_set_eq:NN \l__hawkdraw_softpath_offset_construct_cubic_ta_fp
             \l__hawkdraw_softpath_offset_construct_cubic_tb_fp
+    }
+    % smoothen segment convergence
+    \int_compare:nNnT { \seq_count:N #1 } > { 1 } {
+        \int_step_inline:nnn { 2 } { \seq_count:N #1 } {
+            \tl_set:Ne \l__hawkdraw_softpath_offset_construct_cubic_curve_i_tl {
+                \seq_item:Nn #1 { ##1 - 1 }
+            }
+            \tl_set:Ne \l__hawkdraw_softpath_offset_construct_cubic_curve_ii_tl {
+                \seq_item:Nn #1 {##1}
+            }
+            \seq_set_item:Nne #1 { ##1 - 1 } {
+                { \tl_item:Nn \l__hawkdraw_softpath_offset_construct_cubic_curve_i_tl { 1 } }
+                { \tl_item:Nn \l__hawkdraw_softpath_offset_construct_cubic_curve_i_tl { 2 } }
+                { \tl_item:Nn \l__hawkdraw_softpath_offset_construct_cubic_curve_i_tl { 3 } }
+                { 
+                    \fp_eval:n {
+                        (
+                            \tl_item:Nn \l__hawkdraw_softpath_offset_construct_cubic_curve_i_tl { 3 } +
+                            \tl_item:Nn \l__hawkdraw_softpath_offset_construct_cubic_curve_ii_tl { 2 }
+                        ) / 2
+                    }
+                }
+            }
+            \seq_set_item:Nne #1 {##1} {
+                { 
+                    \fp_eval:n {
+                        (
+                            \tl_item:Nn \l__hawkdraw_softpath_offset_construct_cubic_curve_i_tl { 3 } +
+                            \tl_item:Nn \l__hawkdraw_softpath_offset_construct_cubic_curve_ii_tl { 2 }
+                        ) / 2
+                    }
+                }
+                { \tl_item:Nn \l__hawkdraw_softpath_offset_construct_cubic_curve_ii_tl { 2 } }
+                { \tl_item:Nn \l__hawkdraw_softpath_offset_construct_cubic_curve_ii_tl { 3 } }
+                { \tl_item:Nn \l__hawkdraw_softpath_offset_construct_cubic_curve_ii_tl { 4 } }
+            }
+        }
     }
 }
 
