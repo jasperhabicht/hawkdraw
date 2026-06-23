@@ -1396,10 +1396,7 @@
                 \tl_item:nn {#2} { 5 } , \tl_item:nn {#2} { 6 }
             } {#4} {#5}
     }
-    {#1}
-    \tl_item:nn {#2} { 1 } { \tl_item:nn {#2} { 2 } } { \tl_item:nn {#2} { 3 } }
-    \tl_item:nn {#2} { 4 } { \tl_item:nn {#2} { 5 } } { \tl_item:nn {#2} { 6 } }
-    #3 {#4} {#5}
+    #1#2#3 {#4} {#5}
 }
 
 \cs_new:Npn \hawkdraw_softpath_offset_calculate_corner_offset:nnn #1#2#3 {
@@ -1791,7 +1788,9 @@
 
 \cs_new_protected:Npn \hawkdraw_softpath_offset_arc_op:nnNnn #1#2#3#4#5 {
     \__hawkdraw_softpath_offset_get_slope_next:nnN {
-        ( cosd( #5 ) , sind( #5 ) )
+        \__hawkdraw_point_part_arc:nnnnnn
+            { 1 } { \l_hawkdraw_softpath_offset_point_previous_fp }
+            {#1} {#2} {#4} {#5}
     } {
         \hawkdraw_softpath_offset_arc_axes:nnnn
             { #1 , 0pt } { 0pt , #2 } {#4} {#5}
@@ -1800,13 +1799,9 @@
 
 \cs_new_protected:Npn \hawkdraw_softpath_offset_arc_axes_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
     \__hawkdraw_softpath_offset_get_slope_next:nnN {
-        (
-            \hawkdraw_tuple_use_i:n {#3} * cosd( #5 ) -
-            \hawkdraw_tuple_use_i:n {#2} * sind( #5 )
-        ,
-            \hawkdraw_tuple_use_ii:n {#3} * cosd( #5 ) -
-            \hawkdraw_tuple_use_ii:n {#2} * sind( #5 )
-        )
+        \__hawkdraw_point_part_arc_axes:nnnnnn
+            { 1 } { \l_hawkdraw_softpath_offset_point_previous_fp }
+            { #1 , #2 } { #4 , #5 } {#7} {#8}
     } {
         \hawkdraw_softpath_offset_arc_axes:nnnn
             { #1 , #2 } { #4 , #5 } {#7} {#8}
@@ -1984,13 +1979,6 @@
     }
 }
 
-% a to l
-\int_step_inline:nn { 12 } {
-    \fp_new:c {
-        l__hawkdraw_softpath_offset_ellipse_point_tmp \int_to_alph:n {#1 } _fp
-    }
-}
-
 \cs_new_protected:Npn \hawkdraw_softpath_offset_ellipse_op:nnNnnNnn #1#2#3#4#5#6#7#8 {
     \hawkdraw_softpath_offset_ellipse:nnn { #1 , #2 } { #4 , #5 } { #7 , #8 }
 }
@@ -2000,7 +1988,6 @@
         \__hawkdraw_point_part_ellipse:nnnn
             { 0 } {#1} {#2} {#3}
     }
-    \draw_path_circle:nn { \l__hawkdraw_softpath_offset_arc_point_last_fp } { 2pt }
 
     \int_step_inline:nn { 4 } {
         \__hawkdraw_softpath_offset_construct_cubic_from_arc:nnnnn {

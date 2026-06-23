@@ -131,12 +131,6 @@
     }
 }
 
-\cs_new:Npn \__hawkdraw_exp_last_unbraced:NeV #1#2#3 {
-    \use:e {
-        \exp_not:N #1 {#2} \exp_not:V #3
-    }
-}
-
 % ===
 
 \cs_new:Npn \hawkdraw_tag_bb_attribute_use: {
@@ -1111,8 +1105,7 @@
         \__hawkdraw_point_part_slope_arc:n { 1 }
     }
     \fp_gset:Nn \g_hawkdraw_path_point_last_fp {
-        \l__hawkdraw_point_o_fp +
-        ( \__hawkdraw_point_part_arc:n { 1 } )
+        \__hawkdraw_point_part_arc:n { 1 }
     }
     \bool_if:NTF \l_hawkdraw_path_arc_axes_bool {
         \hawkdraw_softpath_build_arc_axes:nnnn
