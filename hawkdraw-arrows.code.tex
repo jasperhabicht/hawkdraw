@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.3.1 2026-06-17
+% v0.3.1 2026-06-24
 
 \msg_new:nnn { hawkdraw } { arrow-unknown } {
     Arrow ~ tip ~ `#1` ~ unknown.
@@ -172,6 +172,16 @@
     \draw_path_close:
 }
 
+\hawkdraw_arrow_create:nnn { kite } {
+    fill
+} {
+    \draw_path_moveto:n { 0 , 0 }
+    \draw_path_lineto:n { -2.5 , -5 }
+    \draw_path_lineto:n { 0 , -7.5 }
+    \draw_path_lineto:n { 2.5 , -5 }
+    \draw_path_close:
+}
+
 \hawkdraw_arrow_create:nnn { circle } {
     fill
 } {
@@ -201,6 +211,36 @@
 } {
     \draw_path_moveto:n { -3 , 0 }
     \draw_path_lineto:n { 3 , 0 }
+}
+
+\hawkdraw_arrow_create:nnn { slash } {
+    stroke
+} {
+    \draw_path_moveto:n { -3 , 3 }
+    \draw_path_lineto:n { 3 , -3 }
+}
+
+\hawkdraw_arrow_create:nnn { barslash } {
+    stroke
+} {
+    \draw_path_moveto:n { 0 , 0 }
+    \draw_path_lineto:n { 0 , 3 }
+    \draw_path_moveto:n { -3 , 0 }
+    \draw_path_lineto:n { 3 , 0 }
+    \draw_path_moveto:n { -2 , 2 }
+    \draw_path_lineto:n { 2 , -2 }
+}
+
+\hawkdraw_arrow_create:nnn { tail } {
+    fill
+} {
+    \draw_path_moveto:n { 0 , 0 }
+    \draw_path_lineto:n { -2.5 , 2.5 }
+    \draw_path_lineto:n { -2.5 , -2.5 }
+    \draw_path_lineto:n { 0 , -5 }
+    \draw_path_lineto:n { 2.5 , -2.5 }
+    \draw_path_lineto:n { 2.5 , 2.5 }
+    \draw_path_close:
 }
 
 % EOF

@@ -13,7 +13,7 @@
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
 \def\hawkdrawfileversion{0.3.1}
-\def\hawkdrawfiledate{17 June 2026}
+\def\hawkdrawfiledate{24 June 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -290,7 +290,7 @@
 \changes{v0.1.1}{2026/06/05}{Fixing bug in arrow tip slopes; fixing bugs in tagging support; improving option setting; adding option to set bounding box; adding ConTeXt module.}
 \changes{v0.2.0}{2026/06/12}{Adding softpath system; adding option to shorten paths; improving ConTeXt module.}
 \changes{v0.3.0}{2026/06/17}{Adding option to offset paths; fixing a bug with positioning of points on arcs.}
-\changes{v0.3.1}{2026/06/17}{Allowing for multiple softpath manipulations.}
+\changes{v0.3.1}{2026/06/24}{Allowing for multiple softpath manipulations; improved offset mechanism; added arrow tips and patterns.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -1642,10 +1642,14 @@ The following arrow tips are available, of these the last three, \macro{simple},
   \arrowexample{default} & \macro{default} \\
   \arrowexample{stealth} & \macro{stealth} \\
   \arrowexample{triangle} & \macro{triangle} \\
+  \arrowexample{kite} & \macro{kite} \\
   \arrowexample{circle} & \macro{circle} \\
   \arrowexample{simple} & \macro{simple} \\
   \arrowexample{straight} & \macro{straight} \\
   \arrowexample{bar} & \macro{bar} \\
+  \arrowexample{slash} & \macro{slash} \\
+  \arrowexample{barslash} & \macro{barslash} \\
+  \arrowexample{tail} & \macro{tail} \\
   \bottomrule
 \end{longtable}
 
@@ -1728,6 +1732,8 @@ The following patterns are available:
   \patternexample{lines} & \macro{lines} \\
   \patternexample{hatch} & \macro{hatch} \\
   \patternexample{dots} & \macro{dots} \\
+  \patternexample{check} & \macro{check} \\
+  \patternexample{masonry} & \macro{masonry} \\
   \bottomrule
 \end{longtable}
 

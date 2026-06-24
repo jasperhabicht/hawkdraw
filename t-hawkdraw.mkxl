@@ -17,7 +17,7 @@
 %D        title=hawkdraw,
 %D     subtitle=A package for drawing vector graphics with the l3draw package and a TikZ-like syntax,
 %D       author=Jasper Habicht,
-%D         date=2026-06-17,
+%D         date=2026-06-24,
 %D    copyright=Jasper Habicht,
 %D      license=LPPL-1.3c,
 %D          url=https://github.com/jasperhabicht/hawkdraw
