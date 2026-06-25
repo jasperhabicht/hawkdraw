@@ -21,6 +21,8 @@
 \prop_new:N \g_hawkdraw_pattern_default_keys_prop
 \clist_new:N \l_hawkdraw_pattern_keys_clist
 \box_new:N \l_hawkdraw_pattern_box
+\dim_new:N \l__hawkdraw_pattern_width_dim
+\dim_new:N \l__hawkdraw_pattern_height_dim
 
 \dim_new:N \l_hawkdraw_pattern_xunit_dim
 \dim_new:N \l_hawkdraw_pattern_yunit_dim
@@ -59,29 +61,35 @@
             \str_mdfive_hash:n { #1 #2 }
         }
     }
+    \dim_set:Nn \l__hawkdraw_pattern_width_dim {
+        \box_wd:N \l_hawkdraw_pattern_box
+    }
+    \dim_set:Nn \l__hawkdraw_pattern_height_dim {
+        \box_ht_plus_dp:N \l_hawkdraw_pattern_box
+    }
     \bool_set_false:N \l_draw_bb_update_bool
     \int_step_inline:nnn {
         \fp_to_int:n {
-            floor( \g_draw_bb_xmin_dim / \l_hawkdraw_pattern_xunit_dim )
+            floor( \g_draw_bb_xmin_dim / \l__hawkdraw_pattern_width_dim )
         }
     } {
         \fp_to_int:n {
-            floor( \g_draw_bb_xmax_dim / \l_hawkdraw_pattern_xunit_dim )
+            floor( \g_draw_bb_xmax_dim / \l__hawkdraw_pattern_width_dim )
         }
     } {
         \int_step_inline:nnn {
             \fp_to_int:n {
-                floor( \g_draw_bb_ymin_dim / \l_hawkdraw_pattern_yunit_dim )
+                floor( \g_draw_bb_ymin_dim / \l__hawkdraw_pattern_height_dim )
             }
         } {
             \fp_to_int:n {
-                floor( \g_draw_bb_ymax_dim / \l_hawkdraw_pattern_yunit_dim )
+                floor( \g_draw_bb_ymax_dim / \l__hawkdraw_pattern_height_dim )
             }
         } {
             \draw_box_use:Nn \l_hawkdraw_pattern_box {
-                ##1 * \l_hawkdraw_pattern_xunit_dim
+                ##1 * \l__hawkdraw_pattern_width_dim
                 ,
-                ####1 * \l_hawkdraw_pattern_yunit_dim
+                ####1 * \l__hawkdraw_pattern_height_dim
             }
         }
     }
@@ -102,7 +110,7 @@
                 \draw_path_rectangle:nn { 0pt , 0pt } {
                     \l_hawkdraw_pattern_xunit_dim , \l_hawkdraw_pattern_yunit_dim
                 }
-                \draw_path_replace_bb:
+                \draw_path_use_clear:n { }
                 \bool_set_false:N \l_draw_bb_update_bool
                 \use:c { hawkdraw_pattern_ #1 : }
             \draw_end:
@@ -125,6 +133,13 @@
     \draw_path_use_clear:n { stroke }
 }
 
+\hawkdraw_pattern_create:nnn { waves } { } {
+    \draw_path_moveto:n { 0pt , 2.5pt }
+    \draw_path_curveto:nnn { 2.5pt , 2.5pt } { 2.5pt , 7.5pt } { 5pt , 7.5pt }
+    \draw_path_curveto:nnn { 7.5pt , 7.5pt } { 7.5pt , 2.5pt } { 10pt , 2.5pt }
+    \draw_path_use_clear:n { stroke }
+}
+
 \hawkdraw_pattern_create:nnn { hatch } { } {
     \draw_path_moveto:n { 0pt , 5pt }
     \draw_path_lineto:n { 10pt , 5pt }
@@ -136,6 +151,25 @@
 \hawkdraw_pattern_create:nnn { dots } { } {
     \draw_path_circle:nn { 5pt , 5pt } { 2.5pt }
     \draw_path_use_clear:n { fill }
+}
+
+\hawkdraw_pattern_create:nnn { circles } { } {
+    \draw_path_circle:nn { 5pt , 5pt } { 2.5pt }
+    \draw_path_use_clear:n { stroke }
+}
+
+\hawkdraw_pattern_create:nnn { plus } { } {
+    \draw_path_moveto:n { 5pt , 2.5pt }
+    \draw_path_lineto:n { 5pt , 7.5pt }
+    \draw_path_moveto:n { 2.5pt , 5pt }
+    \draw_path_lineto:n { 7.5pt , 5pt }
+    \draw_path_use_clear:n { stroke }
+}
+
+\hawkdraw_pattern_create:nnn { minus } { } {
+    \draw_path_moveto:n { 2.5pt , 5pt }
+    \draw_path_lineto:n { 7.5pt , 5pt }
+    \draw_path_use_clear:n { stroke }
 }
 
 \hawkdraw_pattern_create:nnn { check } { } {
@@ -155,6 +189,66 @@
     \draw_path_lineto:n { 7.5pt , 2.5pt }
     \draw_path_moveto:n { 2.5pt , 2.5pt }
     \draw_path_lineto:n { 2.5pt , 0pt }
+    \draw_path_use_clear:n { stroke }
+}
+
+\hawkdraw_pattern_create:nnn { herringbone } { } {
+    \draw_path_moveto:n { 0pt , 0pt }
+    \draw_path_lineto:n { 5pt , 5pt }
+    \draw_path_lineto:n { 10pt , 0pt }
+    \draw_path_moveto:n { 2.5pt , 2.5pt }
+    \draw_path_lineto:n { 5pt , 0pt }
+    \draw_path_moveto:n { 7.5pt , 2.5pt }
+    \draw_path_lineto:n { 10pt , 5pt }
+    \draw_path_moveto:n { 0pt , 5pt }
+    \draw_path_lineto:n { 5pt , 10pt }
+    \draw_path_lineto:n { 10pt , 5pt }
+    \draw_path_moveto:n { 2.5pt , 7.5pt }
+    \draw_path_lineto:n { 5pt , 5pt }
+    \draw_path_moveto:n { 7.5pt , 7.5pt }
+    \draw_path_lineto:n { 10pt , 10pt }
+    \draw_path_use_clear:n { stroke }
+}
+
+\hawkdraw_pattern_create:nnn { hexagonal } {
+   pattern ~ x = { \fp_to_dim:n { cosd( 30 ) * 20/3pt } }
+} {
+    \draw_path_moveto:n { 0pt , 0pt }
+    \draw_path_lineto:n { 0pt , 5/3pt }
+    \draw_path_lineto:n {
+        ( 0pt , 5/3pt ) + 
+        ( \draw_point_polar:nn { 10/3pt } { 30 } )
+    }
+    \draw_path_lineto:n {
+        ( 0pt , 15/3pt ) +
+        ( \draw_point_polar:nn { 10/3pt } { 30 } )
+    }
+    \draw_path_lineto:n { 0pt , 25/3pt }
+    \draw_path_lineto:n { 0pt , 10pt }
+    \draw_path_moveto:n {
+        ( 0pt , 15/3pt ) +
+        ( \draw_point_polar:nn { 10/3pt } { 30 } )
+    }
+    \draw_path_lineto:n {
+        ( 0pt , 15/3pt ) +
+        ( \draw_point_polar:nn { 20/3pt } { 30 } )
+    }
+    \draw_path_lineto:n {
+        ( 0pt , 25/3pt ) +
+        ( \draw_point_polar:nn { 20/3pt } { 30 } )
+    }
+    \draw_path_moveto:n {
+        ( 0pt , 5/3pt ) +
+        ( \draw_point_polar:nn { 10/3pt } { 30 } )
+    }
+    \draw_path_lineto:n {
+        ( 0pt , 15/3pt ) +
+        ( \draw_point_polar:nn { 20/3pt } { -30 } )
+    }
+    \draw_path_lineto:n {
+        ( 0pt , 10/3pt ) +
+        ( \draw_point_polar:nn { 20/3pt } { -30 } )
+    }
     \draw_path_use_clear:n { stroke }
 }
 
