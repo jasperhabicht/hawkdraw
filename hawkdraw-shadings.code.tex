@@ -137,23 +137,29 @@
         }
     }
     \draw_transform_shift:n {
-        \l_hawkdraw_shading_bbox_xmin_dim
-    ,
-        \l_hawkdraw_shading_bbox_ymin_dim
+        (
+            \l_hawkdraw_shading_bbox_xmin_dim + (
+                \l_hawkdraw_shading_bbox_xmax_dim -
+                \l_hawkdraw_shading_bbox_xmin_dim
+            ) / 2
+        ,
+            \l_hawkdraw_shading_bbox_ymin_dim + (
+                \l_hawkdraw_shading_bbox_ymax_dim -
+                \l_hawkdraw_shading_bbox_ymin_dim
+            ) / 2
+        )
     }
     \draw_transform_rotate:n {
         \l_hawkdraw_shading_rotate_fp
     }
-    \draw_box_use:Nn \l_hawkdraw_shading_box {
+    \draw_box_use:Nn \l_hawkdraw_shading_box { 
         (
-            \l_hawkdraw_shading_bbox_ymax_dim -
-            \l_hawkdraw_shading_bbox_ymin_dim
-        ) / -2
-    ,
-        (
-            \l_hawkdraw_shading_bbox_xmax_dim -
-            \l_hawkdraw_shading_bbox_xmin_dim
-        ) / -2
+            \l_hawkdraw_shading_bbox_xmin_dim -
+            \l_hawkdraw_shading_bbox_xmax_dim
+        ,
+            \l_hawkdraw_shading_bbox_ymin_dim -
+            \l_hawkdraw_shading_bbox_ymax_dim
+        )
     }
 }
 
