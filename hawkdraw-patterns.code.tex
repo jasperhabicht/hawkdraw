@@ -32,6 +32,7 @@
         \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
             \draw_scope_begin:
                 \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
+                \tl_use:N \g_hawkdraw_softpath_original_tl
                 \draw_path_use_clear:n { clip }
                 \hawkdraw_pattern_fill:nV {#1} \l_hawkdraw_pattern_keys_clist
                 \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
@@ -49,6 +50,9 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_pattern_fill:nn #1#2 {
+    \prop_if_in:NnF \g_hawkdraw_pattern_default_keys_prop {#1} {
+        \msg_warning:nnn { hawkdraw } { pattern-unknown } {#1}
+    }
     \pdfxform_if_exist:nF {
         hawkdraw_pattern_
         \str_mdfive_hash:n { #1 #2 }

@@ -631,7 +631,7 @@
 \hawkdraw_modules_load:n { utils , softpath , nodes , arrows , plots }
 
 \IfPDFManagementActiveTF {
-    \hawkdraw_modules_load:n { patterns }
+    \hawkdraw_modules_load:n { patterns , shadings }
 } {
     \msg_warning:nn { hawkdraw } { documentmetadata-required }
     \keys_define:nn { hawkdraw / path } {
@@ -826,7 +826,6 @@
     \fp_gzero:N \g_hawkdraw_path_length_fp
     \draw_scope_begin:
         \hook_use:n { hawkdraw / path / begin }
-        \tl_use:N \l_hawkdraw_path_preactions_tl
         \tl_build_gbegin:N \g_hawkdraw_softpath_original_tl
         \tl_trim_spaces_apply:nN { #1 \s__hawkdraw_path_end } \__hawkdraw_path_process:n
         \tl_build_gput_right:Nn \g_hawkdraw_softpath_original_tl { \s__hawkdraw_softpath_end }
@@ -835,6 +834,7 @@
         \hawkdraw_softpath_update:NV \g_hawkdraw_softpath_original_tl \l_hawkdraw_softpath_update_clist
         \tl_use:N \g_hawkdraw_softpath_original_tl
         \clist_remove_duplicates:N \l_hawkdraw_path_use_clist
+        \tl_use:N \l_hawkdraw_path_preactions_tl
         \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }
         \tl_use:N \l_hawkdraw_path_postactions_tl
         \hook_use:n { hawkdraw / path / end }
