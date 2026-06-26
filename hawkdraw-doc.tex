@@ -1743,6 +1743,43 @@ The following patterns are available:
   \bottomrule
 \end{longtable}
 
+\section{Shadings}
+
+Note that in order to be able to use shadings, \macro{\DocumentMetadata{}} needs to be set.
+
+\begin{macrodef}
+!path/!|fill shading|={<string>}
+\end{macrodef}
+The option \macro{fill shading} sets a fill shading for the current path. The key takes as value a string representing the name of the relevant shading.
+
+\begin{macrodef}
+!path/!|shading colors|={<clist>}
+\end{macrodef}
+The option \macro{shading colors} accepts a comma-separated list of strings that represent names of predefined colors.
+
+\begin{macrodef}
+!path/!|shading rotate|={<float>}
+\end{macrodef}
+The option \macro{shading rotate} accepts a unit-less floating-point number representing the angle of the roratation of the shasing.
+
+The following shadings are available:
+
+\NewDocumentCommand{\shadingexample}{ m }{%
+  \begin{hawkdraw}[baseline={0.5ex}]
+    \path[fill shading={#1}, shading colors={red,blue,green}]
+      (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  \end{hawkdraw}%
+}
+
+\begin{longtable}{ @{} p{2.5cm} p{\dimexpr\textwidth-2\tabcolsep-2.5cm} @{} }
+  \toprule
+  \textbf{Pattern} & \textbf{Name} \\
+  \midrule
+  \shadingexample{linear} & \macro{linear} \\
+  \shadingexample{radial} & \macro{radial} \\
+  \bottomrule
+\end{longtable}
+
 \section{Tagging support}
 
 The \macro{hawkdraw} package supports tagging to provide accessible PDF structures. The following tags are available for the \macro{hawkdraw} environment as well as for nodes:

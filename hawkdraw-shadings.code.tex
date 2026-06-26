@@ -18,6 +18,27 @@
     Shading ~ `#1` ~ unknown.
 }
 
+\cs_new_protected:Npn \hawkdraw_support_pdfliteral:n #1 {
+    \sys_if_engine_luatex:TF {
+        \tex_pdfextension:D literal {#1}
+    } {
+        \tex_pdfliteral:D {#1}
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_support_pdfxform_resources:n #1 {
+    \tex_immediate:D \tex_pdfxform:D resources {#1}
+}
+
+\cs_new_protected:Npn \hawkdraw_support_pdflastxform: {
+    \tex_pdflastxform:D
+}
+
+\cs_new_protected:Npn \hawkdraw_support_pdfrefxform:N #1 {
+    \tex_pdfrefxform:D \int_use:N #1
+}
+\cs_generate_variant:Nn \hawkdraw_support_pdfrefxform:N { c }
+
 \tl_new:N \l_hawkdraw_shadings_bbox_tl
 \box_new:N \l_hawkdraw_shading_box
 \clist_new:N \l_hawkdraw_shading_colors_clist
@@ -65,6 +86,8 @@
 }
 
 \tl_new:N \l__hawkdraw_shading_color_value_tmp_tl
+\clist_new:N \l__hawkdraw_shading_color_values_clist
+\box_new:N \l__hawkdraw_shading_object_box
 
 \cs_generate_variant:Nn \color_export:nnN { e }
 
@@ -72,32 +95,25 @@
     \hbox_set_to_wd:Nnn \l__hawkdraw_shading_object_box { 100bp } {
         \vbox_to_ht:nn { 100bp } {
             \skip_vertical:n { 0pt plus 1fil }
-            \tex_pdfliteral:D { /Sh ~ sh }
+            \hawkdraw_support_pdfliteral:n { /Sh ~ sh }
             \skip_horizontal:n { 0pt plus 1fil }
         }
     }
-    \tex_immediate:D \tex_pdfxform:D resources {
+    \hawkdraw_support_pdfxform_resources:n {
         /Shading ~ << ~
             /Sh ~ << ~
-                /ShadingType ~ 2 ~
-                /ColorSpace ~ /DeviceRGB ~
-                /Domain ~ [ 0.0 ~ 100.0 ] ~
-                /Coords ~ [ 0.0 ~ 0.0 ~ 0.0 ~ 100.0 ] ~
-                /Extend ~ [ false ~ false ] ~
-                /Function ~ << ~
-                    #3
-                >> ~
+                #3
             >> ~
         >>
     }
     \l__hawkdraw_shading_object_box
     \int_const:cn { c__hawkdraw_shading_ \str_mdfive_hash:e {#1#2} _int } {
-        \tex_pdflastxform:D
+        \hawkdraw_support_pdflastxform:
     }
 }
 
 \cs_new_protected:Npn \hawkdraw_shading_pdf_object_ref:n #1 {
-    \tex_pdfrefxform:D \int_use:c {
+    \hawkdraw_support_pdfrefxform:c {
         c__hawkdraw_shading_ \str_mdfive_hash:e {#1} _int
     }
     \scan_stop:
@@ -174,8 +190,6 @@
 
 % ===
 
-\clist_new:N \l__hawkdraw_shading_color_values_clist
-
 \cs_new:Npn \__hawkdraw_shading_linear_bounds:n #1 {
     \int_step_tokens:nn { \clist_count:n {#1} } {
         \__hawkdraw_shading_linear_bounds_aux:nn { \clist_count:n {#1} }
@@ -234,8 +248,6 @@
     >> ~
 }
 
-\box_new:N \l__hawkdraw_shading_object_box
-
 \cs_new_protected:Npn \hawkdraw_shading_linear:n #1 {
     \int_if_exist:cF {
         c__hawkdraw_shading_ \str_mdfive_hash:e { linear #1 } _int
@@ -244,20 +256,107 @@
             \l__hawkdraw_shading_color_values_clist
             {#1}
         \hawkdraw_shading_pdf_object_write:nnn { linear } {#1} {
-            /FunctionType ~ 3 ~
+            /ShadingType ~ 2 ~
+            /ColorSpace ~ /DeviceRGB ~
             /Domain ~ [ 0.0 ~ 100.0 ] ~
-            /Functions ~ [ ~
-                \__hawkdraw_shading_linear_functions:V
-                    \l__hawkdraw_shading_color_values_clist     
-            ] ~
-            /Bounds ~ [
-                \__hawkdraw_shading_linear_bounds:n {#1}
-            ] ~
-            /Encode ~ [
-                \prg_replicate:nn { \clist_count:n {#1} + 1 } {
-                    0 ~ 1 ~
-                }
-            ] ~
+            /Coords ~ [ 0.0 ~ 0.0 ~ 0.0 ~ 100.0 ] ~
+            /Extend ~ [ false ~ false ] ~
+            /Function ~ << ~
+                /FunctionType ~ 3 ~
+                /Domain ~ [ 0.0 ~ 100.0 ] ~
+                /Functions ~ [ ~
+                    \__hawkdraw_shading_linear_functions:V
+                        \l__hawkdraw_shading_color_values_clist     
+                ] ~
+                /Bounds ~ [
+                    \__hawkdraw_shading_linear_bounds:n {#1}
+                ] ~
+                /Encode ~ [
+                    \prg_replicate:nn { \clist_count:n {#1} + 1 } {
+                        0 ~ 1 ~
+                    }
+                ] ~
+            >> ~
+        }
+    }
+}
+
+% ===
+
+\cs_new:Npn \__hawkdraw_shading_radial_bounds:n #1 {
+    \int_step_tokens:nn { \clist_count:n {#1} - 1 } {
+        \__hawkdraw_shading_radial_bounds_aux:nn { \clist_count:n {#1} }
+    }
+}
+
+\cs_new:Npn \__hawkdraw_shading_radial_bounds_aux:nn #1#2 {
+    \fp_format:nn { ( 50 / ( #1 + 1 ) ) * ( #2 ) } { .3 } ~
+}
+
+\cs_new:Npn \__hawkdraw_shading_radial_functions:n #1 {
+    \int_step_function:nN { \clist_count:N \l__hawkdraw_shading_color_values_clist - 1 }
+        \__hawkdraw_shading_radial_functions_aux:n
+    << ~
+        /FunctionType ~ 2 ~
+        /Domain ~ [ 0.0 ~ 50.0 ] ~
+        /C0 ~ [
+            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
+                { -1 }
+        ] ~
+        /C1 ~ [
+            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
+                { -1 }
+        ] ~
+        /N ~ 1 ~
+    >> ~
+}
+\cs_generate_variant:Nn \__hawkdraw_shading_radial_functions:n { V }
+
+\cs_new:Npn \__hawkdraw_shading_radial_functions_aux:n #1 {
+    << ~
+        /FunctionType ~ 2 ~
+        /Domain ~ [ 0.0 ~ 50.0 ] ~
+        /C0 ~ [
+            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
+                {#1}
+        ] ~
+        /C1 ~ [
+            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
+                { #1 + 1 }
+        ] ~
+        /N ~ 1 ~
+    >> ~
+}
+
+\cs_new_protected:Npn \hawkdraw_shading_radial:n #1 {
+    \int_if_exist:cF {
+        c__hawkdraw_shading_ \str_mdfive_hash:e { radial #1 } _int
+    } {
+        \hawkdraw_shading_color_set_values:Nn
+            \l__hawkdraw_shading_color_values_clist
+            {#1}
+        \hawkdraw_shading_pdf_object_write:nnn { radial } {#1} {
+            /ShadingType ~ 3 ~
+            /ColorSpace ~ /DeviceRGB ~
+            /Domain ~ [ 0.0 ~ 50.0 ] ~
+            /Coords ~ [ 50.0 ~ 50.0 ~ 0.0 ~ 50.0 ~ 50.0 ~ 50.0 ] ~
+            /Extend ~ [ true ~ false ] ~
+            /Function ~ << ~
+                /FunctionType ~ 3 ~
+                /Domain ~ [ 0.0 ~ 50.0 ] ~
+                /Functions ~ [ ~
+                    \__hawkdraw_shading_radial_functions:V
+                        \l__hawkdraw_shading_color_values_clist     
+                ] ~
+                /Bounds ~ [
+                    \__hawkdraw_shading_radial_bounds:n {#1}
+                ] ~
+                /Encode ~ [
+                    \prg_replicate:nn { \clist_count:n {#1} } {
+                        0 ~ 1 ~
+                    }
+                ] ~
+            >> ~
         }
     }
 }
