@@ -41,8 +41,10 @@
 
 \tl_new:N \l_hawkdraw_shadings_bbox_tl
 \box_new:N \l_hawkdraw_shading_box
+
 \clist_new:N \l_hawkdraw_shading_colors_clist
 \fp_new:N \l_hawkdraw_shading_rotate_fp
+\fp_new:N \l_hawkdraw_shading_offset_fp
 
 \dim_new:N \l_hawkdraw_shading_bbox_xmin_dim
 \dim_new:N \l_hawkdraw_shading_bbox_xmax_dim
@@ -83,6 +85,8 @@
     shading ~ colors        .clist_set:N    = \l_hawkdraw_shading_colors_clist ,
     shading ~ rotate        .fp_set:N       = \l_hawkdraw_shading_rotate_fp ,
     shading ~ rotate        .initial:n      = { 0.0 } ,
+    shading ~ offset        .fp_set:N       = \l_hawkdraw_shading_offset_fp ,
+    shading ~ offset        .initial:n      = { 0.0 } ,
 }
 
 \tl_new:N \l__hawkdraw_shading_color_value_tmp_tl
@@ -190,14 +194,16 @@
 
 % ===
 
-\cs_new:Npn \__hawkdraw_shading_linear_bounds:n #1 {
-    \int_step_tokens:nn { \clist_count:n {#1} } {
+\cs_set:Npn \__hawkdraw_shading_linear_bounds:n #1 {
+    \fp_format:nn { 25 } { .5 } ~
+    \int_step_tokens:nnn { 2 } { \clist_count:n {#1} - 1 } {
         \__hawkdraw_shading_linear_bounds_aux:nn { \clist_count:n {#1} }
     }
+    \fp_format:nn { 75 } { .5 } ~
 }
 
-\cs_new:Npn \__hawkdraw_shading_linear_bounds_aux:nn #1#2 {
-    \fp_format:nn { ( 100 / ( #1 + 1 ) ) * ( #2 ) } { .3 } ~
+\cs_set:Npn \__hawkdraw_shading_linear_bounds_aux:nn #1#2 {
+    \fp_format:nn { ( 50 / ( #1 - 1 ) ) * ( #2 - 1 ) + 25 } { .5 } ~
 }
 
 \cs_new:Npn \__hawkdraw_shading_linear_functions:n #1 {
@@ -328,6 +334,10 @@
     >> ~
 }
 
+\cs_new:Npn \hawkdraw_shading_radial_offset:n #1 {
+    \fp_format:nn { 50 + ( #1 * 25 ) } { .5 } ~
+}
+
 \cs_new_protected:Npn \hawkdraw_shading_radial:n #1 {
     \int_if_exist:cF {
         c__hawkdraw_shading_ \str_mdfive_hash:e { radial #1 } _int
@@ -339,7 +349,12 @@
             /ShadingType ~ 3 ~
             /ColorSpace ~ /DeviceRGB ~
             /Domain ~ [ 0.0 ~ 50.0 ] ~
-            /Coords ~ [ 50.0 ~ 50.0 ~ 0.0 ~ 50.0 ~ 50.0 ~ 50.0 ] ~
+            /Coords ~ [
+                \hawkdraw_shading_radial_offset:n {
+                    \l_hawkdraw_shading_offset_fp
+                }
+                50.0 ~ 0.0 ~ 50.0 ~ 50.0 ~ 50.0
+            ] ~
             /Extend ~ [ true ~ false ] ~
             /Function ~ << ~
                 /FunctionType ~ 3 ~
