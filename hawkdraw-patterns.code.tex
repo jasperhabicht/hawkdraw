@@ -23,9 +23,7 @@
 \box_new:N \l_hawkdraw_pattern_box
 \dim_new:N \l__hawkdraw_pattern_width_dim
 \dim_new:N \l__hawkdraw_pattern_height_dim
-
-\dim_new:N \l_hawkdraw_pattern_xunit_dim
-\dim_new:N \l_hawkdraw_pattern_yunit_dim
+\fp_new:N \l_hawkdraw_pattern_tile_size_fp
 
 \keys_define:nn { hawkdraw / path } {
     fill ~ pattern          .code:n         = {
@@ -43,10 +41,8 @@
     pattern ~ style ~ add   .code:n         = {
         \clist_put_right:Nn \l_hawkdraw_pattern_keys_clist {#1}
     } ,
-    pattern ~ x             .dim_set:N     = \l_hawkdraw_pattern_xunit_dim ,
-    pattern ~ x             .initial:n     = { 10pt } ,
-    pattern ~ y             .dim_set:N     = \l_hawkdraw_pattern_yunit_dim ,
-    pattern ~ y             .initial:n     = { 10pt } ,
+    pattern ~ tile ~ size   .fp_set:N      = \l_hawkdraw_pattern_tile_size_fp ,
+    pattern ~ tile ~ size   .initial:n     = { ( 10pt , 10pt ) } ,
 }
 
 \cs_new_protected:Npn \hawkdraw_pattern_fill:nn #1#2 {
@@ -112,7 +108,8 @@
                 \keys_set:nn { hawkdraw / path } {#2}
                 \hawkdraw_path_set_options:
                 \draw_path_rectangle:nn { 0pt , 0pt } {
-                    \l_hawkdraw_pattern_xunit_dim , \l_hawkdraw_pattern_yunit_dim
+                    \hawkdraw_tuple_use_i:n { \l_hawkdraw_pattern_tile_size_fp } ,
+                    \hawkdraw_tuple_use_ii:n { \l_hawkdraw_pattern_tile_size_fp }
                 }
                 \draw_path_use_clear:n { }
                 \bool_set_false:N \l_draw_bb_update_bool
@@ -215,7 +212,10 @@
 }
 
 \hawkdraw_pattern_create:nnn { hexagonal } {
-   pattern ~ x = { \fp_to_dim:n { cosd( 30 ) * 20/3pt } }
+    pattern ~ tile ~ size = {
+        \fp_to_dim:n { cosd( 30 ) * 20/3pt } ,
+        10pt
+    }
 } {
     \draw_path_moveto:n { 0pt , 0pt }
     \draw_path_lineto:n { 0pt , 5/3pt }

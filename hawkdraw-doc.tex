@@ -1701,10 +1701,9 @@ The option \macro{fill pattern} sets a fill pattern for the current path. The ke
 Patterns can be styled using the options \macro{pattern style set} and \macro{pattern style add}. The option \macro{pattern style set} sets the style for the pattern of the current path. The options \macro{pattern style add} appends the relevant styles to the existing styles. All options that are available for paths are also available for patterns.
 
 \begin{macrodef}
-!path/!|pattern x|={<dimension>}
-!path/!|pattern y|={<dimension>}
+!path/!|pattern tile size|={<tuple>}
 \end{macrodef}
-The options \macro{pattern x} and \macro{pattern y} set the dimensions of the pattern in the x and y directions, respectively. The default dimensions of a pattern in both directions are both \qty{10}{\point}.
+The option \macro{pattern tile size} accepts a tuple of two dimensions representing the size of the pattern tile. The default size of a pattern tile is \qty{10}{\point}\,\texttimes\,\qty{10}{\point}.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -1761,6 +1760,37 @@ The option \macro{shading colors} accepts a comma-separated list of strings that
 !path/!|shading rotate|={<float>}
 \end{macrodef}
 The option \macro{shading rotate} accepts a unit-less floating-point number representing the angle of the roratation of the shasing.
+
+\begin{macrodef}
+!path/!|shading offset|={<float>}
+\end{macrodef}
+The option \macro{shading offset} accepts a unit-less floating-point number ranging between the values \num{0} and \num{1} representing the offset of the center of a radial shasing. A value of \num{0} means that the center has no offset, a value of \num{1} means that the center sits at the right side of the shading.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \path[
+    fill shading={radial},
+    shading colors={white,blue},
+    shading offset={0.5},
+    shading rotate={135}
+  ] (0cm,0cm) circle[radius={1cm}] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{macrodef}
+!path/!|shading circular|={<boolean>}
+\end{macrodef}
+The option \macro{shading circular} sets radial shadings to be circular instead of adhering to the aspect ratio which they do per default.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \path[
+    fill shading={radial},
+    shading colors={red,blue,green},
+    shading circular
+  ] (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
 
 The following shadings are available:
 

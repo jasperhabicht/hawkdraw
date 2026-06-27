@@ -45,6 +45,7 @@
 \clist_new:N \l_hawkdraw_shading_colors_clist
 \fp_new:N \l_hawkdraw_shading_rotate_fp
 \fp_new:N \l_hawkdraw_shading_offset_fp
+\bool_new:N \l_hawkdraw_shading_circular_bool
 
 \dim_new:N \l_hawkdraw_shading_bbox_xmin_dim
 \dim_new:N \l_hawkdraw_shading_bbox_xmax_dim
@@ -87,6 +88,9 @@
     shading ~ rotate        .initial:n      = { 0.0 } ,
     shading ~ offset        .fp_set:N       = \l_hawkdraw_shading_offset_fp ,
     shading ~ offset        .initial:n      = { 0.0 } ,
+    shading ~ circular      .bool_set:N     = \l_hawkdraw_shading_circular_bool ,
+    shading ~ circular      .default:n      = { true } ,
+    shading ~ circular      .initial:n      = { false } ,
 }
 
 \tl_new:N \l__hawkdraw_shading_color_value_tmp_tl
@@ -141,21 +145,6 @@
     }
     % scale to 2 * width of current bbox, 2 * height of current bbox
     % translate to center of current bbox
-    \box_resize_to_wd_and_ht:Nnn \l_hawkdraw_shading_box {
-        \fp_to_dim:n {
-            (
-                \l_hawkdraw_shading_bbox_xmax_dim -
-                \l_hawkdraw_shading_bbox_xmin_dim
-            ) * 2
-        }
-    } {
-        \fp_to_dim:n {
-            (
-                \l_hawkdraw_shading_bbox_ymax_dim -
-                \l_hawkdraw_shading_bbox_ymin_dim
-            ) * 2
-        }
-    }
     \draw_transform_shift:n {
         (
             \l_hawkdraw_shading_bbox_xmin_dim + (
@@ -171,6 +160,45 @@
     }
     \draw_transform_rotate:n {
         \l_hawkdraw_shading_rotate_fp
+    }
+    \bool_lazy_and:nnT {
+        \l_hawkdraw_shading_circular_bool
+    } {
+        \str_if_eq_p:nn {#1} { radial }
+    } {
+        \dim_set:Nn \l_hawkdraw_shading_bbox_xmax_dim {
+            \dim_max:nn {
+                \l_hawkdraw_shading_bbox_xmax_dim
+            } {
+                \l_hawkdraw_shading_bbox_ymax_dim
+            }
+        }
+        \dim_set:Nn \l_hawkdraw_shading_bbox_xmin_dim {
+            \dim_min:nn {
+                \l_hawkdraw_shading_bbox_xmin_dim
+            } {
+                \l_hawkdraw_shading_bbox_ymin_dim
+            }
+        }
+        \dim_set_eq:NN \l_hawkdraw_shading_bbox_ymax_dim
+            \l_hawkdraw_shading_bbox_xmax_dim
+        \dim_set_eq:NN \l_hawkdraw_shading_bbox_ymin_dim
+            \l_hawkdraw_shading_bbox_xmin_dim
+    }
+    \box_resize_to_wd_and_ht:Nnn \l_hawkdraw_shading_box {
+        \fp_to_dim:n {
+            (
+                \l_hawkdraw_shading_bbox_xmax_dim -
+                \l_hawkdraw_shading_bbox_xmin_dim
+            ) * 2
+        }
+    } {
+        \fp_to_dim:n {
+            (
+                \l_hawkdraw_shading_bbox_ymax_dim -
+                \l_hawkdraw_shading_bbox_ymin_dim
+            ) * 2
+        }
     }
     \draw_box_use:Nn \l_hawkdraw_shading_box { 
         (
