@@ -1,0 +1,71 @@
+% File: hawkdraw-shadings.code.tex
+% Copyright 2026 Jasper Habicht (mail(at)jasperhabicht.de).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License version 1.3c,
+% available at http://www.latex-project.org/lppl/.
+%
+% This file is part of the `hawkdraw' package (The Work in LPPL)
+% and all files in that bundle must be distributed together.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% BOF
+
+% v0.4.0 2026-06-27
+
+% =====
+
+% Opacity groups
+
+% ===
+
+\dim_new:N \g_hawkdraw_opacity_group_bbox_xmin_dim
+\dim_new:N \g_hawkdraw_opacity_group_bbox_ymin_dim
+
+\int_new:N \g__hawkdraw_opacity_group_int
+\box_new:N \l__hawkdraw_opacity_group_box
+
+\keys_define:nn { hawkdraw / scope } {
+    opacity ~ group         .code:n         = {
+        \int_gincr:N \g__hawkdraw_opacity_group_int
+        \cs_set_protected:Npn \hawkdraw_scope_use:n ##1 {
+            \pdfxform_new:nnn {
+                hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
+            } {
+                /Group ~ << ~
+                    /S ~ /Transparency ~
+                    /I ~ true ~
+                    /K ~ false ~
+                >>
+            } {
+                \draw_suspend_begin:
+                    \draw_begin:
+                        \fp_set:Nn \l_hawkdraw_path_opacity_stroke_fp { 1.0 }
+                        \fp_set:Nn \l_hawkdraw_path_opacity_fill_fp { 1.0 }
+                        ##1
+                    \draw_end:
+                    \dim_gset_eq:NN
+                        \g_hawkdraw_opacity_group_bbox_xmin_dim
+                        \g_draw_bb_xmin_dim
+                    \dim_gset_eq:NN
+                        \g_hawkdraw_opacity_group_bbox_ymin_dim
+                        \g_draw_bb_ymin_dim
+                \draw_suspend_end:
+            }
+            \hbox_set:Nn \l__hawkdraw_opacity_group_box {
+                \pdfxform_use:n {
+                    hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
+                }
+            }
+            \opacity_stroke:V \l_hawkdraw_path_opacity_stroke_fp
+            \opacity_fill:V \l_hawkdraw_path_opacity_fill_fp
+            \draw_box_use:Nn \l__hawkdraw_opacity_group_box {
+                \g_hawkdraw_opacity_group_bbox_xmin_dim ,
+                \g_hawkdraw_opacity_group_bbox_ymin_dim
+            }
+        } 
+    } ,
+}
+
+% EOF

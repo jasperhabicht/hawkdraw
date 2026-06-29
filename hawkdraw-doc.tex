@@ -1743,9 +1743,45 @@ The following patterns are available:
   \bottomrule
 \end{longtable}
 
-\section{Shadings}
+\section{Opacity and shadings}
 
-Note that in order to be able to use shadings, \macro{\DocumentMetadata{}} needs to be set.
+Note that in order to be able to use opacity and shadings, \macro{\DocumentMetadata{}} needs to be set.
+
+\subsection{Opacity groups}
+
+\begin{macrodef}
+!scope/!|opacity group|
+\end{macrodef}
+The option \macro{opacity group} sets the current scope to an opacity group. The key does not take any value.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \begin{scope}[
+    opacity fill=0.5
+  ]
+    \fill (0cm,0cm)
+      circle[radius={0.5cm}] ;
+    \fill (-1cm,-0.25cm) 
+      rectangle[corner={1cm,0.25cm}] ;
+  \end{scope}
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \begin{scope}[
+    opacity fill=0.5,
+    opacity group
+  ]
+    \fill (0cm,0cm)
+      circle[radius={0.5cm}] ;
+    \fill (-1cm,-0.25cm) 
+      rectangle[corner={1cm,0.25cm}] ;
+  \end{scope}
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\subsection{Linear and radial shadings}
 
 \begin{macrodef}
 !path/!|fill shading|={<string>}

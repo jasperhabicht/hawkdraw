@@ -57,14 +57,17 @@
     fill ~ shading          .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_preactions_tl {
             \draw_scope_begin:
-                \hawkdraw_path_set_bbox:NNNN
-                    \l_hawkdraw_shading_bbox_xmin_dim
-                    \l_hawkdraw_shading_bbox_xmax_dim
-                    \l_hawkdraw_shading_bbox_ymin_dim
-                    \l_hawkdraw_shading_bbox_ymax_dim
                 \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
                 \tl_use:N \g_hawkdraw_softpath_original_tl
                 \draw_path_use_clear:n { clip }
+                \dim_set_eq:NN \l_hawkdraw_shading_bbox_xmin_dim
+                    \g_draw_bb_xmin_dim
+                \dim_set_eq:NN \l_hawkdraw_shading_bbox_xmax_dim
+                    \g_draw_bb_xmax_dim
+                \dim_set_eq:NN \l_hawkdraw_shading_bbox_ymin_dim
+                    \g_draw_bb_ymin_dim
+                \dim_set_eq:NN \l_hawkdraw_shading_bbox_ymax_dim
+                    \g_draw_bb_ymax_dim
                 \hawkdraw_shading_fill:n {#1}
                 \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
             \draw_scope_end:
