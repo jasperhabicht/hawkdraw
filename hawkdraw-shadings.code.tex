@@ -57,7 +57,7 @@
     fill ~ shading          .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_preactions_tl {
             \draw_scope_begin:
-                \hawkdraw_path_get_bbox:NNNN
+                \hawkdraw_path_set_bbox:NNNN
                     \l_hawkdraw_shading_bbox_xmin_dim
                     \l_hawkdraw_shading_bbox_xmax_dim
                     \l_hawkdraw_shading_bbox_ymin_dim
