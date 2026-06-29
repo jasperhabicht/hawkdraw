@@ -774,7 +774,7 @@
 
 \tl_new:N \l__hawkdraw_path_bbox_tl
 
-\cs_new_protected:Npn \hawkdraw_shading_get_path_bbox:NNNN #1#2#3#4 {
+\cs_new_protected:Npn \hawkdraw_path_get_bbox:NNNN #1#2#3#4 {
     \group_begin:
         \hawkdraw_softpath_update:Nn \l__hawkdraw_path_bbox_tl { bbox }
         \tl_use:N \l__hawkdraw_path_bbox_tl
