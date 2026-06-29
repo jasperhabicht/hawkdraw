@@ -482,36 +482,36 @@
 
 \fp_new:N \l_hawkdraw_softpath_bbox_point_last_fp
 
-\dim_new:N \g_hawkdraw_bbox_xmin_dim
-\dim_new:N \g_hawkdraw_bbox_xmax_dim
-\dim_new:N \g_hawkdraw_bbox_ymin_dim
-\dim_new:N \g_hawkdraw_bbox_ymax_dim
+\dim_new:N \g_hawkdraw_softpath_bbox_xmin_dim
+\dim_new:N \g_hawkdraw_softpath_bbox_xmax_dim
+\dim_new:N \g_hawkdraw_softpath_bbox_ymin_dim
+\dim_new:N \g_hawkdraw_softpath_bbox_ymax_dim
 
 \cs_new_protected:Npn \hawkdraw_softpath_bbox_reset: {
-    \dim_gset:Nn \g_hawkdraw_bbox_xmin_dim { \c_max_dim }
-    \dim_gset:Nn \g_hawkdraw_bbox_xmax_dim { -\c_max_dim }
-    \dim_gset:Nn \g_hawkdraw_bbox_ymin_dim { \c_max_dim }
-    \dim_gset:Nn \g_hawkdraw_bbox_ymax_dim { -\c_max_dim }
+    \dim_gset:Nn \g_hawkdraw_softpath_bbox_xmin_dim { \c_max_dim }
+    \dim_gset:Nn \g_hawkdraw_softpath_bbox_xmax_dim { -\c_max_dim }
+    \dim_gset:Nn \g_hawkdraw_softpath_bbox_ymin_dim { \c_max_dim }
+    \dim_gset:Nn \g_hawkdraw_softpath_bbox_ymax_dim { -\c_max_dim }
 }
 
 \cs_new_protected:Npn \hawkdraw_softpath_bbox_update:nn #1#2 {
-    \dim_gset:Nn \g_hawkdraw_bbox_xmin_dim {
-        \dim_min:nn { \g_hawkdraw_bbox_xmin_dim } {
+    \dim_gset:Nn \g_hawkdraw_softpath_bbox_xmin_dim {
+        \dim_min:nn { \g_hawkdraw_softpath_bbox_xmin_dim } {
             \fp_to_dim:n {#1}
         }
     }
-    \dim_gset:Nn \g_hawkdraw_bbox_xmax_dim {
-        \dim_max:nn { \g_hawkdraw_bbox_xmax_dim } {
+    \dim_gset:Nn \g_hawkdraw_softpath_bbox_xmax_dim {
+        \dim_max:nn { \g_hawkdraw_softpath_bbox_xmax_dim } {
             \fp_to_dim:n {#1}
         }
     }
-    \dim_gset:Nn \g_hawkdraw_bbox_ymin_dim {
-        \dim_min:nn { \g_hawkdraw_bbox_ymin_dim } {
+    \dim_gset:Nn \g_hawkdraw_softpath_bbox_ymin_dim {
+        \dim_min:nn { \g_hawkdraw_softpath_bbox_ymin_dim } {
             \fp_to_dim:n {#2}
         }
     }
-    \dim_gset:Nn \g_hawkdraw_bbox_ymax_dim {
-        \dim_max:nn { \g_hawkdraw_bbox_ymax_dim } {
+    \dim_gset:Nn \g_hawkdraw_softpath_bbox_ymax_dim {
+        \dim_max:nn { \g_hawkdraw_softpath_bbox_ymax_dim } {
             \fp_to_dim:n {#2}
         }
     }

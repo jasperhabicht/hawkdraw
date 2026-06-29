@@ -39,7 +39,6 @@
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfrefxform:N { c }
 
-\tl_new:N \l_hawkdraw_shadings_bbox_tl
 \box_new:N \l_hawkdraw_shading_box
 
 \clist_new:N \l_hawkdraw_shading_colors_clist
@@ -52,29 +51,17 @@
 \dim_new:N \l_hawkdraw_shading_bbox_ymin_dim
 \dim_new:N \l_hawkdraw_shading_bbox_ymax_dim
 
-\cs_new_protected:Npn \__hawkdraw_shading_get_path_bbox:nnnn #1#2#3#4 {
-    \dim_set:Nn \l_hawkdraw_shading_bbox_xmin_dim {#1}
-    \dim_set:Nn \l_hawkdraw_shading_bbox_xmax_dim {#2}
-    \dim_set:Nn \l_hawkdraw_shading_bbox_ymin_dim {#3}
-    \dim_set:Nn \l_hawkdraw_shading_bbox_ymax_dim {#4}
-}
-
 \exp_args_generate:n { NVVVV }
 
 \keys_define:nn { hawkdraw / path } {
     fill ~ shading          .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_path_preactions_tl {
             \draw_scope_begin:
-                \group_begin:
-                    \hawkdraw_softpath_update:Nn \l_hawkdraw_shadings_bbox_tl { bbox }
-                    \tl_use:N \l_hawkdraw_shadings_bbox_tl
-                    \exp_args:NNVVVV
-                \group_end:
-                \__hawkdraw_shading_get_path_bbox:nnnn
-                    \g_hawkdraw_bbox_xmin_dim
-                    \g_hawkdraw_bbox_xmax_dim
-                    \g_hawkdraw_bbox_ymin_dim
-                    \g_hawkdraw_bbox_ymax_dim
+                \hawkdraw_shading_get_path_bbox:NNNN
+                    \l_hawkdraw_shading_bbox_xmin_dim
+                    \l_hawkdraw_shading_bbox_xmax_dim
+                    \l_hawkdraw_shading_bbox_ymin_dim
+                    \l_hawkdraw_shading_bbox_ymax_dim
                 \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
                 \tl_use:N \g_hawkdraw_softpath_original_tl
                 \draw_path_use_clear:n { clip }

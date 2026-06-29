@@ -764,4 +764,25 @@
     \fp_set:Nn \l_hawkdraw_softpath_point_last_fp { #7 , #8 }
 }
 
+% =====
+
+% Calculation of local bbox
+
+% ===
+
+\exp_args_generate:n { NVVVV }
+
+\tl_new:N \l__hawkdraw_path_bbox_tl
+
+\cs_new_protected:Npn \hawkdraw_shading_get_path_bbox:NNNN #1#2#3#4 {
+    \group_begin:
+        \hawkdraw_softpath_update:Nn \l__hawkdraw_path_bbox_tl { bbox }
+        \tl_use:N \l__hawkdraw_path_bbox_tl
+    \group_end:
+    \dim_set_eq:NN #1 \g_hawkdraw_softpath_bbox_xmin_dim
+    \dim_set_eq:NN #2 \g_hawkdraw_softpath_bbox_xmax_dim
+    \dim_set_eq:NN #3 \g_hawkdraw_softpath_bbox_ymin_dim
+    \dim_set_eq:NN #4 \g_hawkdraw_softpath_bbox_ymax_dim
+}
+
 % EOF
