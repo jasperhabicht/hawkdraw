@@ -323,6 +323,8 @@ To install the package, copy the package file \macro{hawkdraw.sty} together with
 
 The package can be used with PDFLaTeX, LuaLaTeX or XeLaTeX. The package does not load any dependencies, but it needs a LaTeX kernel of 1 June 2022 or newer. It is recommended to use the package with an up-to-date TeX distribution.
 
+\warning The \macro{hawkdraw} package supports PDFLaTeX and LuaLaTeX in full. Most basic commands should work with other compilation engines as well. Some features such as shadings or complex opacity settings, however, are not supported with LaTeX (via DVI) or XeLaTeX.
+
 \section{General remarks}
 
 Similar to Ti\emph{k}Z, the \macro{hawkdraw} package makes use of key-value pairs to set options for commands. Some options are available for almost all commands, other have very specific uses. In the descriptions of the options, this manual states which data type the relevant option assumes. The following data types exist:
@@ -1752,7 +1754,7 @@ Note that in order to be able to use opacity and shadings, \macro{\DocumentMetad
 \begin{macrodef}
 !scope/!|opacity group|
 \end{macrodef}
-The option \macro{opacity group} sets the current scope to an opacity group. The key does not take any value.
+The option \macro{opacity group} sets the current scope to an opacity group. The key does not take any value. Note that the option \macro{opacity group} is only available for scopes.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -1780,6 +1782,87 @@ The option \macro{opacity group} sets the current scope to an opacity group. The
   \end{scope}
 \end{hawkdraw}
 \end{codeexamplecolumns}
+
+\iffalse
+\subsection{Soft masks}
+
+\begin{macrodef}
+!scope/!|soft mask set|={<string>}
+\end{macrodef}
+The option \macro{soft mask set} defines the content of the current scope as greyscale soft mask with the name given as string value. 
+
+\begin{macrodef}
+!scope/!|soft mask use|={<string>}
+\end{macrodef}
+The option \macro{soft mask use} sets the soft mask of the current scope. The option takes as string the name of the previously defined soft mask. 
+Note that the options \macro{soft mask set} and \macro{soft mask use} are only available for scopes.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \begin{scope}[
+    soft mask set={custom}
+  ]
+    \fill[color fill={gray}] (0cm,0cm)
+      circle[radius={0.5cm}] ;
+    \fill[color fill={black}] (-1cm,-0.25cm) 
+      rectangle[corner={1cm,0.25cm}] ;
+  \end{scope}
+  \begin{scope}[
+    soft mask use={custom}
+  ]
+    \fill[color fill={blue}] (0.75cm,0cm)
+      circle[radius={0.75cm}] ;
+  \end{scope}
+\end{hawkdraw}
+\end{codeexamplecolumns}
+\fi
+
+\iffalse
+\subsection{Blend modes}
+
+\begin{macrodef}
+!scope/!|blend mode|={<string>}
+\end{macrodef}
+The option \macro{blend mode} sets the blend mode of the current scope. The key takes as string one of the following values. Note that the option \macro{blend mode} is only available for scopes.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \begin{scope}[
+    blend mode={screen}
+  ]
+    \fill[color fill={red}] (0cm,0cm)
+      circle[radius={0.5cm}] ;
+    \fill[color fill={blue}] (-1cm,-0.25cm) 
+      rectangle[corner={1cm,0.25cm}] ;
+  \end{scope}
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+The following blend modes are available:
+
+\NewDocumentCommand{\blendmodeexample}{ m }{%
+  \begin{hawkdraw}[baseline={0.5ex}]
+    \begin{scope}[blend mode={#1}]
+      \fill[color fill={red}] (0cm,0cm)
+        circle[radius={0.5cm}] ;
+      \fill[color fill={blue}] (-1cm,-0.25cm)
+        rectangle[corner={1cm,0.25cm}] ;
+    \end{scope}
+  \end{hawkdraw}%
+}
+
+\begin{longtable}{ @{} p{2.5cm} p{\dimexpr\textwidth-2\tabcolsep-2.5cm} @{} }
+  \toprule
+  \textbf{Blend mode} & \textbf{Name} \\
+  \midrule
+  \blendmodeexample{normal} & \macro{normal} \\
+  \blendmodeexample{multiply} & \macro{multiply} \\
+  \blendmodeexample{screen} & \macro{screen} \\
+  \blendmodeexample{overlay} & \macro{overlay} \\
+  \blendmodeexample{darken} & \macro{darken} \\
+  \bottomrule
+\end{longtable}
+\fi
 
 \subsection{Linear and radial shadings}
 
@@ -1840,7 +1923,7 @@ The following shadings are available:
 
 \begin{longtable}{ @{} p{2.5cm} p{\dimexpr\textwidth-2\tabcolsep-2.5cm} @{} }
   \toprule
-  \textbf{Pattern} & \textbf{Name} \\
+  \textbf{Shading} & \textbf{Name} \\
   \midrule
   \shadingexample{linear} & \macro{linear} \\
   \shadingexample{radial} & \macro{radial} \\

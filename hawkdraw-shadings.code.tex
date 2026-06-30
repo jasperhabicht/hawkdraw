@@ -18,27 +18,6 @@
     Shading ~ `#1` ~ unknown.
 }
 
-\cs_new_protected:Npn \hawkdraw_support_pdfliteral:n #1 {
-    \sys_if_engine_luatex:TF {
-        \tex_pdfextension:D literal {#1}
-    } {
-        \tex_pdfliteral:D {#1}
-    }
-}
-
-\cs_new_protected:Npn \hawkdraw_support_pdfxform_resources:n #1 {
-    \tex_immediate:D \tex_pdfxform:D resources {#1}
-}
-
-\cs_new_protected:Npn \hawkdraw_support_pdflastxform: {
-    \tex_pdflastxform:D
-}
-
-\cs_new_protected:Npn \hawkdraw_support_pdfrefxform:N #1 {
-    \tex_pdfrefxform:D \int_use:N #1
-}
-\cs_generate_variant:Nn \hawkdraw_support_pdfrefxform:N { c }
-
 \box_new:N \l_hawkdraw_shading_box
 
 \clist_new:N \l_hawkdraw_shading_colors_clist
@@ -89,7 +68,7 @@
 
 \cs_generate_variant:Nn \color_export:nnN { e }
 
-\cs_new_protected:Npn \hawkdraw_shading_pdf_object_write:nnn #1#2#3 {
+\cs_new_protected:Npn \hawkdraw_shading_set:nn #1#2 {
     \hbox_set_to_wd:Nnn \l__hawkdraw_shading_object_box { 100bp } {
         \vbox_to_ht:nn { 100bp } {
             \skip_vertical:n { 0pt plus 1fil }
@@ -97,24 +76,24 @@
             \skip_horizontal:n { 0pt plus 1fil }
         }
     }
-    \hawkdraw_support_pdfxform_resources:n {
+    \hawkdraw_support_pdfxform:nnN { } {
         /Shading ~ << ~
             /Sh ~ << ~
-                #3
+                #2
             >> ~
         >>
-    }
-    \l__hawkdraw_shading_object_box
-    \int_const:cn { c__hawkdraw_shading_ \str_mdfive_hash:e {#1#2} _int } {
+    } \l__hawkdraw_shading_object_box
+    \int_const:cn {
+        c__hawkdraw_shading_ #1 _int
+    } {
         \hawkdraw_support_pdflastxform:
     }
 }
 
-\cs_new_protected:Npn \hawkdraw_shading_pdf_object_ref:n #1 {
+\cs_new_protected:Npn \hawkdraw_shading_use:n #1 {
     \hawkdraw_support_pdfrefxform:c {
-        c__hawkdraw_shading_ \str_mdfive_hash:e {#1} _int
+        c__hawkdraw_shading_ #1 _int
     }
-    \scan_stop:
 }
 
 \cs_new_protected:Npn \hawkdraw_shading_color_set_values:Nn #1#2 {
@@ -129,8 +108,12 @@
 \cs_new_protected:Npn \hawkdraw_shading_fill:n #1 {
     \hawkdraw_shading_create:nV {#1} \l_hawkdraw_shading_colors_clist
     \hbox_set:Nn \l_hawkdraw_shading_box {
-        \hawkdraw_shading_pdf_object_ref:n {
-            #1 \clist_use:N \l_hawkdraw_shading_colors_clist
+        \hawkdraw_shading_use:n {
+            #1
+            . \clist_use:N \l_hawkdraw_shading_colors_clist
+            \str_if_eq:nnT {#1} { radial } {
+                . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
+            }
         }
     }
     % scale to 2 * width of current bbox, 2 * height of current bbox
@@ -274,12 +257,18 @@
 
 \cs_new_protected:Npn \hawkdraw_shading_linear:n #1 {
     \int_if_exist:cF {
-        c__hawkdraw_shading_ \str_mdfive_hash:e { linear #1 } _int
+        c__hawkdraw_shading_
+        linear
+        . #1
+        _int
     } {
         \hawkdraw_shading_color_set_values:Nn
             \l__hawkdraw_shading_color_values_clist
             {#1}
-        \hawkdraw_shading_pdf_object_write:nnn { linear } {#1} {
+        \hawkdraw_shading_set:nn {
+            linear
+            . #1
+        } {
             /ShadingType ~ 2 ~
             /ColorSpace ~ /DeviceRGB ~
             /Domain ~ [ 0.0 ~ 100.0 ] ~
@@ -358,12 +347,20 @@
 
 \cs_new_protected:Npn \hawkdraw_shading_radial:n #1 {
     \int_if_exist:cF {
-        c__hawkdraw_shading_ \str_mdfive_hash:e { radial #1 } _int
+        c__hawkdraw_shading_
+        radial
+        . #1
+        . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
+        _int
     } {
         \hawkdraw_shading_color_set_values:Nn
             \l__hawkdraw_shading_color_values_clist
             {#1}
-        \hawkdraw_shading_pdf_object_write:nnn { radial } {#1} {
+        \hawkdraw_shading_set:nn {
+            radial
+            . #1
+            . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
+        } {
             /ShadingType ~ 3 ~
             /ColorSpace ~ /DeviceRGB ~
             /Domain ~ [ 0.0 ~ 50.0 ] ~

@@ -14,6 +14,76 @@
 
 % v0.4.0 2026-06-27
 
+\cs_new_protected:Npn \hawkdraw_support_pdfliteral:n #1 {
+    \sys_if_engine_luatex:TF {
+        \tex_pdfextension:D literal {#1}
+    } {
+        \tex_pdfliteral:D {#1}
+    }
+}
+\cs_generate_variant:Nn \hawkdraw_support_pdfliteral:n { e }
+
+\cs_new_protected:Npn \hawkdraw_support_pdfxform:nnN #1#2#3 {
+    \tex_immediate:D \tex_pdfxform:D
+    \tl_if_empty:nF {#1} {
+        attr {#1}
+    }
+    resources {#2}
+    #3
+}
+
+\cs_new_protected:Npn \hawkdraw_support_pdflastxform: {
+    \tex_pdflastxform:D
+}
+
+\cs_new_protected:Npn \hawkdraw_support_pdfrefxform:N #1 {
+    \tex_pdfrefxform:D \int_use:N #1 \scan_stop:
+}
+\cs_generate_variant:Nn \hawkdraw_support_pdfrefxform:N { c }
+
+\cs_new_protected:Npn \hawkdraw_support_pdfcolorstack:n #1 {
+    \sys_if_engine_luatex:TF {
+        \tex_pdfextension:D colorstack ~ #1
+    } {
+        \tex_pdfcolorstack:D ~ #1
+    }
+}
+\cs_generate_variant:Nn \hawkdraw_support_pdfcolorstack:n { e }
+
+\cs_new_protected:Npn \hawkdraw_support_pdfcolorstackinit:n #1 {
+    \sys_if_engine_luatex:TF {
+        \tex_pdffeedback:D colorstackinit ~ #1
+    } {
+        \tex_pdfcolorstackinit:D ~ #1
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_support_pdfsave: {
+    \sys_if_engine_luatex:TF {
+        \tex_pdfextension:D save \scan_stop:
+    } {
+        \tex_pdfsave:D
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_support_pdfrestore: {
+    \sys_if_engine_luatex:TF {
+        \tex_pdfextension:D restore \scan_stop:
+    } {
+        \tex_pdfrestore:D
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_support_pdfsetmatrix:nnnn #1#2#3#4 {
+    \sys_if_engine_luatex:TF {
+        \tex_pdfextension:D setmatrix { #1 ~ #2 ~ #3 ~ #4 }
+    } {
+        \tex_pdfsetmatrix:D { #1 ~ #2 ~ #3 ~ #4 }
+    } 
+}
+
+% ===
+
 \cs_new:Npn \__hawkdraw_tuple_use_i:w ( #1 , #2 ) {#1}
 \cs_new:Npn \hawkdraw_tuple_use_i:n #1 {
     \fp_to_dim:n {

@@ -26,44 +26,246 @@
 \int_new:N \g__hawkdraw_opacity_group_int
 \box_new:N \l__hawkdraw_opacity_group_box
 
+\cs_new_protected:Npn \hawkdraw_opacity_group_set: {
+    \int_gincr:N \g__hawkdraw_opacity_group_int
+    \cs_set_protected:Npn \hawkdraw_scope_use:n ##1 {
+        \pdfxform_new:nnn {
+            hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
+        } {
+            /Group ~ << ~
+                /S ~ /Transparency ~
+                /I ~ true ~
+                /K ~ false ~
+            >>
+        } {
+            \draw_suspend_begin:
+                \draw_begin:
+                    \fp_set:Nn \l_hawkdraw_path_opacity_stroke_fp { 1.0 }
+                    \fp_set:Nn \l_hawkdraw_path_opacity_fill_fp { 1.0 }
+                    ##1
+                \draw_end:
+                \dim_gset_eq:NN
+                    \g_hawkdraw_opacity_group_bbox_xmin_dim
+                    \g_draw_bb_xmin_dim
+                \dim_gset_eq:NN
+                    \g_hawkdraw_opacity_group_bbox_ymin_dim
+                    \g_draw_bb_ymin_dim
+            \draw_suspend_end:
+        }
+        \hbox_set:Nn \l__hawkdraw_opacity_group_box {
+            \pdfxform_use:n {
+                hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
+            }
+        }
+        \opacity_stroke:V \l_hawkdraw_path_opacity_stroke_fp
+        \opacity_fill:V \l_hawkdraw_path_opacity_fill_fp
+        \draw_box_use:Nn \l__hawkdraw_opacity_group_box {
+            \g_hawkdraw_opacity_group_bbox_xmin_dim ,
+            \g_hawkdraw_opacity_group_bbox_ymin_dim
+        }
+    }
+}
+
 \keys_define:nn { hawkdraw / scope } {
     opacity ~ group         .code:n         = {
-        \int_gincr:N \g__hawkdraw_opacity_group_int
+        \hawkdraw_opacity_group_set:
+    } ,
+}
+
+% =====
+
+% Soft masks
+
+% ===
+
+\msg_new:nnn { hawkdraw } { softmask-defined } {
+    Soft ~ mask ~ `#1` ~ already ~ defined.
+}
+
+\msg_new:nnn { hawkdraw } { softmask-undefined } {
+    Soft ~ mask ~ `#1` ~ undefined.
+}
+
+\box_new:N \l__hawkdraw_softmask_ref_box
+
+\cs_new_protected:Npn \hawkdraw_softmask_set:nn #1#2 {
+    \int_if_exist:cTF {
+        c__hawkdraw_softmask_ #1 _int
+    } {
+        \msg_warning:nnn { hawkdraw } { softmask-defined } {#1}
+    } {
+
+        \pdfxform_new:nnn { hawkdraw_softmask_ #1 } { } {
+            \draw_suspend_begin:
+                \draw_begin:
+                    #2
+                \draw_end:
+            \draw_suspend_end:
+        }
+        \int_const:cn { 
+            c__hawkdraw_softmask_ #1 _int
+        } {
+            \hawkdraw_support_pdflastxform:
+        }
+
+        \hbox_set:Nn \l__hawkdraw_softmask_ref_box {
+            \hawkdraw_support_pdfsave:
+            \hawkdraw_support_pdfsetmatrix:nnnn { 1 } { 0 } { 0 } { 1 }
+            \hawkdraw_support_pdfrestore:
+            \hawkdraw_support_pdfliteral:n {
+                /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~ Do
+            }
+        }
+        \exp_args:Nne
+        \hawkdraw_support_pdfxform:nnN {
+            /Group ~ << ~
+                /S ~ /Transparency ~
+                /CS ~ /DeviceGray ~
+            >>
+        } {
+            /XObject ~ << ~
+                /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~
+                    \pdfxform_ref:n { hawkdraw_softmask_ #1 } ~
+            >>
+        } \l__hawkdraw_softmask_ref_box
+        \int_const:cn { 
+            c__hawkdraw_softmask_object_ #1 _int
+        } {
+            \hawkdraw_support_pdflastxform:
+        }
+        
+        \pdfmanagement_add:nee {
+            Page / Resources / ExtGState
+        } {
+            hawkdraw Softmask
+            \int_use:c {
+                c__hawkdraw_softmask_object_ #1 _int
+            }
+        } {
+            << ~
+                /SMask ~ << ~
+                    /S ~ /Luminosity ~
+                    /G ~ \int_use:c { c__hawkdraw_softmask_object_ #1 _int } ~ 0 ~ R ~
+                >> ~
+            >>
+        }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_softmask_use:n #1 {
+    \int_if_exist:cTF {
+        c__hawkdraw_softmask_ #1 _int
+    } {
+        \hawkdraw_support_pdfliteral:n {
+            /hawkdraw Softmask
+            \int_use:c {
+                c__hawkdraw_softmask_object_ #1 _int
+            }
+            ~ gs
+        }
+    } {
+        \msg_warning:nnn { hawkdraw } { softmask-undefined } {#1}
+    } 
+}
+
+\keys_define:nn { hawkdraw / scope } {
+    soft ~ mask ~ set       .code:n         = {
         \cs_set_protected:Npn \hawkdraw_scope_use:n ##1 {
-            \pdfxform_new:nnn {
-                hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
+            \hawkdraw_softmask_set:nn {#1} {##1}
+        } 
+    } ,
+    soft ~ mask ~ use       .code:n         = {
+        \hawkdraw_softmask_use:n {#1}
+    } ,
+}
+
+% =====
+
+% Blend modes
+
+% ===
+
+\msg_new:nnn { hawkdraw } { blendmode-unknown } {
+    Blend ~ mode ~ `#1` ~ unknown.
+}
+
+\prop_const_from_keyval:Nn \c__hawkdraw_blendmode_prop {
+    normal        = Normal ,
+    multiply      = Multiply ,
+    screen        = Screen ,
+    overlay       = Overlay ,
+    darken        = Darken ,
+    lighten       = Lighten ,
+    color ~ dodge = ColorDodge ,
+    color ~ burn  = ColorBurn ,
+    hard ~ light  = HardLight ,
+    soft ~ light  = SoftLight ,
+    difference    = Difference ,
+    exclusion     = Exclusion ,
+    saturation    = Saturation ,
+    color         = Color ,
+    hue           = Hue ,
+    luminosity    = Luminosity ,
+}
+
+\clist_new:N \c__hawkdraw_blendmode_active_clist
+
+\int_const:Nn \c__hawkdraw_blendmode_stack_int {
+    \hawkdraw_support_pdfcolorstackinit:n {
+        page ~ direct ~ {
+            /hawkdraw Blendmode Normal ~ gs
+        }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_blendmode_stack_push:n #1 {
+    \hawkdraw_support_pdfcolorstack:e {
+        \int_use:N \c__hawkdraw_blendmode_stack_int ~ push ~ {
+            /hawkdraw Blendmode \prop_item:Nn \c__hawkdraw_blendmode_prop {#1} ~ gs
+        }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_blendmode_stack_pop: {
+    \hawkdraw_support_pdfcolorstack:e {
+        \int_use:N \c__hawkdraw_blendmode_stack_int ~ pop ~ { }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_blendmode_set:nn #1#2 {
+    \prop_if_in:NnTF \c__hawkdraw_blendmode_prop {#1} {
+        \clist_if_in:NnF \c__hawkdraw_blendmode_active_clist { normal } {
+            \pdfmanagement_add:nnn {
+                Page / Resources / ExtGState
             } {
-                /Group ~ << ~
-                    /S ~ /Transparency ~
-                    /I ~ true ~
-                    /K ~ false ~
-                >>
+                hawkdraw Blendmode Normal
             } {
-                \draw_suspend_begin:
-                    \draw_begin:
-                        \fp_set:Nn \l_hawkdraw_path_opacity_stroke_fp { 1.0 }
-                        \fp_set:Nn \l_hawkdraw_path_opacity_fill_fp { 1.0 }
-                        ##1
-                    \draw_end:
-                    \dim_gset_eq:NN
-                        \g_hawkdraw_opacity_group_bbox_xmin_dim
-                        \g_draw_bb_xmin_dim
-                    \dim_gset_eq:NN
-                        \g_hawkdraw_opacity_group_bbox_ymin_dim
-                        \g_draw_bb_ymin_dim
-                \draw_suspend_end:
+                << ~ /BM ~ /Normal ~ >>
             }
-            \hbox_set:Nn \l__hawkdraw_opacity_group_box {
-                \pdfxform_use:n {
-                    hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
-                }
+            \clist_put_right:Nn \c__hawkdraw_blendmode_active_clist { normal }
+        }
+        \clist_if_in:NnF \c__hawkdraw_blendmode_active_clist {#1} {
+            \pdfmanagement_add:nee {
+                Page / Resources / ExtGState
+            } {
+                hawkdraw Blendmode \prop_item:Nn \c__hawkdraw_blendmode_prop {#1}
+            } {
+                << ~ /BM ~ / \prop_item:Nn \c__hawkdraw_blendmode_prop {#1} ~ >>
             }
-            \opacity_stroke:V \l_hawkdraw_path_opacity_stroke_fp
-            \opacity_fill:V \l_hawkdraw_path_opacity_fill_fp
-            \draw_box_use:Nn \l__hawkdraw_opacity_group_box {
-                \g_hawkdraw_opacity_group_bbox_xmin_dim ,
-                \g_hawkdraw_opacity_group_bbox_ymin_dim
-            }
+            \clist_put_right:Nn \c__hawkdraw_blendmode_active_clist {#1}
+        }
+        \hawkdraw_blendmode_stack_push:n {#1}
+        #2
+        \hawkdraw_blendmode_stack_pop:
+    } {
+        \msg_warning:nnn { hawkdraw } { blendmode-unknown } {#1}
+    }
+}
+
+\keys_define:nn { hawkdraw / scope } {
+    blend ~ mode            .code:n         = {
+        \cs_set_protected:Npn \hawkdraw_scope_use:n ##1 {
+            \hawkdraw_blendmode_set:nn {#1} {##1}
         } 
     } ,
 }
