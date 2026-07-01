@@ -13,7 +13,7 @@
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
 \def\hawkdrawfileversion{0.4.0}
-\def\hawkdrawfiledate{27 June 2026}
+\def\hawkdrawfiledate{1 July 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -291,7 +291,7 @@
 \changes{v0.2.0}{2026/06/12}{Adding softpath system; adding option to shorten paths; improving ConTeXt module.}
 \changes{v0.3.0}{2026/06/17}{Adding option to offset paths; fixing a bug with positioning of points on arcs.}
 \changes{v0.3.1}{2026/06/24}{Allowing for multiple softpath manipulations; improved offset mechanism; added arrow tips and patterns.}
-\changes{v0.4.0}{2026/06/27}{Adding shadings.}
+\changes{v0.4.0}{2026/07/01}{Adding shadings, opacity groups, blend modes and soft masks.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -1747,9 +1747,11 @@ The following patterns are available:
 
 \section{Opacity and shadings}
 
-Note that in order to be able to use opacity and shadings, \macro{\DocumentMetadata{}} needs to be set.
+Note that in order to be able to use opacity and shadings, \macro{\DocumentMetadata{}} needs to be set. The functionality in this section is relatively advanced and may not be supported by all PDF viewers. It is recommended to use the latest version of Adobe Acrobat Reader.
 
 \subsection{Opacity groups}
+
+An opacitty group treats multiple paths as a single object for the purpose of applying opacity. This means that the opacity is applied to the entire scope, rather than to each individual path within the scope.
 
 \begin{macrodef}
 !scope/!|opacity group|
@@ -1785,6 +1787,8 @@ The option \macro{opacity group} sets the current scope to an opacity group. The
 
 \subsection{Soft masks}
 
+Soft masks are used to create transparency effects by defining a mask that determines the opacity of different parts of an object. Soft masks are defined by a grayscale image or drawing where white parts in the soft mask are fully transparent while black parts are fully opaque.
+
 \begin{macrodef}
 \\\begin{|hawkdrawsoftmask|}{<string>}[<options>]
 \end{|hawkdrawsoftmask|}
@@ -1817,6 +1821,8 @@ Note that the options \macro{soft mask set} and \macro{soft mask use} are only a
 \end{codeexamplecolumns}
 
 \subsection{Blend modes}
+
+Blend modes change the way colors of overlapping objects are combined.
 
 \begin{macrodef}
 !scope/!|blend mode|={<string>}

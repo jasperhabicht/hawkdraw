@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.4.0 2026-06-27
+% v0.4.0 2026-07-01
 
 \cs_new_protected:Npn \hawkdraw_support_pdfliteral:n #1 {
     \sys_if_engine_luatex:TF {
@@ -56,30 +56,6 @@
     } {
         \tex_pdfcolorstackinit:D ~ #1
     }
-}
-
-\cs_new_protected:Npn \hawkdraw_support_pdfsave: {
-    \sys_if_engine_luatex:TF {
-        \tex_pdfextension:D save \scan_stop:
-    } {
-        \tex_pdfsave:D
-    }
-}
-
-\cs_new_protected:Npn \hawkdraw_support_pdfrestore: {
-    \sys_if_engine_luatex:TF {
-        \tex_pdfextension:D restore \scan_stop:
-    } {
-        \tex_pdfrestore:D
-    }
-}
-
-\cs_new_protected:Npn \hawkdraw_support_pdfsetmatrix:nnnn #1#2#3#4 {
-    \sys_if_engine_luatex:TF {
-        \tex_pdfextension:D setmatrix { #1 ~ #2 ~ #3 ~ #4 }
-    } {
-        \tex_pdfsetmatrix:D { #1 ~ #2 ~ #3 ~ #4 }
-    } 
 }
 
 % ===
