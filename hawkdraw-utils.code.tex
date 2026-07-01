@@ -15,47 +15,74 @@
 % v0.4.0 2026-07-01
 
 \cs_new_protected:Npn \hawkdraw_support_pdfliteral:n #1 {
-    \sys_if_engine_luatex:TF {
+    \sys_if_engine_luatex:T {
         \tex_pdfextension:D literal {#1}
-    } {
+    }
+    \sys_if_engine_pdftex:T {
         \tex_pdfliteral:D {#1}
     }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfliteral:n { e }
 
 \cs_new_protected:Npn \hawkdraw_support_pdfxform:nnN #1#2#3 {
-    \tex_immediate:D \tex_pdfxform:D
-    \tl_if_empty:nF {#1} {
-        attr {#1}
+    \bool_lazy_or:nnT {
+        \sys_if_engine_luatex_p:
+    } {
+        \sys_if_engine_pdftex_p:
+    } {
+        \tex_immediate:D \tex_pdfxform:D
+        \tl_if_empty:nF {#1} {
+            attr {#1}
+        }
+        resources {#2}
+        #3
     }
-    resources {#2}
-    #3
 }
 
 \cs_new_protected:Npn \hawkdraw_support_pdflastxform: {
-    \tex_pdflastxform:D
+    \bool_lazy_or:nnTF {
+        \sys_if_engine_luatex_p:
+    } {
+        \sys_if_engine_pdftex_p:
+    } {
+        \tex_pdflastxform:D
+    } { 0 }
 }
 
 \cs_new_protected:Npn \hawkdraw_support_pdfrefxform:N #1 {
-    \tex_pdfrefxform:D \int_use:N #1 \scan_stop:
+    \bool_lazy_or:nnT {
+        \sys_if_engine_luatex_p:
+    } {
+        \sys_if_engine_pdftex_p:
+    } {
+        \tex_pdfrefxform:D \int_use:N #1 \scan_stop:
+    }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfrefxform:N { c }
 
 \cs_new_protected:Npn \hawkdraw_support_pdfcolorstack:n #1 {
-    \sys_if_engine_luatex:TF {
+    \sys_if_engine_luatex:T {
         \tex_pdfextension:D colorstack ~ #1
-    } {
+    }
+    \sys_if_engine_pdftex:T {
         \tex_pdfcolorstack:D ~ #1
     }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfcolorstack:n { e }
 
 \cs_new_protected:Npn \hawkdraw_support_pdfcolorstackinit:n #1 {
-    \sys_if_engine_luatex:TF {
-        \tex_pdffeedback:D colorstackinit ~ #1
+    \bool_lazy_or:nnTF {
+        \sys_if_engine_luatex_p:
     } {
-        \tex_pdfcolorstackinit:D ~ #1
-    }
+        \sys_if_engine_pdftex_p:
+    } {
+        \sys_if_engine_luatex:T {
+            \tex_pdffeedback:D colorstackinit ~ #1
+        }
+        \sys_if_engine_pdftex:T {
+            \tex_pdfcolorstackinit:D ~ #1
+        }
+    } { 0 }
 }
 
 % ===

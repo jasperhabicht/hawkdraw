@@ -51,14 +51,14 @@
     }
     \pdfxform_if_exist:nF {
         hawkdraw_pattern_
-        \str_mdfive_hash:n { #1 #2 }
+        #1 . \str_mdfive_hash:n {#2}
     } {
         \hawkdraw_pattern_set:nn {#1} {#2}
     }
     \hbox_set:Nn \l_hawkdraw_pattern_box {
         \pdfxform_use:n {
             hawkdraw_pattern_
-            \str_mdfive_hash:n { #1 #2 }
+            #1 . \str_mdfive_hash:n {#2}
         }
     }
     \dim_set:Nn \l__hawkdraw_pattern_width_dim {
@@ -98,7 +98,10 @@
 \cs_generate_variant:Nn \hawkdraw_pattern_fill:nn { nV }
 
 \cs_new_protected:Npn \hawkdraw_pattern_set:nn #1#2 {
-    \pdfxform_new:nnn { hawkdraw_pattern_ \str_mdfive_hash:n { #1 #2 } } { } {
+    \pdfxform_new:nnn {
+        hawkdraw_pattern_
+        #1 . \str_mdfive_hash:n {#2}
+    } { } {
         \draw_suspend_begin:
             \draw_begin:
                 \clist_clear:N \l_hawkdraw_path_use_clist

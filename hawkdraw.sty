@@ -29,6 +29,20 @@
     to ~ enable ~ full ~ functionality.
 }
 
+\msg_new:nnn { hawkdraw } { feature-unsupported } {
+    #1 : ~ Feature ~ only ~ supported ~ with ~ PDFLaTeX ~ or ~ LuaLaTeX.
+}
+
+\cs_new_protected:Npn \__hawkdraw_error_unsupported:n #1 {
+    \bool_lazy_or:nnF {
+        \sys_if_engine_luatex_p:
+    } {
+        \sys_if_engine_pdftex_p:
+    } {
+        \msg_error:nnn { hawkdraw } { feature-unsupported }{ #1}
+    }
+}
+
 % \NeedsTeXFormat{LaTeX2e}[2026-05-26]
 
 \cs_if_exist:NF \ProcessKeyOptions {
@@ -648,9 +662,9 @@
     \keys_define:nn { hawkdraw / scope } {
         opacity ~ group         .code:n     = { } ,
         blend ~ mode            .code:n     = { } ,
-        soft ~ mask ~ set       .code:n     = { } ,
         soft ~ mask ~ use       .code:n     = { } ,
     }
+    \NewDocumentEnvironment { hawkdrawsoftmask } { m O{} } { } { }
 }
 
 % ===

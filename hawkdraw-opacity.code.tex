@@ -228,6 +228,7 @@
 }
 
 \NewDocumentEnvironment { hawkdrawsoftmask } { m O{} +b } { } {
+    \__hawkdraw_error_unsupported:n { Soft ~ mask }
     \hawkdraw_softmask_set:nn {#1} {
         \begin{hawkdraw}[#2]
             #3
@@ -335,6 +336,7 @@
 
 \keys_define:nn { hawkdraw / scope } {
     blend ~ mode            .code:n         = {
+        \__hawkdraw_error_unsupported:n { Blend ~ mode }
         \cs_set_protected:Npn \hawkdraw_scope_use:n ##1 {
             \hawkdraw_blendmode_set:nn {#1} {##1}
         } 
