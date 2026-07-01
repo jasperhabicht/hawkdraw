@@ -38,7 +38,6 @@
 
 % ===
 
-
 \msg_new:nnn { hawkdraw } { shading-unknown } {
     Shading ~ `#1` ~ unknown.
 }
@@ -57,11 +56,21 @@
 
 \exp_args_generate:n { NVVVV }
 
+\cs_set:Npn \hawkdraw_scope_reset_bb_begin: {
+    \draw_scope_begin:
+        \__draw_scope_bb_begin:
+}
+\cs_set:Npn \hawkdraw_scope_reset_bb_end: {
+        \__draw_scope_bb_end:
+    \draw_scope_end:
+}
+
+
 \keys_define:nn { hawkdraw / path } {
     fill ~ shading          .code:n         = {
         \__hawkdraw_error_unsupported:n { Shading }
         \tl_put_right:Nn \l_hawkdraw_path_preactions_tl {
-            \draw_scope_begin:
+            \hawkdraw_scope_reset_bb_begin:
                 \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
                 \tl_use:N \g_hawkdraw_softpath_original_tl
                 \draw_path_use_clear:n { clip }
@@ -75,7 +84,7 @@
                     \g_draw_bb_ymax_dim
                 \hawkdraw_shading_fill:n {#1}
                 \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
-            \draw_scope_end:
+            \hawkdraw_scope_reset_bb_end:
         }
     } ,
     shading ~ colors        .clist_set:N    = \l_hawkdraw_shading_colors_clist ,
