@@ -14,6 +14,31 @@
 
 % v0.4.0 2026-06-27
 
+% =====
+
+% Shadings
+
+% ===
+
+% Shadings are defined as rectangular PDF XObjects. There are various types of shadings, but we only define
+% linear and radial shaings here having type 2 and 3 respectively. We define shadings as square with a size
+% of 100bp times 100bp. Shadings are defined by functions.
+
+% In order to allow for rotation of shadings, we use the PGF approach of defining the shadings twice the
+% size of the path they should fill. Thus, we need to use multiple functions to define the shading, because
+% the outer part of the shading object will be clipped away by the path. We do this by defining the
+% functions in a nested way. The outer function is a type 3 function, which defines the inner functions.
+% The inner functions depend on the type of the shading and the number of colors used.
+
+% Every shading defined by its type, the used colors and whether or not it has some offset (for radial
+% shadings) is defined only once and a PDF XObject is created for it. In the PDF, two XObjects are created,
+% one that defines the shading using functions and one that represents a box referring to the shading. Upon
+% use, the latter XObject is (re-)used by placing it in a box which is then scaled to twice the size of the
+% path bounding box, rotated and placed at the center of the relevant path, then clipped by this path.
+
+% ===
+
+
 \msg_new:nnn { hawkdraw } { shading-unknown } {
     Shading ~ `#1` ~ unknown.
 }

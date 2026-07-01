@@ -20,6 +20,14 @@
 
 % ===
 
+% Blend modes are activated and deactivated using a stack. We define a new color stack for this purpose.
+% For opacity groups, the relevant scope is grabbed and stored in an XObject, setting the opacity inside
+% the XObject to 1 (fully opaque). The XObject is then placed in a box which is then replaced into the
+% drawing in a scope with the intended opacity selected and adhering to the bounding box of the original 
+% scope (of which the lower left corner are stored when the XObject is created). 
+
+% ===
+
 \dim_new:N \g_hawkdraw_opacity_group_bbox_xmin_dim
 \dim_new:N \g_hawkdraw_opacity_group_bbox_ymin_dim
 
@@ -76,7 +84,20 @@
 % =====
 
 % Soft masks 
-%%% Work in progress
+
+% ===
+
+% Soft masks need to be defined and added to the page resources before they are used. Therefore, we
+% first store the path that should become the soft mask in a box. SInce we want the full functionality
+% of the hawkdraw environment, we use a new environment to define the soft mask.
+
+% When the soft mask is used, this box is placed in an XObject. Then, another XObject is created that
+% has the size of the first box and refers to the XObject containing the soft masj. This XObject is set
+% to be a transparency group with grayscale color space.
+
+% This XObject is then used as reference in the page resources. The soft mask is activated by placing
+% the reference into the drawing setting the graphic state shifted by half of the width and height of
+% the original box in otder to center it at the origin.
 
 % ===
 
@@ -88,11 +109,9 @@
     Soft ~ mask ~ `#1` ~ undefined.
 }
 
-\dim_new:N \g_hawkdraw_softmask_bbox_xmin_dim
-\dim_new:N \g_hawkdraw_softmask_bbox_ymin_dim
-
-\box_new:N \l__hawkdraw_softmask_box
 \box_new:N \l__hawkdraw_softmask_ref_box
+
+\cs_generate_variant:Nn \draw_box_use:Nn { c }
 
 \cs_new_protected:Npn \hawkdraw_softmask_set:nn #1#2 {
     \int_if_exist:cTF {
@@ -100,106 +119,140 @@
     } {
         \msg_warning:nnn { hawkdraw } { softmask-defined } {#1}
     } {
-        \hbox_set:Nn \l__hawkdraw_softmask_box {
-            \draw_suspend_begin:
-                \draw_begin:
-                    #2
-                \draw_end:
-                \dim_gset_eq:NN
-                    \g_hawkdraw_softmask_bbox_xmin_dim
-                    \g_draw_bb_xmin_dim
-                \dim_gset_eq:NN
-                    \g_hawkdraw_softmask_bbox_ymin_dim
-                    \g_draw_bb_ymin_dim
-            \draw_suspend_end:
-        }
-        \pdfxform_new:nnn { hawkdraw_softmask_ #1 } { } {
-            \draw_box_use:Nn \l__hawkdraw_softmask_box {
-                \g_hawkdraw_softmask_bbox_xmin_dim
-            ,
-                \g_hawkdraw_softmask_bbox_ymin_dim
+        \box_new:c { g_hawkdraw_softmask_ #1 _box }
+        \dim_new:c { g_hawkdraw_softmask_ #1 _bbox_xmin_dim }
+        \dim_new:c { g_hawkdraw_softmask_ #1 _bbox_ymin_dim }
+        {
+            \dim_set:Nn \tex_parindent:D { 0pt }
+            \hbox_gset:cn { g_hawkdraw_softmask_ #1 _box } {
+                \vbox:n {#2}
             }
         }
-        \int_const:cn { 
-            c__hawkdraw_softmask_ #1 _int
-        } {
-            \hawkdraw_support_pdflastxform:
+        \dim_gset_eq:cN { g_hawkdraw_softmask_ #1 _bbox_xmin_dim } {
+            \g_draw_bb_xmin_dim
         }
-
-        \hbox_set:Nn \l__hawkdraw_softmask_ref_box {
-            \hawkdraw_support_pdfsave:
-            \hawkdraw_support_pdfsetmatrix:nnnn { 1 } { 0 } { 0 } { 1 }
-            \hawkdraw_support_pdfrestore:
-            \hawkdraw_support_pdfliteral:n {
-                /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~ Do
-            }
-        }
-        \exp_args:Nne
-        \hawkdraw_support_pdfxform:nnN {
-            /Group ~ << ~
-                /S ~ /Transparency ~
-                /CS ~ /DeviceGray ~
-            >>
-        } {
-            /XObject ~ << ~
-                /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~
-                    \pdfxform_ref:n { hawkdraw_softmask_ #1 } ~
-            >>
-        } \l__hawkdraw_softmask_ref_box
-        \int_const:cn { 
-            c__hawkdraw_softmask_object_ #1 _int
-        } {
-            \hawkdraw_support_pdflastxform:
-        }
-        
-        \pdfmanagement_add:nee {
-            Page / Resources / ExtGState
-        } {
-            hawkdraw Softmask
-            \int_use:c {
-                c__hawkdraw_softmask_object_ #1 _int
-            }
-        } {
-            << ~
-                /SMask ~ << ~
-                    /S ~ /Luminosity ~
-                    /G ~ \int_use:c { c__hawkdraw_softmask_object_ #1 _int } ~ 0 ~ R ~
-                >> ~
-            >>
+        \dim_gset_eq:cN { g_hawkdraw_softmask_ #1 _bbox_ymin_dim } {
+            \g_draw_bb_ymin_dim
         }
     }
 }
 
-\cs_new_protected:Npn \hawkdraw_softmask_use:n #1 {
+\cs_new_protected:Npn \hawkdraw_softmask_use:nn #1#2 {
+    \pdfxform_new:nnn { hawkdraw_softmask_ #1 } { } {
+        \box_use:c { g_hawkdraw_softmask_ #1 _box }
+    }
+    \int_const:cn { 
+        c__hawkdraw_softmask_ #1 _int
+    } {
+        \hawkdraw_support_pdflastxform:
+    }
+
+    \hbox_set_to_wd:Nnn \l__hawkdraw_softmask_ref_box {
+        \box_wd:c { g_hawkdraw_softmask_ #1 _box }
+    } {
+        \vbox_to_ht:nn {
+            \box_ht_plus_dp:c { g_hawkdraw_softmask_ #1 _box }
+        } {
+            \skip_vertical:n { 0pt plus 1fil }
+            \hawkdraw_support_pdfliteral:n {
+                /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~ Do
+            }
+            \skip_horizontal:n { 0pt plus 1fil }
+        }
+    }
+    \hawkdraw_support_pdfxform:nnN {
+        /Group ~ << ~
+            /S ~ /Transparency ~
+            /CS ~ /DeviceGray ~
+        >>
+    } {
+        /XObject ~ << ~
+            /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~
+                \pdfxform_ref:n { hawkdraw_softmask_ #1 } ~
+        >>
+    } \l__hawkdraw_softmask_ref_box
+    \int_const:cn { 
+        c__hawkdraw_softmask_object_ #1 _int
+    } {
+        \hawkdraw_support_pdflastxform:
+    }
+    
+    \pdfmanagement_add:nee {
+        Page / Resources / ExtGState
+    } {
+        hawkdraw Softmask
+        \int_use:c {
+            c__hawkdraw_softmask_object_ #1 _int
+        }
+    } {
+        << ~
+            /SMask ~ << ~
+                /S ~ /Luminosity ~
+                /G ~ \int_use:c { c__hawkdraw_softmask_object_ #1 _int } ~ 0 ~ R ~
+            >> ~
+        >>
+    }
+
     \int_if_exist:cTF {
         c__hawkdraw_softmask_ #1 _int
     } {
+        \hawkdraw_support_pdfliteral:n {
+            1 ~ 0 ~ 0 ~ 1 ~
+            \dim_to_decimal_in_bp:n {
+                \use:c { g_hawkdraw_softmask_ #1 _bbox_xmin_dim }
+            } ~
+            \dim_to_decimal_in_bp:n {
+                \use:c { g_hawkdraw_softmask_ #1 _bbox_ymin_dim }
+            } ~ cm
+        }
         \hawkdraw_support_pdfliteral:n {
             /hawkdraw Softmask
             \int_use:c {
                 c__hawkdraw_softmask_object_ #1 _int
             }
-            ~ gs
+            \c_space_tl gs
         }
+        \hawkdraw_support_pdfliteral:n {
+            1 ~ 0 ~ 0 ~ 1 ~
+            \dim_to_decimal_in_bp:n {
+                - \use:c { g_hawkdraw_softmask_ #1 _bbox_xmin_dim }
+            } ~
+            \dim_to_decimal_in_bp:n {
+                - \use:c { g_hawkdraw_softmask_ #1 _bbox_ymin_dim }
+            } ~ cm
+        }
+        #2
     } {
         \msg_warning:nnn { hawkdraw } { softmask-undefined } {#1}
     } 
 }
 
+\NewDocumentEnvironment { hawkdrawsoftmask } { m O{} +b } { } {
+    \hawkdraw_softmask_set:nn {#1} {
+        \begin{hawkdraw}[#2]
+            #3
+        \end{hawkdraw}
+    }
+}
+
 \keys_define:nn { hawkdraw / scope } {
-    soft ~ mask ~ set       .code:n         = {
-        \cs_set_protected:Npn \hawkdraw_scope_use:n ##1 {
-            \hawkdraw_softmask_set:nn {#1} {##1}
-        } 
-    } ,
     soft ~ mask ~ use       .code:n         = {
-        \hawkdraw_softmask_use:n {#1}
+        \cs_set_protected:Npn \hawkdraw_scope_use:n ##1 {
+            \hawkdraw_softmask_use:nn {#1} {##1}
+        } 
     } ,
 }
 
 % =====
 
 % Blend modes
+
+% ===
+
+% Blend modes are activated and deactivated using a stack. We define a new color stack for this purpose.
+% The stack is initialized with the default blend mode (Normal). When a blend mode is set, it is pushed 
+% onto the stack and the corresponding ExtGState resource is added to the relevant page. When the scope
+% ends, the blend mode is popped from the stack and the Normal blend mode is restored. 
 
 % ===
 
