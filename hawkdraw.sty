@@ -639,12 +639,17 @@
         pattern ~ style ~ set   .code:n     = { } ,
         pattern ~ style ~ add   .code:n     = { } ,
         pattern ~ tile ~ size   .code:n     = { } ,
-        opacity ~ group         .code:n     = { } ,
         fill ~ shading          .code:n     = { } ,
         shading ~ colors        .code:n     = { } ,
         shading ~ rotate        .code:n     = { } ,
         shading ~ offset        .code:n     = { } ,
         shading ~ circular      .code:n     = { } ,
+    }
+    \keys_define:nn { hawkdraw / scope } {
+        opacity ~ group         .code:n     = { } ,
+        blend ~ mode            .code:n     = { } ,
+        soft ~ mask ~ set       .code:n     = { } ,
+        soft ~ mask ~ use       .code:n     = { } ,
     }
 }
 

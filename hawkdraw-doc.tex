@@ -1784,7 +1784,7 @@ The option \macro{opacity group} sets the current scope to an opacity group. The
 \end{codeexamplecolumns}
 
 \iffalse
-\subsection{Soft masks}
+\subsection{Soft masks} %%% Work in progress
 
 \begin{macrodef}
 !scope/!|soft mask set|={<string>}
@@ -1817,7 +1817,6 @@ Note that the options \macro{soft mask set} and \macro{soft mask use} are only a
 \end{codeexamplecolumns}
 \fi
 
-\iffalse
 \subsection{Blend modes}
 
 \begin{macrodef}
@@ -1827,11 +1826,11 @@ The option \macro{blend mode} sets the blend mode of the current scope. The key 
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
+  \fill[color fill={red}] (0cm,0cm)
+    circle[radius={0.5cm}] ;
   \begin{scope}[
     blend mode={screen}
   ]
-    \fill[color fill={red}] (0cm,0cm)
-      circle[radius={0.5cm}] ;
     \fill[color fill={blue}] (-1cm,-0.25cm) 
       rectangle[corner={1cm,0.25cm}] ;
   \end{scope}
@@ -1842,9 +1841,9 @@ The following blend modes are available:
 
 \NewDocumentCommand{\blendmodeexample}{ m }{%
   \begin{hawkdraw}[baseline={0.5ex}]
+    \fill[color fill={red}] (0cm,0cm)
+      circle[radius={0.5cm}] ;
     \begin{scope}[blend mode={#1}]
-      \fill[color fill={red}] (0cm,0cm)
-        circle[radius={0.5cm}] ;
       \fill[color fill={blue}] (-1cm,-0.25cm)
         rectangle[corner={1cm,0.25cm}] ;
     \end{scope}
@@ -1862,7 +1861,6 @@ The following blend modes are available:
   \blendmodeexample{darken} & \macro{darken} \\
   \bottomrule
 \end{longtable}
-\fi
 
 \subsection{Linear and radial shadings}
 

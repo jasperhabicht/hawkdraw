@@ -26,55 +26,57 @@
 \int_new:N \g__hawkdraw_opacity_group_int
 \box_new:N \l__hawkdraw_opacity_group_box
 
-\cs_new_protected:Npn \hawkdraw_opacity_group_set: {
-    \int_gincr:N \g__hawkdraw_opacity_group_int
-    \cs_set_protected:Npn \hawkdraw_scope_use:n ##1 {
-        \pdfxform_new:nnn {
+\cs_new_protected:Npn \hawkdraw_opacity_group_set_use:n #1 {
+    \pdfxform_new:nnn {
+        hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
+    } {
+        /Group ~ << ~
+            /S ~ /Transparency ~
+            /I ~ true ~
+            /K ~ false ~
+        >>
+    } {
+        \draw_suspend_begin:
+            \draw_begin:
+                \fp_set:Nn \l_hawkdraw_path_opacity_stroke_fp { 1.0 }
+                \fp_set:Nn \l_hawkdraw_path_opacity_fill_fp { 1.0 }
+                #1
+            \draw_end:
+            \dim_gset_eq:NN
+                \g_hawkdraw_opacity_group_bbox_xmin_dim
+                \g_draw_bb_xmin_dim
+            \dim_gset_eq:NN
+                \g_hawkdraw_opacity_group_bbox_ymin_dim
+                \g_draw_bb_ymin_dim
+        \draw_suspend_end:
+    }
+    \hbox_set:Nn \l__hawkdraw_opacity_group_box {
+        \pdfxform_use:n {
             hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
-        } {
-            /Group ~ << ~
-                /S ~ /Transparency ~
-                /I ~ true ~
-                /K ~ false ~
-            >>
-        } {
-            \draw_suspend_begin:
-                \draw_begin:
-                    \fp_set:Nn \l_hawkdraw_path_opacity_stroke_fp { 1.0 }
-                    \fp_set:Nn \l_hawkdraw_path_opacity_fill_fp { 1.0 }
-                    ##1
-                \draw_end:
-                \dim_gset_eq:NN
-                    \g_hawkdraw_opacity_group_bbox_xmin_dim
-                    \g_draw_bb_xmin_dim
-                \dim_gset_eq:NN
-                    \g_hawkdraw_opacity_group_bbox_ymin_dim
-                    \g_draw_bb_ymin_dim
-            \draw_suspend_end:
-        }
-        \hbox_set:Nn \l__hawkdraw_opacity_group_box {
-            \pdfxform_use:n {
-                hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
-            }
-        }
-        \opacity_stroke:V \l_hawkdraw_path_opacity_stroke_fp
-        \opacity_fill:V \l_hawkdraw_path_opacity_fill_fp
-        \draw_box_use:Nn \l__hawkdraw_opacity_group_box {
-            \g_hawkdraw_opacity_group_bbox_xmin_dim ,
-            \g_hawkdraw_opacity_group_bbox_ymin_dim
         }
     }
+    \opacity_stroke:V \l_hawkdraw_path_opacity_stroke_fp
+    \opacity_fill:V \l_hawkdraw_path_opacity_fill_fp
+    \draw_box_use:Nn \l__hawkdraw_opacity_group_box {
+        \g_hawkdraw_opacity_group_bbox_xmin_dim
+    ,
+        \g_hawkdraw_opacity_group_bbox_ymin_dim
+    }    
 }
 
 \keys_define:nn { hawkdraw / scope } {
     opacity ~ group         .code:n         = {
-        \hawkdraw_opacity_group_set:
+        \int_gincr:N \g__hawkdraw_opacity_group_int
+        \cs_set_protected:Npn \hawkdraw_scope_use:n ##1 {
+            \hawkdraw_opacity_group_set_use:n {##1}
+        }
     } ,
 }
 
 % =====
 
-% Soft masks
+% Soft masks 
+%%% Work in progress
 
 % ===
 
@@ -86,6 +88,10 @@
     Soft ~ mask ~ `#1` ~ undefined.
 }
 
+\dim_new:N \g_hawkdraw_softmask_bbox_xmin_dim
+\dim_new:N \g_hawkdraw_softmask_bbox_ymin_dim
+
+\box_new:N \l__hawkdraw_softmask_box
 \box_new:N \l__hawkdraw_softmask_ref_box
 
 \cs_new_protected:Npn \hawkdraw_softmask_set:nn #1#2 {
@@ -94,13 +100,25 @@
     } {
         \msg_warning:nnn { hawkdraw } { softmask-defined } {#1}
     } {
-
-        \pdfxform_new:nnn { hawkdraw_softmask_ #1 } { } {
+        \hbox_set:Nn \l__hawkdraw_softmask_box {
             \draw_suspend_begin:
                 \draw_begin:
                     #2
                 \draw_end:
+                \dim_gset_eq:NN
+                    \g_hawkdraw_softmask_bbox_xmin_dim
+                    \g_draw_bb_xmin_dim
+                \dim_gset_eq:NN
+                    \g_hawkdraw_softmask_bbox_ymin_dim
+                    \g_draw_bb_ymin_dim
             \draw_suspend_end:
+        }
+        \pdfxform_new:nnn { hawkdraw_softmask_ #1 } { } {
+            \draw_box_use:Nn \l__hawkdraw_softmask_box {
+                \g_hawkdraw_softmask_bbox_xmin_dim
+            ,
+                \g_hawkdraw_softmask_bbox_ymin_dim
+            }
         }
         \int_const:cn { 
             c__hawkdraw_softmask_ #1 _int
