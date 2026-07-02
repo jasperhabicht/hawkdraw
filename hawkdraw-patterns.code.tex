@@ -111,10 +111,7 @@
                 }
                 \keys_set:nn { hawkdraw / path } {#2}
                 \hawkdraw_path_set_options:
-                \draw_path_rectangle:nn { 0pt , 0pt } {
-                    \hawkdraw_tuple_use_i:n { \l_hawkdraw_pattern_tile_size_fp } ,
-                    \hawkdraw_tuple_use_ii:n { \l_hawkdraw_pattern_tile_size_fp }
-                }
+                \draw_path_rectangle:nn { 0pt , 0pt } { \l_hawkdraw_pattern_tile_size_fp }
                 \draw_path_use_clear:n { }
                 \bool_set_false:N \l_draw_bb_update_bool
                 \use:c { hawkdraw_pattern_ #1 : }
