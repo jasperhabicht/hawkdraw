@@ -43,7 +43,7 @@
     }
 }
 
-% \NeedsTeXFormat{LaTeX2e}[2026-05-26]
+\NeedsTeXFormat{LaTeX2e}[2026-05-26]
 
 \cs_if_exist:NF \ProcessKeyOptions {
     \msg_critical:nn { hawkdraw } { old-kernel }
@@ -55,80 +55,6 @@
 
 \RequirePackage { l3draw }
 
-% ===
-
-% backward compatibility
-\IfExplAtLeastTF { 2025-04-14 } { } {
-    \RequirePackage { l3opacity }
-}
-
-\clist_map_inline:nn {
-    linewidth:n ,
-    baseline:n ,
-    miterlimit:n ,
-    dash_pattern:nn ,
-    cap_butt: ,
-    cap_rectangle: ,
-    cap_round: ,
-    join_bevel: ,
-    join_miter: ,
-    join_round: ,
-    evenodd_rule: ,
-    nonzero_rule:
-} {
-    \cs_if_exist:cF { draw_set_ #1 } {
-        \cs_set_eq:cc { draw_set_ #1 } { draw_ #1 }
-    }
-}
-\cs_if_exist:NF \draw_point_interpolate_curve:nnnnn {
-    \cs_set_eq:NN \draw_point_interpolate_curve:nnnnn \draw_point_interpolate_curve:nnnnnn
-}
-\cs_if_exist:NF \draw_point_interpolate_curve:nnnn {
-    \cs_set:Npn \draw_point_interpolate_curve:nnnn #1#2#3#4 {
-        \draw_point_interpolate_curve:nnnnn {#1} {#2} {
-            ( #2 + 2 * #3 ) / 3
-        } {
-            ( #4 + 2 * #3 ) / 3
-        } {#4}
-    }
-}
-\cs_if_exist:NF \draw_point_interpolate_arc_axes:nnnnnn {
-    \cs_set_eq:NN \draw_point_interpolate_arc_axes:nnnnnn \draw_point_interpolate_arcaxes:nnnnnn
-}
-\IfExplAtLeastTF { 2026-04-28 } { } {
-    \msg_warning:nn { hawkdraw } { compat-mode }
-    \cs_set_eq:NN \__hawkdraw_compat_draw_path_arc:nnnn \draw_path_arc:nnnn
-    \cs_set_protected:Npn \draw_path_arc:nnnn #1#2#3#4 {
-        \__hawkdraw_compat_draw_path_arc:nnnn {#3} {#4} {#1} {#2}
-    }
-    \cs_set_protected:Npn \draw_path_arc:nnn #1#2#3 {
-        \__hawkdraw_compat_draw_path_arc:nnnn {#2} {#3} {#1} {#1}
-    }
-    \cs_set_protected:Npn \draw_path_arc_axes:nnnn #1#2#3#4 {
-        \group_begin:
-            \draw_transform_triangle:nnn { 0cm , 0cm } {#1} {#2}
-            \__hawkdraw_compat_draw_path_arc:nnnn {#3} {#4} { 1pt } { 1pt }
-        \group_end:
-    }
-}
-\IfExplAtLeastTF { 2026-05-26 } { } {
-    \cs_set:Npn \__draw_point_interpolate_line_aux:nnnnnn #1#2#3#4#5#6 {
-        \draw_point:n { #1 * #3 + #2 * #5 , #1 * #4 + #2 * #6 }
-    }
-    \cs_set:Npn \__draw_point_interpolate_curve_auxvii:nnnnnnnn #1#2#3#4#5#6#7#8 {
-        \__draw_point_interpolate_curve_auxviii:eeeenn
-            { \fp_eval:n { #1 * #3 + #2 * #5 } }
-            { \fp_eval:n { #1 * #4 + #2 * #6 } }
-            { \fp_eval:n { #1 * #5 + #2 * #7 } }
-            { \fp_eval:n { #1 * #6 + #2 * #8 } }
-            {#1} {#2}
-    }
-    \cs_set:Npn \__draw_point_interpolate_curve_auxviii:nnnnnn #1#2#3#4#5#6 {
-        \draw_point:n {
-            { #5 * #1 + #6 * #3 , #5 * #2 + #6 * #4 }
-        }
-    }
-}
 % ===
 
 \cs_generate_variant:Nn \prg_new_conditional:Npnn { Npne }
