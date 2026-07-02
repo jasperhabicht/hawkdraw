@@ -88,15 +88,15 @@
 
 % Soft masks need to be defined and added to the page resources before they are used. Therefore, we
 % first store the path that should become the soft mask in a box. Since we want the full functionality
-% of the hawkdraw environment, we use a new environment to define the soft mask.
+% of the hawkdraw environment, we use a separate environment to define the soft mask.
 
 % When the soft mask is used, this box is placed in an XObject. Then, another XObject is created that
-% has the size of the first box and refers to the XObject containing the soft masj. This XObject is set
+% has the size of the first box and refers to the XObject containing the soft mask. This XObject is set
 % to be a transparency group with grayscale color space.
 
 % This XObject is then used as reference in the page resources. The soft mask is activated by placing
-% the reference into the drawing setting the graphic state shifted by half of the width and height of
-% the original box in otder to center it at the origin.
+% the reference into the drawing setting the graphic state shifted by the offset of the lower left
+% corner of the soft mask bounding box from the origin which was stored upon creating the first box.
 
 % ===
 
