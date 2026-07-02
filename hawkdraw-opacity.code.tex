@@ -22,8 +22,8 @@
 
 % For opacity groups, the relevant scope is grabbed and stored in an XObject, setting the opacity inside
 % the XObject to 1 (fully opaque). The XObject is then placed in a box which is then replaced into the
-% drawing in a scope with the intended opacity selected and adhering to the bounding box of the original 
-% scope (of which the lower left corner are stored when the XObject is created). 
+% drawing in a scope with the intended opacity selected and adhering to the bounding box of the original
+% scope (of which the lower left corner are stored when the XObject is created).
 
 % ===
 
@@ -68,7 +68,7 @@
         \g_hawkdraw_opacity_group_bbox_xmin_dim
     ,
         \g_hawkdraw_opacity_group_bbox_ymin_dim
-    }    
+    }
 }
 
 \keys_define:nn { hawkdraw / scope } {
@@ -82,7 +82,7 @@
 
 % =====
 
-% Soft masks 
+% Soft masks
 
 % ===
 
@@ -143,7 +143,7 @@
         \pdfxform_new:nnn { hawkdraw_softmask_ #1 } { } {
             \box_use:c { g_hawkdraw_softmask_ #1 _box }
         }
-        \int_const:cn { 
+        \int_const:cn {
             c__hawkdraw_softmask_ #1 _int
         } {
             \hawkdraw_support_pdflastxform:
@@ -173,12 +173,12 @@
                     \pdfxform_ref:n { hawkdraw_softmask_ #1 } ~
             >>
         } \l__hawkdraw_softmask_ref_box
-        \int_const:cn { 
+        \int_const:cn {
             c__hawkdraw_softmask_object_ #1 _int
         } {
             \hawkdraw_support_pdflastxform:
         }
-        
+
         \pdfmanagement_add:nee {
             Page / Resources / ExtGState
         } {
@@ -223,7 +223,7 @@
         #2
     } {
         \msg_warning:nnn { hawkdraw } { softmask-undefined } {#1}
-    } 
+    }
 }
 
 \NewDocumentEnvironment { hawkdrawsoftmask } { m O{} +b } { } {
@@ -239,7 +239,7 @@
     soft ~ mask ~ use       .code:n         = {
         \cs_set_protected:Npn \hawkdraw_scope_use:n ##1 {
             \hawkdraw_softmask_use:nn {#1} {##1}
-        } 
+        }
     } ,
 }
 
@@ -250,9 +250,9 @@
 % ===
 
 % Blend modes are activated and deactivated using a stack. We define a new color stack for this purpose.
-% The stack is initialized with the default blend mode (Normal). When a blend mode is set, it is pushed 
+% The stack is initialized with the default blend mode (Normal). When a blend mode is set, it is pushed
 % onto the stack and the corresponding ExtGState resource is added to the relevant page. When the scope
-% ends, the blend mode is popped from the stack and the Normal blend mode is restored. 
+% ends, the blend mode is popped from the stack and the Normal blend mode is restored.
 
 % ===
 
@@ -338,7 +338,7 @@
         \__hawkdraw_error_unsupported:n { Blend ~ mode }
         \cs_set_protected:Npn \hawkdraw_scope_use:n ##1 {
             \hawkdraw_blendmode_set:nn {#1} {##1}
-        } 
+        }
     } ,
 }
 

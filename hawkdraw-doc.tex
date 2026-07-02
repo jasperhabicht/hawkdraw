@@ -1061,6 +1061,8 @@ The node can be named by setting the \macro{name} option which can be referenced
 
 It is possible to reference a point where two poles of the node intersect by appending the node name with the relevant poles concatenated with a dash and separated by a dot from the node name. For example, if a node is named \macro{foo}, the point where the top and left pole of the node intersect can be referenced by \macro{(foo[t,l])}.
 
+It is also possible to reference a point where a line starting from the center of the node and having a specific angle intersects with the node's border. For example, if a node is named \macro{foo}, the point where a line with an angle od \num{30} degrees intersects with the node's border can be referenced by \macro{(foo[30])}.
+
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \node {foo} ;
@@ -1070,8 +1072,20 @@ It is possible to reference a point where two poles of the node intersect by app
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \node[stroke, name={A}] {foo} ;
-  \fill[color fill=red] (A[b,l]) circle[radius={2pt}] ;
-  \fill[color fill=red] (A[t,r]) circle[radius={2pt}] ;
+  \fill[color fill={red}] (A[b,l])
+    circle[radius={2pt}] ;
+  \fill[color fill={red}] (A[t,r])
+    circle[radius={2pt}] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \node[stroke, name={B}] {foo} ;
+  \fill[color fill={red}] (B[30])
+    circle[radius={2pt}] ;
+  \fill[color fill={red}] (B[270])
+    circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1162,7 +1176,8 @@ Using the \macro{frame} command, the frame surrounding the node text can be sele
 \begin{hawkdraw}
   \stroke (0cm,0cm) -- (1cm,0.5cm)
     node[
-      fill, color fill={yellow},
+      fill,
+      color fill={yellow},
       color text={blue},
       frame={ellipse}
     ] {foo} ;
@@ -1463,6 +1478,8 @@ The option \macro{rotate} sets the rotation for the path as a floating-point num
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
+  \stroke[color stroke={blue}]
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
   \stroke[scale={0.25,0.5}]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
@@ -1472,6 +1489,8 @@ The option \macro{scale} sets the scale for the path as a comma-separated list o
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
+  \stroke[color stroke={blue}]
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
   \stroke[rotate={20}]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
@@ -1481,6 +1500,8 @@ The option \macro{slant} sets the slant for the path as a comma-separated list o
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
+  \stroke[color stroke={blue}]
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
   \stroke[slant={0.25,0.5}]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
@@ -1765,7 +1786,7 @@ The option \macro{opacity group} sets the current scope to an opacity group. The
   ]
     \fill (0cm,0cm)
       circle[radius={0.5cm}] ;
-    \fill (-1cm,-0.25cm) 
+    \fill (-1cm,-0.25cm)
       rectangle[corner={1cm,0.25cm}] ;
   \end{scope}
 \end{hawkdraw}
@@ -1779,7 +1800,7 @@ The option \macro{opacity group} sets the current scope to an opacity group. The
   ]
     \fill (0cm,0cm)
       circle[radius={0.5cm}] ;
-    \fill (-1cm,-0.25cm) 
+    \fill (-1cm,-0.25cm)
       rectangle[corner={1cm,0.25cm}] ;
   \end{scope}
 \end{hawkdraw}
@@ -1793,20 +1814,21 @@ Soft masks are used to create transparency effects by defining a mask that deter
 \\\begin{|hawkdrawsoftmask|}{<string>}[<options>]
 \end{|hawkdrawsoftmask|}
 \end{macrodef}
-A soft mask can be defined using the \macro{hawkdrawsoftmask} environment. It requires as first argument a string that represents the name of the soft mask. The soft mask is defined by the contents of the environment. The optional argument can be used to set the options for the soft mask which are the same as for the \macro{hawkdraw} environment. 
+A soft mask can be defined using the \macro{hawkdrawsoftmask} environment. It requires as first argument a string that represents the name of the soft mask. The soft mask is defined by the contents of the environment. The optional argument can be used to set the options for the soft mask which are the same as for the \macro{hawkdraw} environment.
 
 \begin{macrodef}
 !scope/!|soft mask use|={<string>}
 \end{macrodef}
-The option \macro{soft mask use} sets the soft mask of the current scope. The option takes as string the name of the previously defined soft mask. 
-Note that the options \macro{soft mask set} and \macro{soft mask use} are only available for scopes.
+The option \macro{soft mask use} applies a soft mask of the current scope. The option takes as string the name of the previously defined soft mask to be applied. Note that the option \macro{soft mask use} is only available for scopes.
 
 \begin{codeexamplecolumns}
 \begin{hawkdrawsoftmask}{custom}
   \fill[color fill={black!50}]
-    (0cm,0cm) circle[radius={0.5cm}] ;
+    (0cm,0cm)
+      circle[radius={0.5cm}] ;
   \fill[color fill={black!25}]
-    (-1cm,-0.25cm) rectangle[corner={1cm,0.25cm}] ;
+    (-1cm,-0.25cm)
+      rectangle[corner={1cm,0.25cm}] ;
 \end{hawkdrawsoftmask}
 \begin{hawkdraw}
   \begin{scope}[
@@ -1836,7 +1858,7 @@ The option \macro{blend mode} sets the blend mode of the current scope. The key 
   \begin{scope}[
     blend mode={screen}
   ]
-    \fill[color fill={blue}] (-1cm,-0.25cm) 
+    \fill[color fill={blue}] (-1cm,-0.25cm)
       rectangle[corner={1cm,0.25cm}] ;
   \end{scope}
 \end{hawkdraw}

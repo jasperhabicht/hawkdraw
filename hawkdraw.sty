@@ -685,17 +685,23 @@
             } { point }
         }
     } {
-        \__hawkdraw_tl_has_greater_than_sign:nTF {#1} {
+        \__hawkdraw_tl_has_left_square_bracket:nTF {#1} {
             \fp_eval:n {
-                \__hawkdraw_point_parse_polar:w #1 \s__hawkdraw_stop
+                \__hawkdraw_point_parse_node_anchor_degrees:w #1 \s__hawkdraw_stop
             }
         } {
-            \__hawkdraw_tl_has_colon:nTF {#1} {
+            \__hawkdraw_tl_has_greater_than_sign:nTF {#1} {
                 \fp_eval:n {
-                    \__hawkdraw_point_parse_polar_compat:w #1 \s__hawkdraw_stop
+                    \__hawkdraw_point_parse_polar:w #1 \s__hawkdraw_stop
                 }
             } {
-                \fp_eval:n {#1}
+                \__hawkdraw_tl_has_colon:nTF {#1} {
+                    \fp_eval:n {
+                        \__hawkdraw_point_parse_polar_compat:w #1 \s__hawkdraw_stop
+                    }
+                } {
+                    \fp_eval:n {#1}
+                }
             }
         }
     }
@@ -716,6 +722,13 @@
     \__hawkdraw_tl_has_greater_than_sign:w \q_mark #1 > \q_nil > \q_stop
 }
 \cs_new:Npn \__hawkdraw_tl_has_greater_than_sign:w #1 > #2 > #3 \q_stop {
+    \quark_if_nil:nTF {#2} { \prg_return_false: } { \prg_return_true: }
+}
+
+\prg_new_conditional:Npnn \__hawkdraw_tl_has_left_square_bracket:n #1 { TF } {
+    \__hawkdraw_tl_has_left_square_bracket:w \q_mark #1 [ \q_nil [ \q_stop
+}
+\cs_new:Npn \__hawkdraw_tl_has_left_square_bracket:w #1 [ #2 [ #3 \q_stop {
     \quark_if_nil:nTF {#2} { \prg_return_false: } { \prg_return_true: }
 }
 
@@ -757,6 +770,36 @@
     } {
         \draw_point_polar:nn {#2} {#1}
     }
+}
+
+\cs_new:Npn \__hawkdraw_point_parse_node_anchor_degrees:w #1 [ #2 ] #3 \s__hawkdraw_stop {
+    \use:c {
+        hawkdraw_node_frame_point_
+        \prop_item:cn {
+            g__hawkdraw_point_
+            \__hawkdraw_point_parse_trim:n {#1}
+            _prop
+        } { frame }
+        :nnnn
+    } {
+        \prop_item:cn {
+            g__hawkdraw_point_
+            \__hawkdraw_point_parse_trim:n {#1}
+            _prop
+        } { point }
+    } {
+        \prop_item:cn {
+            g__hawkdraw_point_
+            \__hawkdraw_point_parse_trim:n {#1}
+            _prop
+        } { width } / 2
+    } {
+        \prop_item:cn {
+            g__hawkdraw_point_
+            \__hawkdraw_point_parse_trim:n {#1}
+            _prop
+        } { height } / 2
+    } { \fp_eval:n {#2} }
 }
 
 % ===
@@ -1056,6 +1099,7 @@
     }
     \fp_gset:Nn \g_hawkdraw_path_point_last_fp {
         \__hawkdraw_point_part_arc:n { 1 }
+        % ( \draw_path_lastx: , \draw_path_lasty: )
     }
     \bool_if:NTF \l_hawkdraw_path_arc_axes_bool {
         \hawkdraw_softpath_build_arc_axes:nnnn

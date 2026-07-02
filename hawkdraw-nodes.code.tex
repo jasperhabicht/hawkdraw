@@ -135,6 +135,9 @@
     \tag_socket_use:n { hawkdraw / node / contents / end }
 }
 
+\dim_new:N \l__hawkdraw_node_width_dim
+\dim_new:N \l__hawkdraw_node_height_dim
+
 \cs_new_protected:Npn \hawkdraw_node:nn #1#2 {
     \draw_scope_begin:
         \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_point_last_fp
@@ -185,7 +188,7 @@
             \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
                 { point } \l_hawkdraw_point_at_fp
             \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
-                { slope } \l_hawkdraw_point_slope_fp
+                { slope } \l_hawkdraw_point_slope_fp            
         }
         \keys_set_known:nVN { hawkdraw / tag }
             \l__hawkdraw_keys_unprocessed_clist
@@ -210,6 +213,20 @@
         }
         \__hawkdraw_node_set_padding:
         \__hawkdraw_node_set_frame:V \l__hawkdraw_keys_unprocessed_clist
+        \tl_if_blank:VF \l_hawkdraw_point_name_tl {
+            \dim_set:Nn \l__hawkdraw_node_width_dim {
+                \coffin_wd:N \l_hawkdraw_node_frame_coffin
+            }
+            \dim_set:Nn \l__hawkdraw_node_height_dim {
+                \coffin_ht_plus_dp:N \l_hawkdraw_node_frame_coffin
+            }
+            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+                { frame } \l_hawkdraw_node_frame_tl
+            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+                { width } \l__hawkdraw_node_width_dim
+            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+                { height } \l__hawkdraw_node_height_dim
+        }
         \coffin_attach:NnnNnnnn
             \l_hawkdraw_node_frame_coffin { hc } { vc }
             \l_hawkdraw_node_coffin { hc } { vc }
@@ -430,7 +447,7 @@
 \dim_new:N \l_hawkdraw_node_natural_width_dim
 \dim_new:N \l_hawkdraw_node_natural_height_dim
 
-\cs_new_protected:Npn \hawkdraw_node_create_frame:nn #1#2 {
+\cs_new_protected:Npn \hawkdraw_node_create_frame:nnn #1#2#3 {
     \cs_new_protected:cpn { hawkdraw_node_frame_ #1 :Nnnnn } ##1##2##3##4##5 {
         \dim_set:Nn \l_hawkdraw_node_natural_width_dim {
             \coffin_wd:N ##1 + ##2 + ##3
@@ -441,13 +458,17 @@
         #2
     }
     \cs_generate_variant:cn { hawkdraw_node_frame_ #1 :Nnnnn } { NVVVV }
+
+    \cs_new_protected:cpn { hawkdraw_node_frame_point_ #1 :nnnn } ##1##2##3##4 {
+        #3
+    }
 }
 
 % ===
 
-\hawkdraw_node_create_frame:nn { none } { }
+\hawkdraw_node_create_frame:nnn { none } { } { ( #1 ) }
 
-\hawkdraw_node_create_frame:nn { rectangle } {
+\hawkdraw_node_create_frame:nnn { rectangle } {
     \draw_path_rectangle:nn {
         (
             -0.5 * \l_hawkdraw_node_natural_width_dim
@@ -461,17 +482,31 @@
             \l_hawkdraw_node_natural_height_dim
         )
     }
+} {
+    ( #1 ) + (
+        \draw_point_polar:nn {
+            min(
+                ( #2 ) / abs( cosd( #4 ) )
+            ,
+                ( #3 ) / abs( sind( #4 ) )
+            )
+        } {#4}
+    )
 }
 
-\hawkdraw_node_create_frame:nn { ellipse } {
+\hawkdraw_node_create_frame:nnn { ellipse } {
     \draw_path_ellipse:nnn { 0pt , 0pt } {
         ( 0.5 * \l_hawkdraw_node_natural_width_dim , 0pt )
     } {
         ( 0pt , 0.5 * \l_hawkdraw_node_natural_height_dim )
     }
+} {
+    ( #1 ) + (
+        \draw_point_polar:nnn {#2} {#3} {#4}
+    )
 }
 
-\hawkdraw_node_create_frame:nn { circle } {
+\hawkdraw_node_create_frame:nnn { circle } {
     \draw_path_circle:nn { 0pt , 0pt } {
         max(
             0.5 * \l_hawkdraw_node_natural_width_dim
@@ -479,9 +514,13 @@
             0.5 * \l_hawkdraw_node_natural_height_dim
         )
     }
+} {
+    ( #1 ) + (
+        \draw_point_polar:nnn {#2} {#3} {#4}
+    )
 }
 
-\hawkdraw_node_create_frame:nn { diamond } {
+\hawkdraw_node_create_frame:nnn { diamond } {
     \draw_path_moveto:n {
         ( 0pt , \l_hawkdraw_node_natural_height_dim )
     }
@@ -495,6 +534,15 @@
         ( -1 * \l_hawkdraw_node_natural_width_dim , 0pt )
     }
     \draw_path_close:
+} {
+    ( #1 ) + (
+        \draw_point_polar:nn {
+            ( #2 ) * ( #3 ) / (
+                ( #2 ) * abs( sind( #4 ) ) +
+                ( #3 ) * abs( cosd( #4 ) )
+            )
+        } {#4}
+    )
 }
 
 % EOF
