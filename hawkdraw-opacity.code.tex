@@ -45,6 +45,7 @@
     } {
         \draw_suspend_begin:
             \draw_begin:
+                \draw_set_baseline:n { -1 * \l_hawkdraw_picture_baseline_fp }
                 \fp_set:Nn \l_hawkdraw_path_opacity_stroke_fp { 1.0 }
                 \fp_set:Nn \l_hawkdraw_path_opacity_fill_fp { 1.0 }
                 #1

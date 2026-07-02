@@ -104,6 +104,7 @@
     } { } {
         \draw_suspend_begin:
             \draw_begin:
+                \draw_set_baseline:n { 0pt }
                 \clist_clear:N \l_hawkdraw_path_use_clist
                 \keys_set:ne { hawkdraw / path } {
                     \prop_item:Nn \g_hawkdraw_pattern_default_keys_prop {#1}
