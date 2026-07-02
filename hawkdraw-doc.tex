@@ -971,7 +971,7 @@ The position on a path using these options depend on the type of the path. For s
 \begin{macrodef}*
 |\getpoint|{<point>}
 \end{macrodef}
-Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used to access the coordinates of a point on the current path. The point is given as an argument. The command returns the coordinates of the point as a tuple of dimensions and can be used in subsequent calculations.
+Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used to access the coordinates of a point on the current path. The point is given as an argument. The command returns the coordinates of the point as a tuple of dimensions and can be used in subsequent calculations. Note that you might need to wrap the \macro{\getpoint} command (including the argument) in parenthesis in order to have the parser read its expansion as a tuple.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -979,7 +979,7 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used
   \stroke[color stroke={blue}]
      (0cm,0cm) rectangle[corner={(A)}] ;
   \stroke (0cm,0cm)
-    -- ({\getpoint{A} + (1cm,0cm)}) ;
+    -- ({(\getpoint{A}) + (1cm,0cm)}) ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1886,6 +1886,17 @@ The following blend modes are available:
   \blendmodeexample{screen} & \macro{screen} \\
   \blendmodeexample{overlay} & \macro{overlay} \\
   \blendmodeexample{darken} & \macro{darken} \\
+  \blendmodeexample{lighten} & \macro{lighten} \\
+  \blendmodeexample{color dodge} & \macro{color dodge} \\
+  \blendmodeexample{color burn} & \macro{color burn} \\
+  \blendmodeexample{hard light} & \macro{hard light} \\
+  \blendmodeexample{soft light} & \macro{soft light} \\
+  \blendmodeexample{difference} & \macro{difference} \\
+  \blendmodeexample{exclusion} & \macro{exclusion} \\
+  \blendmodeexample{saturation} & \macro{saturation} \\
+  \blendmodeexample{color} & \macro{color} \\
+  \blendmodeexample{hue} & \macro{hue} \\
+  \blendmodeexample{luminosity} & \macro{luminosity} \\
   \bottomrule
 \end{longtable}
 
