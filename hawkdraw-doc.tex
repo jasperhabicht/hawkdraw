@@ -12,8 +12,8 @@
 %
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
-\def\hawkdrawfileversion{0.4.0}
-\def\hawkdrawfiledate{1 July 2026}
+\def\hawkdrawfileversion{0.4.1}
+\def\hawkdrawfiledate{5 July 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -292,6 +292,7 @@
 \changes{v0.3.0}{2026/06/17}{Adding option to offset paths; fixing a bug with positioning of points on arcs.}
 \changes{v0.3.1}{2026/06/24}{Allowing for multiple softpath manipulations; improved offset mechanism; added arrow tips and patterns.}
 \changes{v0.4.0}{2026/07/01}{Adding shadings, opacity groups, blend modes and soft masks; adding support for referencing anchors of nodes by degree.}
+\changes{v0.4.1}{2026/07/05}{Enhacing pattern support.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -1716,7 +1717,7 @@ Note that in order to be able to use patterns, \macro{\DocumentMetadata{}} needs
 \begin{macrodef}
 !path/!|pattern|={<string>}
 \end{macrodef}
-The option \macro{pattern} fills the current path with a pattern. The key takes as value a string representing the name of the relevant pattern.
+The option \macro{pattern} fills the current path with a pattern. The key takes as value a string representing the name of the relevant pattern. It is possible to additionally set a color as fill to the same path.
 
 \begin{macrodef}
 !path/!|pattern style set|={<options>}
