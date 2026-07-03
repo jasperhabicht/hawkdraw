@@ -12,7 +12,16 @@
 %
 % BOF
 
-% v0.4.0 2026-07-01
+% v0.4.1 2026-07-05
+
+% For opacity groups, the relevant scope is grabbed and stored in an XObject, setting the opacity inside
+
+% To improve rendering speed, we make use of PDF /Pattern objects. To this end, we first create an PDF
+% XObject from the pattern (unique to pattern type and options) which can be reused. Upon use, a new PDF
+% Object is created with the required /Pattern attributes and with the XObject in the stream (via Do).
+% The pattern is then linked to the page attributes, And a literal is added into the code for the
+% postaction to the path. This makes it possible to use a fill and a pattern together, which otherwise
+% is not possible as PDF handles a /Pattern as fill.
 
 \msg_new:nnn { hawkdraw } { pattern-unknown } {
     Pattern ~ `#1` ~ unknown.
@@ -72,8 +81,6 @@
         \hawkdraw_support_pdflastxform:
     }
 }
-
-% no pattern shown, unsure why.
 
 \cs_new_protected:Npn \hawkdraw_pattern_use:nn #1#2 {
     \prop_if_in:NnF \g_hawkdraw_pattern_default_keys_prop {#1} {
