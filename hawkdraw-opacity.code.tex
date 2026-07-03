@@ -294,7 +294,7 @@
 
 \cs_new_protected:Npn \hawkdraw_blendmode_stack_pop: {
     \hawkdraw_support_pdfcolorstack:e {
-        \int_use:N \c__hawkdraw_blendmode_stack_int ~ pop ~ { }
+        \int_use:N \c__hawkdraw_blendmode_stack_int ~ pop \scan_stop:
     }
 }
 

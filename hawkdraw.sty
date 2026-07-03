@@ -804,8 +804,10 @@
 
 % ===
 
-\hook_new_pair:nn { hawkdraw / options / before } { hawkdraw / options / after }
+\hook_new_pair:nn { hawkdraw / picture / begin } { hawkdraw / picture / end }
+\hook_new_pair:nn { hawkdraw / scope / begin } { hawkdraw / scope / end }
 \hook_new_pair:nn { hawkdraw / path / begin } { hawkdraw / path / end }
+\hook_new_pair:nn { hawkdraw / options / before } { hawkdraw / options / after }
 
 \cs_new_protected:Npn \hawkdraw_path:w #1 ; {
     \fp_set:Nn \l__hawkdraw_point_o_fp { ( 0pt , 0pt ) }
@@ -1434,6 +1436,7 @@
     }
     \NewDocumentEnvironment { scope } { O{} +b } {
         \draw_scope_begin:
+            \hook_use:n { hawkdraw / scope / begin }
             \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
             \keys_set_known:nnN { hawkdraw / scope } {##1}
                 \l__hawkdraw_keys_unprocessed_clist
@@ -1449,6 +1452,7 @@
             \tl_if_empty:NF \l_hawkdraw_scope_layer_tl {
                 \draw_layer_end:
             }
+            \hook_use:n { hawkdraw / scope / end }
         \draw_scope_end:
     }
     \fp_set:Nn \l_hawkdraw_picture_baseline_fp { nan }
@@ -1458,6 +1462,7 @@
     \tag_suspend:n { hawkdraw / picture }
     \nullfont
     \draw_begin:
+        \hook_use:n { hawkdraw / picture / begin }
         \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
         \keys_set_known:nnN { hawkdraw / picture } {#1}
             \l__hawkdraw_keys_unprocessed_clist
@@ -1486,6 +1491,7 @@
             \bool_set_false:N \l_draw_bb_update_bool
         }
 } {
+        \hook_use:n { hawkdraw / picture / end }
     \draw_end:
     \tag_resume:n { hawkdraw / picture }
     \tag_socket_use:nn { hawkdraw / picture / end } {

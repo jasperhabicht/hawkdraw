@@ -14,87 +14,6 @@
 
 % v0.4.0 2026-07-01
 
-% =====
-
-% Text rendering
-
-% ===
-
-\tl_new:N \l_hawkdraw_text_render_mode_tl
-
-\keys_define:nn { hawkdraw / text } {
-    render ~ mode           .tl_set:N       = \l_hawkdraw_text_render_mode_tl ,
-    render ~ mode           .initial:n      = { fill } ,
-}
-
-\prop_const_from_keyval:Nn \c__hawkdraw_text_render_prop {
-    fill                 = 0 ,
-    stroke               = 1 ,
-    fill ~ stroke        = 2 ,
-    none                 = 3 ,
-    fill ~ clip          = 4 ,
-    stroke ~ clip        = 5 ,
-    fill ~ stroke ~ clip = 6 ,
-    clip                 = 7 ,
-}
-
-\cs_new_protected:Npn \hawkdraw_text_render_init_check: {
-    \str_if_eq:VnF \l_hawkdraw_text_render_mode_tl { fill } {
-        \int_const:Nn \c__hawkdraw_text_render_stack_int {
-            \hawkdraw_support_pdfcolorstackinit:n {
-                page ~ direct ~ {
-                    0 ~ Tr ~
-                }
-            }
-        }
-    }
-}
-
-\cs_new_protected:Npn \hawkdraw_text_render_stack_push:n #1 {
-    \int_if_exist:NF \c__hawkdraw_text_render_stack_int {
-        \hawkdraw_text_render_init_check:
-    }
-    \int_if_exist:NT \c__hawkdraw_text_render_stack_int {
-        \hawkdraw_support_pdfcolorstack:e {
-            \int_use:N \c__hawkdraw_text_render_stack_int ~ push ~ {
-                \prop_item:Nn \c__hawkdraw_text_render_prop {#1} ~ Tr ~
-            }
-        }
-    }
-}
-\cs_generate_variant:Nn \hawkdraw_text_render_stack_push:n { V }
-
-\cs_new_protected:Npn \hawkdraw_text_render_stack_pop: {
-    \int_if_exist:NT \c__hawkdraw_text_render_stack_int {
-        \hawkdraw_support_pdfcolorstack:e {
-            \int_use:N \c__hawkdraw_text_render_stack_int ~ pop ~ { }
-        }
-    }
-}
-
-% Inserts something at the end if `stroke' is set
-% Using clip inside node does not result in clipping (same with `pdfrender'). Why? Keep like that?
-% Should this functionality be incorporated into `node`? This way text could be placed freely.
-
-\NewDocumentCommand { \hawkdrawtext } { O{} +m } {
-    \group_begin:
-        \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
-        \keys_set_known:nnN { hawkdraw / path } {#1}
-            \l__hawkdraw_keys_unprocessed_clist
-        \keys_set:nV { hawkdraw / text }
-            \l__hawkdraw_keys_unprocessed_clist
-        \hawkdraw_text_render_stack_push:V \l_hawkdraw_text_render_mode_tl
-        #2
-        \hawkdraw_text_render_stack_pop:
-    \group_end:
-}
-
-% =====
-
-% Nodes
-
-% ===
-
 \msg_new:nnn { hawkdraw } { node-unknown } {
     Node ~ frame ~ `#1` ~ unknown.
 }
@@ -157,8 +76,8 @@
 \dim_new:N \l_hawkdraw_node_padding_right_dim
 \dim_new:N \l_hawkdraw_node_padding_top_dim
 \dim_new:N \l_hawkdraw_node_padding_bottom_dim
-\tl_new:N \l_hawkdraw_node_color_text_tl
-\fp_new:N \l_hawkdraw_node_opacity_text_fp
+\tl_new:N \l_hawkdraw_node_text_render_mode_tl
+\tl_new:N \l_hawkdraw_node_text_render_mode_scope_tl
 \tl_new:N \l_hawkdraw_node_frame_tl
 \bool_new:N \l_hawkdraw_node_sloped_bool
 \bool_new:N \l_hawkdraw_node_flipped_bool
@@ -178,10 +97,31 @@
     } ,
     padding                 .clist_set:N    = \l_hawkdraw_node_padding_clist ,
     padding                 .initial:n      = { 5pt } ,
-    color ~ text            .tl_set:N       = \l_hawkdraw_node_color_text_tl ,
-    color ~ text            .initial:n      = { . } ,
-    opacity ~ text          .fp_set:N       = \l_hawkdraw_node_opacity_text_fp ,
-    opacity ~ text          .initial:n      = { 1 } ,
+    text ~ render ~ mode    .tl_set:N       = \l_hawkdraw_node_text_render_mode_tl ,
+    text ~ render ~ mode ~ scope
+                            .choice: ,
+    text ~ render ~ mode ~ scope / node
+                            .code:n         = {
+        \tl_set:Nn \l_hawkdraw_node_text_render_mode_scope_tl { node }
+    } ,
+    text ~ render ~ mode ~ scope / path
+                            .code:n         = {
+        \tl_set:Nn \l_hawkdraw_node_text_render_mode_scope_tl { path }
+    } ,
+    text ~ render ~ mode ~ scope / scope
+                            .code:n         = {
+        \tl_set:Nn \l_hawkdraw_node_text_render_mode_scope_tl { scope }
+    } ,
+    text ~ render ~ mode ~ scope / picture
+                            .code:n         = {
+        \tl_set:Nn \l_hawkdraw_node_text_render_mode_scope_tl { picture }
+    } ,
+    text ~ render ~ mode ~ scope
+                            .initial:n      = { node } ,
+    text ~ style ~ set      .clist_set:N    = \l_hawkdraw_node_text_keys_clist ,
+    text ~ style ~ add      .code:n         = {
+        \clist_put_right:Nn \l_hawkdraw_node_text_keys_clist {#1}
+    } ,
     frame                   .tl_set:N       = \l_hawkdraw_node_frame_tl ,
     frame                   .initial:n      = { rectangle } ,
     sloped                  .bool_set:N     = \l_hawkdraw_node_sloped_bool ,
@@ -194,6 +134,70 @@
 
 \hawkdraw_operator_construct_arg:nN { node } \hawkdraw_node:nn
 
+% ===
+
+\prop_const_from_keyval:Nn \c__hawkdraw_node_text_render_mode_prop {
+    fill                 = 0 ,
+    stroke               = 1 ,
+    fill ~ stroke        = 2 ,
+    none                 = 3 ,
+    fill ~ clip          = 4 ,
+    stroke ~ clip        = 5 ,
+    fill ~ stroke ~ clip = 6 ,
+    clip                 = 7 ,
+}
+
+\cs_new_protected:Npn \hawkdraw_node_text_render_mode_stack_init: {
+    \str_if_eq:VnF \l_hawkdraw_node_text_render_mode_tl { fill } {
+        \int_const:Nn \c__hawkdraw_node_text_render_mode_stack_int {
+            \hawkdraw_support_pdfcolorstackinit:n {
+                page ~ direct ~ {
+                    0 ~ Tr ~
+                }
+            }
+        }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_node_text_render_mode_stack_push:n #1 {
+    \int_if_exist:NF \c__hawkdraw_node_text_render_mode_stack_int {
+        \hawkdraw_node_text_render_mode_stack_init:
+    }
+    \int_if_exist:NT \c__hawkdraw_node_text_render_mode_stack_int {
+        \hawkdraw_support_pdfcolorstack:e {
+            \int_use:N \c__hawkdraw_node_text_render_mode_stack_int ~ push ~ {
+                \prop_item:Nn \c__hawkdraw_node_text_render_mode_prop {#1} ~ Tr ~
+            }
+        }
+    }
+}
+\cs_generate_variant:Nn \hawkdraw_node_text_render_mode_stack_push:n { V }
+
+\cs_new_protected:Npn \hawkdraw_node_text_render_mode_stack_pop: {
+    \int_if_exist:NT \c__hawkdraw_node_text_render_mode_stack_int {
+        \hawkdraw_support_pdfcolorstack:e {
+            \int_use:N \c__hawkdraw_node_text_render_mode_stack_int ~ pop \scan_stop:
+        }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_node_text_render_apply: {
+    \prop_if_in:NVT \c__hawkdraw_node_text_render_mode_prop
+        \l_hawkdraw_node_text_render_mode_tl {
+        \hawkdraw_node_text_render_mode_stack_push:V
+            \l_hawkdraw_node_text_render_mode_tl
+
+        \hook_gput_next_code:nn {
+            hawkdraw / \l_hawkdraw_node_text_render_mode_scope_tl / end
+        } {
+            \hawkdraw_node_text_render_mode_stack_pop:
+        }
+    }
+
+}
+
+% ===
+
 \cs_new_protected:Npn \hawkdraw_node_contents:n #1 {
     \tag_socket_use:n { hawkdraw / node / contents / begin }
     \cctab_select:N \c_document_cctab
@@ -202,9 +206,10 @@
             \char_set_catcode_active:n {##1}
         }
     }
-    \color_select:e { \l_hawkdraw_node_color_text_tl }
-    \opacity_select:V \l_hawkdraw_node_opacity_text_fp
     \normalfont
+    \keys_set:nV { hawkdraw / path } \l_hawkdraw_node_text_keys_clist
+    \hawkdraw_path_set_options:
+    \hawkdraw_node_text_render_apply:
     \hook_use:n { hawkdraw / node / begin }
     \bool_if:NTF \l_hawkdraw_node_rescan_bool {
         \tl_rescan:nn { } {#1}
