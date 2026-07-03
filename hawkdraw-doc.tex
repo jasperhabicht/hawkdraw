@@ -1714,9 +1714,9 @@ If the boolean option \macro{flipped} is set, the arrow head is rotated to the o
 Note that in order to be able to use patterns, \macro{\DocumentMetadata{}} needs to be set.
 
 \begin{macrodef}
-!path/!|fill pattern|={<string>}
+!path/!|pattern|={<string>}
 \end{macrodef}
-The option \macro{fill pattern} sets a fill pattern for the current path. The key takes as value a string representing the name of the relevant pattern.
+The option \macro{pattern} fills the current path with a pattern. The key takes as value a string representing the name of the relevant pattern.
 
 \begin{macrodef}
 !path/!|pattern style set|={<options>}
@@ -1732,7 +1732,7 @@ The option \macro{pattern tile size} accepts a tuple of two dimensions represent
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \path[
-    fill pattern={dots},
+    pattern={dots},
     pattern style set={color fill=blue}
   ]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
@@ -1743,7 +1743,7 @@ The following patterns are available:
 
 \NewDocumentCommand{\patternexample}{ m }{%
   \begin{hawkdraw}[baseline={0.5ex}]
-    \path[fill pattern={#1}]
+    \path[pattern={#1}]
       (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
   \end{hawkdraw}%
 }
@@ -1835,7 +1835,7 @@ The option \macro{soft mask use} applies a soft mask of the current scope. The o
     soft mask use={custom}
   ]
     \path[
-      fill shading={radial},
+      shading={radial},
       shading colors={red,blue,green}
     ] (0cm,0cm) circle[radius={0.75cm}] ;
   \end{scope}
@@ -1903,9 +1903,9 @@ The following blend modes are available:
 \subsection{Linear and radial shadings}
 
 \begin{macrodef}
-!path/!|fill shading|={<string>}
+!path/!|shading|={<string>}
 \end{macrodef}
-The option \macro{fill shading} sets a fill shading for the current path. The key takes as value a string representing the name of the relevant shading. Note that a shading is placed behind the path and therefore, an additional fill will cover the shading.
+The option \macro{shading} fills the current path with a shading. The key takes as value a string representing the name of the relevant shading. Note that a shading is placed behind the path and therefore, an additional fill or pattern will cover the shading.
 
 \begin{macrodef}
 !path/!|shading colors|={<clist>}
@@ -1925,7 +1925,7 @@ The option \macro{shading offset} accepts a unit-less floating-point number rang
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \path[
-    fill shading={radial},
+    shading={radial},
     shading colors={white,blue},
     shading offset={0.5},
     shading rotate={135}
@@ -1941,7 +1941,7 @@ The option \macro{shading circular} sets radial shadings to be circular instead 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \path[
-    fill shading={radial},
+    shading={radial},
     shading colors={red,blue,green},
     shading circular
   ] (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
@@ -1952,7 +1952,7 @@ The following shadings are available:
 
 \NewDocumentCommand{\shadingexample}{ m }{%
   \begin{hawkdraw}[baseline={0.5ex}]
-    \path[fill shading={#1}, shading colors={red,blue,green}]
+    \path[shading={#1}, shading colors={red,blue,green}]
       (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
   \end{hawkdraw}%
 }

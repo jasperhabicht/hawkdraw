@@ -284,14 +284,6 @@
 
 \clist_new:N \c__hawkdraw_blendmode_active_clist
 
-\int_const:Nn \c__hawkdraw_blendmode_stack_int {
-    \hawkdraw_support_pdfcolorstackinit:n {
-        page ~ direct ~ {
-            /hawkdraw Blendmode Normal ~ gs
-        }
-    }
-}
-
 \cs_new_protected:Npn \hawkdraw_blendmode_stack_push:n #1 {
     \hawkdraw_support_pdfcolorstack:e {
         \int_use:N \c__hawkdraw_blendmode_stack_int ~ push ~ {
@@ -307,6 +299,15 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_blendmode_set:nn #1#2 {
+    \int_if_exist:NF \c__hawkdraw_blendmode_stack_int {
+        \int_const:Nn \c__hawkdraw_blendmode_stack_int {
+            \hawkdraw_support_pdfcolorstackinit:n {
+                page ~ direct ~ {
+                    /hawkdraw Blendmode Normal ~ gs
+                }
+            }
+        }
+    }
     \prop_if_in:NnTF \c__hawkdraw_blendmode_prop {#1} {
         \clist_if_in:NnF \c__hawkdraw_blendmode_active_clist { normal } {
             \pdfmanagement_add:nnn {
