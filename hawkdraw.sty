@@ -436,8 +436,12 @@
 
 \cs_new_protected:Npn \hawkdraw_path_set_options: {
     \hook_use:n { hawkdraw / options / before }
-    \color_stroke:e { \l_hawkdraw_path_color_stroke_tl }
-    \color_fill:e { \l_hawkdraw_path_color_fill_tl }
+    \tl_if_eq:NnF \l_hawkdraw_path_color_stroke_tl { . } {
+        \color_stroke:e { \l_hawkdraw_path_color_stroke_tl }
+    }
+    \tl_if_eq:NnF \l_hawkdraw_path_color_fill_tl { . } {
+        \color_fill:e { \l_hawkdraw_path_color_fill_tl }
+    }
     \opacity_stroke:V \l_hawkdraw_path_opacity_stroke_fp
     \opacity_fill:V \l_hawkdraw_path_opacity_fill_fp
     \draw_set_linewidth:V \l_hawkdraw_path_linewidth_dim
@@ -855,9 +859,16 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_path_sanitize:N #1 {
-    \tl_if_head_eq_meaning:VNF #1 \hawkdraw_softpath_moveto_op:nn {
-        \tl_put_left:Nn #1 {
-            \hawkdraw_softpath_moveto_op:nn { 0pt } { 0pt }
+    \bool_lazy_any:nT {
+        { \tl_if_head_eq_meaning_p:VN #1 \hawkdraw_softpath_lineto_op:nn }
+        { \tl_if_head_eq_meaning_p:VN #1 \hawkdraw_softpath_curveto_opi:nn }
+        { \tl_if_head_eq_meaning_p:VN #1 \hawkdraw_softpath_arc_opi:nn }
+        { \tl_if_head_eq_meaning_p:VN #1 \hawkdraw_softpath_arc_axes_opi:nn }
+    } {
+        \tl_if_head_eq_meaning:VNF #1 \hawkdraw_softpath_moveto_op:nn {
+            \tl_put_left:Nn #1 {
+                \hawkdraw_softpath_moveto_op:nn { 0pt } { 0pt }
+            }
         }
     }
 }
