@@ -103,7 +103,7 @@
 
 \cs_generate_variant:Nn \color_export:nnN { e }
 
-\cs_new_protected:Npn \hawkdraw_shading_set:nn #1#2 {
+\cs_new_protected:Npn \hawkdraw_shading_set:nnn #1#2#3 {
     \hbox_set_to_wd:Nnn \l__hawkdraw_shading_object_box { 100bp } {
         \vbox_to_ht:nn { 100bp } {
             \skip_vertical:n { 0pt plus 1fil }
@@ -116,6 +116,11 @@
             /Sh ~ << ~
                 #2
             >> ~
+            \tl_if_empty:nF {#3} {
+                stream ~
+                #3 ~
+                endstream ~
+            }
         >>
     } \l__hawkdraw_shading_object_box
     \int_const:cn {
@@ -300,7 +305,7 @@
         \hawkdraw_shading_color_set_values:Nn
             \l__hawkdraw_shading_color_values_clist
             {#1}
-        \hawkdraw_shading_set:nn {
+        \hawkdraw_shading_set:nnn {
             linear
             . #1
         } {
@@ -325,7 +330,7 @@
                     }
                 ] ~
             >> ~
-        }
+        } { }
     }
 }
 
@@ -391,7 +396,7 @@
         \hawkdraw_shading_color_set_values:Nn
             \l__hawkdraw_shading_color_values_clist
             {#1}
-        \hawkdraw_shading_set:nn {
+        \hawkdraw_shading_set:nnn {
             radial
             . #1
             . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
@@ -422,7 +427,7 @@
                     }
                 ] ~
             >> ~
-        }
+        } { }
     }
 }
 
