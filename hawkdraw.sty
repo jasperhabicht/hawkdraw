@@ -804,10 +804,9 @@
 
 % ===
 
-\hook_new_pair:nn { hawkdraw / picture / begin } { hawkdraw / picture / end }
-\hook_new_pair:nn { hawkdraw / scope / begin } { hawkdraw / scope / end }
-\hook_new_pair:nn { hawkdraw / path / begin } { hawkdraw / path / end }
 \hook_new_pair:nn { hawkdraw / options / before } { hawkdraw / options / after }
+\hook_new_pair:nn { hawkdraw / path / begin } { hawkdraw / path / end }
+\hook_new_pair:nn { hawkdraw / scope / begin } { hawkdraw / scope / end }
 
 \cs_new_protected:Npn \hawkdraw_path:w #1 ; {
     \fp_set:Nn \l__hawkdraw_point_o_fp { ( 0pt , 0pt ) }
@@ -1462,7 +1461,6 @@
     \tag_suspend:n { hawkdraw / picture }
     \nullfont
     \draw_begin:
-        \hook_use:n { hawkdraw / picture / begin }
         \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
         \keys_set_known:nnN { hawkdraw / picture } {#1}
             \l__hawkdraw_keys_unprocessed_clist
@@ -1491,7 +1489,6 @@
             \bool_set_false:N \l_draw_bb_update_bool
         }
 } {
-        \hook_use:n { hawkdraw / picture / end }
     \draw_end:
     \tag_resume:n { hawkdraw / picture }
     \tag_socket_use:nn { hawkdraw / picture / end } {
