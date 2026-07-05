@@ -111,16 +111,28 @@
         }
         \skip_horizontal:n { 0pt plus 1fil }
     }
+    \pdf_object_new:n {
+        hawkdraw_shading_ #1 
+    }
+    \tl_if_empty:nTF {#3} {
+        \pdf_object_write:nne {
+            hawkdraw_shading_ #1 
+        } { dict } {
+            #2
+        }
+    } {
+        pdf_object_write:nne {
+            hawkdraw_shading_ #1 
+        } { stream } {
+            {#2} {#3}
+        }
+    }
     \hawkdraw_support_pdfxform:nnN { } {
         /Shading ~ << ~
-            /Sh ~ << ~
-                #2
-            >> ~
-            \tl_if_empty:nF {#3} {
-                stream ~
-                #3 ~
-                endstream ~
-            }
+            /Sh ~
+            \pdf_object_ref:n {
+                hawkdraw_shading_ #1 
+            } ~
         >>
     } \l__hawkdraw_shading_object_box
     \int_const:cn {
@@ -137,6 +149,7 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_shading_color_set_values:Nn #1#2 {
+    \clist_clear:N #1
     \clist_map_inline:nn {#2} {
         \color_export:enN {##1} { space-sep-rgb }
             \l__hawkdraw_shading_color_value_tmp_tl
