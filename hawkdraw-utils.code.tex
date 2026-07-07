@@ -96,6 +96,36 @@
 
 % ===
 
+\cs_new:Npn \hawkdraw_hex_to_binary:n #1 {
+    \__hawkdraw_hex_to_binary:w #1 \q_stop
+}
+\cs_generate_variant:Nn \hawkdraw_hex_to_binary:n { e }
+
+\cs_new:Npn \__hawkdraw_hex_to_binary:w #1 \q_stop {
+     \__hawkdraw_hex_to_binary:NNw #1 \q_stop
+}
+
+\cs_new:Npn \__hawkdraw_hex_to_binary:NNw #1#2#3 \q_stop {
+    \sys_if_engine_luatex:T {
+        \lua_now:e {
+            token.put_next (
+                token.new (
+                    0x110000 + \int_eval:n { " #1#2 } ,
+                    12
+                )
+            )
+        }
+    }
+    \sys_if_engine_pdftex:T {
+        \char_generate:nn { " #1#2 } { 12 }
+    }
+    \tl_if_empty:nF {#3} {
+        \__hawkdraw_hex_to_binary:w #3 \q_stop
+    }
+}
+
+% ===
+
 \cs_new:Npn \__hawkdraw_tuple_use_i:w ( #1 , #2 ) {#1}
 \cs_new:Npn \hawkdraw_tuple_use_i:n #1 {
     \fp_to_dim:n {
