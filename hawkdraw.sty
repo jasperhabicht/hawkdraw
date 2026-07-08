@@ -10,7 +10,7 @@
 %
 % This work has the LPPL maintenance status `maintained'.
 %
-\ProvidesExplPackage {hawkdraw} {2026-07-05} {0.4.1}
+\ProvidesExplPackage {hawkdraw} {2026-07-08} {0.4.1}
     {A package for drawing vector graphics with the l3draw package and a TikZ-like syntax.}
 
 \msg_new:nnn { hawkdraw } { old-kernel } {
@@ -258,6 +258,7 @@
 
 \clist_new:N \l_hawkdraw_picture_bb_clist
 \fp_new:N \l_hawkdraw_picture_baseline_fp
+\tl_new:N \l_hawkdraw_picture_color_space_tl
 
 \tl_new:N \l_hawkdraw_path_preactions_tl
 \tl_new:N \l_hawkdraw_path_postactions_tl
@@ -436,8 +437,12 @@
 
 \cs_new_protected:Npn \hawkdraw_path_set_options: {
     \hook_use:n { hawkdraw / options / before }
-    \color_stroke:e { \l_hawkdraw_path_color_stroke_tl }
-    \color_fill:e { \l_hawkdraw_path_color_fill_tl }
+    \tl_if_eq:NnF \l_hawkdraw_path_color_stroke_tl { . } {
+        \color_stroke:e { \l_hawkdraw_path_color_stroke_tl }
+    }
+    \tl_if_eq:NnF \l_hawkdraw_path_color_fill_tl { . } {
+        \color_fill:e { \l_hawkdraw_path_color_fill_tl }
+    }
     \opacity_stroke:V \l_hawkdraw_path_opacity_stroke_fp
     \opacity_fill:V \l_hawkdraw_path_opacity_fill_fp
     \draw_set_linewidth:V \l_hawkdraw_path_linewidth_dim
@@ -855,9 +860,16 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_path_sanitize:N #1 {
-    \tl_if_head_eq_meaning:VNF #1 \hawkdraw_softpath_moveto_op:nn {
-        \tl_put_left:Nn #1 {
-            \hawkdraw_softpath_moveto_op:nn { 0pt } { 0pt }
+    \bool_lazy_any:nT {
+        { \tl_if_head_eq_meaning_p:VN #1 \hawkdraw_softpath_lineto_op:nn }
+        { \tl_if_head_eq_meaning_p:VN #1 \hawkdraw_softpath_curveto_opi:nn }
+        { \tl_if_head_eq_meaning_p:VN #1 \hawkdraw_softpath_arc_opi:nn }
+        { \tl_if_head_eq_meaning_p:VN #1 \hawkdraw_softpath_arc_axes_opi:nn }
+    } {
+        \tl_if_head_eq_meaning:VNF #1 \hawkdraw_softpath_moveto_op:nn {
+            \tl_put_left:Nn #1 {
+                \hawkdraw_softpath_moveto_op:nn { 0pt } { 0pt }
+            }
         }
     }
 }
@@ -1330,7 +1342,20 @@
     } ,
     overlay                 .meta:n         = {
         bounding ~ box = { zero }
-    }
+    } ,
+    color ~ space           .choice: ,
+    color ~ space / gray    .code:n         = {
+        \tl_set:Nn \l_hawkdraw_picture_color_space_tl { gray }
+        \tl_set:Nn \l_color_fixed_model_tl { gray }
+    } ,
+    color ~ space / rgb     .code:n         = {
+        \tl_set:Nn \l_hawkdraw_picture_color_space_tl { rgb }
+        \tl_set:Nn \l_color_fixed_model_tl { rgb }
+    } ,
+    color ~ space / cmyk    .code:n         = {
+        \tl_set:Nn \l_hawkdraw_picture_color_space_tl { cmyk }
+        \tl_set:Nn \l_color_fixed_model_tl { cmyk }
+    } ,
 }
 
 \cs_new_protected:Npn \hawkdraw_scope_use:n #1 {#1}

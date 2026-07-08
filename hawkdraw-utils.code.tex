@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.4.1 2026-07-05
+% v0.4.1 2026-07-08
 
 \cs_new_protected:Npn \hawkdraw_support_pdfliteral:n #1 {
     \sys_if_engine_luatex:T {
@@ -92,6 +92,71 @@
             \tex_pdfcolorstackinit:D ~ #1
         }
     } { 0 }
+}
+
+% ===
+
+% #1 : gray
+% #2 : rgb
+% #3 : cmyk
+\cs_new:Npn \hawkdraw_case_color_space:nnn #1#2#3 {
+    \str_case:NnF \l_hawkdraw_picture_color_space_tl {
+        { gray } {#1}
+        { rgb } {#2}
+        { cmyk } {#3}
+    } {#2}
+}
+
+% ===
+
+\cs_new:Npn \hawkdraw_color_pdf_to_hex:n #1 {
+    \exp_last_unbraced:Ne
+    \__hawkdraw_color_pdf_to_hex_aux:w { #1 \c_space_tl \exp_not:N \q_stop }
+}
+\cs_generate_variant:Nn \hawkdraw_color_pdf_to_hex:n { e }
+
+\__hawkdraw_exp_last_unbraced:NNe
+\cs_new:Npn \__hawkdraw_color_pdf_to_hex_aux:w { #1 \c_space_tl #2 \exp_not:N \q_stop } {
+    \__hawkdraw_color_pdf_to_hex_auxi:n {#1}
+    \tl_if_empty:nF {#2} {
+        \__hawkdraw_color_pdf_to_hex_aux:w #2 \q_stop
+    }
+}
+
+\cs_new:Npn \__hawkdraw_color_pdf_to_hex_auxi:n #1 {
+    \int_format:nn {
+        \fp_to_int:n { #1 * 255 }
+    } { 0>2X }
+}
+
+% ===
+
+\cs_new:Npn \hawkdraw_hex_to_binary:n #1 {
+    \__hawkdraw_hex_to_binary:w #1 \q_stop
+}
+\cs_generate_variant:Nn \hawkdraw_hex_to_binary:n { e }
+
+\cs_new:Npn \__hawkdraw_hex_to_binary:w #1 \q_stop {
+     \__hawkdraw_hex_to_binary:NNw #1 \q_stop
+}
+
+\cs_new:Npn \__hawkdraw_hex_to_binary:NNw #1#2#3 \q_stop {
+    \sys_if_engine_luatex:T {
+        \lua_now:e {
+            token.put_next (
+                token.new (
+                    0x110000 + \int_eval:n { " #1#2 } ,
+                    12
+                )
+            )
+        }
+    }
+    \sys_if_engine_pdftex:T {
+        \char_generate:nn { " #1#2 } { 12 }
+    }
+    \tl_if_empty:nF {#3} {
+        \__hawkdraw_hex_to_binary:w #3 \q_stop
+    }
 }
 
 % ===
