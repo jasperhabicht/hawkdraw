@@ -471,9 +471,10 @@
 % means that the path direction of every second patch needs to be reversed. Since we don't need a lot of
 % patches to create a conic shading, we just use flag-0 patches only.
 
-% We need to output a binary stream. Although it is theoretically possinle to output a hex stream and set the
-% relevant /Filter. But when PDFLaTeX compresses the streams, it simply appends a /Filter entry to the
-% attributes of the PDF object without taking into account of other filters which results in faulty syntax.
+% We need to output a binary stream. It is theoretically possinle to output a hex stream and set the relevant
+% /Filter, but when PDFTeX compresses the stream, it simply appends a /Filter entry to the attributes of the
+% PDF object without taking into account an already existing /Filter entry which results in faulty syntax.
+% We need different approaches to output such a stream for PDFTeX and LuaTeX.
 
 \cs_new_protected:Npn \hawkdraw_shading_conic_stream:N #1 {
     \tl_set:Ne #1 {
@@ -490,7 +491,7 @@
     \int_compare:nNnF {#1} = { 1 } {
         % flag (4 bits)
         \hawkdraw_hex_to_binary:n { 00 }
-        % patch is pie segment going from 0 to 360 / ( n * 4 )
+        % patch is pie segment going from 0 deg to 360 / ( n * 4 ) deg
         % points (12 points, 2 * 16 bits each)
         \prg_replicate:nn { 2 } {
             \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
@@ -521,7 +522,7 @@
         \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
             360 / ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
         }
-        % colors (4 colors, 3 * 8 bits each)
+        % colors (4 colors, 3 * 8 bits each for RGB)
         \hawkdraw_hex_to_binary:e {
             \hawkdraw_color_pdf_to_hex:e {
                 \seq_item:Nn \l__hawkdraw_shading_color_values_seq { #1 - 1 }
@@ -579,7 +580,7 @@
         } {
             \__hawkdraw_shading_color_set_value:Nnnn #1 {
                 \fp_to_decimal:n {
-                    0.75 * \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 } +
+                    0.75 * \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 } +
                     0.25 * ##2
                 }
             } {
@@ -591,7 +592,7 @@
             }
             \__hawkdraw_shading_color_set_value:Nnnn #1 {
                 \fp_to_decimal:n {
-                    0.5 * \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 } +
+                    0.5 * \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 } +
                     0.5 * ##2
                 }
             } {
@@ -603,7 +604,7 @@
             }
             \__hawkdraw_shading_color_set_value:Nnnn #1 {
                 \fp_to_decimal:n {
-                    0.25 * \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 } +
+                    0.25 * \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 } +
                     0.75 * ##2
                 }
             } {
