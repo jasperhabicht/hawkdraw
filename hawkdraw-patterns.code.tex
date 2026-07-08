@@ -333,4 +333,36 @@
     \draw_path_use_clear:n { stroke }
 }
 
+\hawkdraw_pattern_create:nnn { tikzduck } {
+    pattern ~ tile ~ size = {
+        22.25pt ,
+        22.25pt
+    }
+} {
+    \draw_transform_scale:n { 10 }
+    \color_select:nn { rgb } { 0.925 , 0.85 , 0.075 }
+    \draw_path_moveto:n { 0.513 , 1.145 }
+    \draw_path_curveto:nnn { 0.267 , 1.102 } { -0.125 , 0.657 } { 0.289 , 0.261 }
+    \draw_path_curveto:nnn { 0.704 , -0.135 } { 2.863 , 0.130 } { 1.818 , 1.419 }
+    \draw_path_curveto:nnn { 0.938 , 0.946 } { 1.240 , 1.379 } { 0.513 , 1.145 }
+    \draw_path_close:
+    \draw_path_ellipse:nnn { 0.90 , 1.50 } { 0.50 , 0 } { 0 , 0.625 }
+    \draw_path_use_clear:n { fill }
+    \color_select:nn { rgb } { 0.875 , 0.5 , 0.125 }
+    \draw_path_moveto:n { 0.406 , 1.472 }
+    \draw_path_curveto:nnn { 0.643 , 1.530 } { 0.541 , 1.303 } { 0.910 , 1.370 }
+    \draw_path_curveto:nnn { 0.083 , 0.850 } { 0.269 , 1.369 } { 0.406 , 1.472 }
+    \draw_path_close:
+    \draw_path_use_clear:n { fill }
+    \color_select:nn { rgb } { 1 , 1 , 0.85 }
+    \draw_transform_rotate:n { -20 }
+    \draw_path_ellipse:nnn { -0.06 , 1.74 } { 0.0786 , 0 } { 0 , 0.1143 }
+    \draw_path_ellipse:nnn { 0.23 , 1.7675 } { 0.0893 , 0 } { 0 , 0.125 }
+    \draw_path_use_clear:n { fill }
+    \color_select:nn { rgb } { 0 , 0 , 0 }
+    \draw_path_ellipse:nnn { -0.03 , 1.73 } { 0.0286 , 0 } { 0 , 0.0643 }
+    \draw_path_ellipse:nnn { 0.26 , 1.7575 } { 0.0357 , 0 } { 0 , 0.0714 }
+    \draw_path_use_clear:n { fill }
+}
+
 %EOF

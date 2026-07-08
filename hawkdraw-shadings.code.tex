@@ -127,7 +127,7 @@
         }
     }
     \hawkdraw_support_pdfxform:nnN { } {
-        % not need to set up a pattern dictionary
+        % no need to set up a pattern dictionary
         % because shadings are directly used via the sh operator
         /Shading ~ << ~
             /Sh ~
@@ -461,6 +461,19 @@
 }
 
 % ===
+
+% We use a Coons patch mesh for conic shadings where multiple circular-segment shaped patches form a circle.
+% Two corners of the patch are at the center of the circle, the other to at the outer border forming a curve.
+% We use four patches for each color in order to be able to generate a circle (or at least an approximation)
+% with only two colors. Therefore, we need to interpolate a few colors so we end up with 2n + 1 colors.
+
+% In theory we can use patches with different flags and reduce the size of the stream, but in practice this
+% means that the path direction of every second patch needs to be reversed. Since we don't need a lot of
+% patches to create a conic shading, we just use flag-0 patches only.
+
+% We need to output a binary stream. Although it is theoretically possinle to output a hex stream and set the
+% relevant /Filter. But when PDFLaTeX compresses the streams, it simply appends a /Filter entry to the
+% attributes of the PDF object without taking into account of other filters which results in faulty syntax.
 
 \cs_new_protected:Npn \hawkdraw_shading_conic_stream:N #1 {
     \tl_set:Ne #1 {
