@@ -258,6 +258,7 @@
 
 \clist_new:N \l_hawkdraw_picture_bb_clist
 \fp_new:N \l_hawkdraw_picture_baseline_fp
+\tl_new:N \l_hawkdraw_picture_color_space_tl
 
 \tl_new:N \l_hawkdraw_path_preactions_tl
 \tl_new:N \l_hawkdraw_path_postactions_tl
@@ -1341,7 +1342,8 @@
     } ,
     overlay                 .meta:n         = {
         bounding ~ box = { zero }
-    }
+    } ,
+    color ~ space           .tl_set:N       = \l_hawkdraw_picture_color_space_tl ,
 }
 
 \cs_new_protected:Npn \hawkdraw_scope_use:n #1 {#1}
