@@ -409,6 +409,13 @@ bar
 
 Note that the \macro{hawkdraw} environment sets all category codes to the default LaTeX category codes, but it collects all characters with category code \num{13} (active) and a character code between \num{32} and \num{127}, resets these to active inside nodes and rescans the node's contents to ensure proper output.
 
+\begin{macrodef}
+!picture/!|color space|={gray}
+!picture/!|color space|={rgb}
+!picture/!|color space|={cmyk}
+\end{macrodef}
+The option \macro{color space} sets the environment to be in a fixed color space, either grayscale, RGB or CMYK.
+
 \section{Scopes and layers}\label{sec:scopes}
 
 \begin{macrodef}

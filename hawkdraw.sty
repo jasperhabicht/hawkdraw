@@ -1343,7 +1343,19 @@
     overlay                 .meta:n         = {
         bounding ~ box = { zero }
     } ,
-    color ~ space           .tl_set:N       = \l_hawkdraw_picture_color_space_tl ,
+    color ~ space           .choice: ,
+    color ~ space / gray    .code:n         = {
+        \tl_set:Nn \l_hawkdraw_picture_color_space_tl { gray }
+        \tl_set:Nn \l_color_fixed_model_tl { gray }
+    } ,
+    color ~ space / rgb     .code:n         = {
+        \tl_set:Nn \l_hawkdraw_picture_color_space_tl { rgb }
+        \tl_set:Nn \l_color_fixed_model_tl { rgb }
+    } ,
+    color ~ space / cmyk    .code:n         = {
+        \tl_set:Nn \l_hawkdraw_picture_color_space_tl { cmyk }
+        \tl_set:Nn \l_color_fixed_model_tl { cmyk }
+    } ,
 }
 
 \cs_new_protected:Npn \hawkdraw_scope_use:n #1 {#1}
