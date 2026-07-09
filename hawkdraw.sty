@@ -258,7 +258,6 @@
 
 \clist_new:N \l_hawkdraw_picture_bb_clist
 \fp_new:N \l_hawkdraw_picture_baseline_fp
-\tl_new:N \l_hawkdraw_picture_color_space_tl
 
 \tl_new:N \l_hawkdraw_path_preactions_tl
 \tl_new:N \l_hawkdraw_path_postactions_tl
@@ -1345,15 +1344,12 @@
     } ,
     color ~ space           .choice: ,
     color ~ space / gray    .code:n         = {
-        \tl_set:Nn \l_hawkdraw_picture_color_space_tl { gray }
         \tl_set:Nn \l_color_fixed_model_tl { gray }
     } ,
     color ~ space / rgb     .code:n         = {
-        \tl_set:Nn \l_hawkdraw_picture_color_space_tl { rgb }
         \tl_set:Nn \l_color_fixed_model_tl { rgb }
     } ,
     color ~ space / cmyk    .code:n         = {
-        \tl_set:Nn \l_hawkdraw_picture_color_space_tl { cmyk }
         \tl_set:Nn \l_color_fixed_model_tl { cmyk }
     } ,
 }

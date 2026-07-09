@@ -14,6 +14,11 @@
 
 % v0.4.1 2026-07-08
 
+% The softpath mechanism detaches the drawing commands from the actual drawing and creates another layer of
+% commands that can be used to manipulate the output of the original drawing commands. This enables it to add
+% functionality such as shortening or offsetting paths. It also allows for other functions that are unrelated
+% to drawing such as measuring the length of a path.
+
 \tl_new:N \g_hawkdraw_softpath_original_tl
 
 % #1 , #2: x and y coordinate of first point of path

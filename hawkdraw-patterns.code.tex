@@ -14,8 +14,6 @@
 
 % v0.4.1 2026-07-08
 
-% For opacity groups, the relevant scope is grabbed and stored in an XObject, setting the opacity inside
-
 % To improve rendering speed, we make use of PDF /Pattern objects. To this end, we first create an PDF
 % XObject from the pattern (unique to pattern type and options) which can be reused. Upon use, a new PDF
 % Object is created with the required /Pattern attributes and with the XObject in the stream (via Do).
