@@ -59,6 +59,7 @@
 \cs_set:Npn \hawkdraw_scope_reset_bb_begin: {
     \draw_scope_begin:
         \__draw_scope_bb_begin:
+        \bool_set_true:N \l_draw_bb_update_bool
 }
 \cs_set:Npn \hawkdraw_scope_reset_bb_end: {
         \__draw_scope_bb_end:
@@ -365,12 +366,12 @@
 
 \cs_new:Npn \__hawkdraw_shading_radial_bounds:n #1 {
     \int_step_tokens:nn { \clist_count:n {#1} - 1 } {
-        \__hawkdraw_shading_radial_bounds_aux:nn { \clist_count:n {#1} }
+        \__hawkdraw_shading_radial_bounds_aux:nn { \clist_count:n {#1} - 1 }
     }
 }
 
 \cs_new:Npn \__hawkdraw_shading_radial_bounds_aux:nn #1#2 {
-    \fp_format:nn { ( 50 / ( #1 + 1 ) ) * ( #2 ) } { .3 } ~
+    \fp_format:nn { ( 25 / ( #1 ) ) * ( #2 ) } { .3 } ~
 }
 
 \cs_new:Npn \__hawkdraw_shading_radial_functions:n #1 {
