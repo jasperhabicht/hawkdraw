@@ -12,8 +12,8 @@
 %
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
-\def\hawkdrawfileversion{0.4.1}
-\def\hawkdrawfiledate{5 July 2026}
+\def\hawkdrawfileversion{0.4.2}
+\def\hawkdrawfiledate{13 July 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -293,6 +293,7 @@
 \changes{v0.3.1}{2026/06/24}{Allowing for multiple softpath manipulations; improved offset mechanism; added arrow tips and patterns.}
 \changes{v0.4.0}{2026/07/01}{Adding shadings, opacity groups, blend modes and soft masks; adding support for referencing anchors of nodes by degree.}
 \changes{v0.4.1}{2026/07/08}{Enhancing pattern support; adding conic shadings.}
+\changes{v0.4.2}{2026/07/13}{Fixing bug in grayscale conic shading; fixing bug in radial shading; adding angle delta option to conic shadings.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -1950,6 +1951,21 @@ The option \macro{shading circular} sets radial shadings to be circular instead 
     shading={radial},
     shading colors={red,blue,green},
     shading circular
+  ] (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{macrodef}
+!path/!|shading angle delta|={<float>}
+\end{macrodef}
+The option \macro{shading angle delta} sets conic shadings to only extend to the unit-less floating-point number as degrees given as value to the option. Per default, conic shadings will extend from \num{0} to \num{360} degrees. The area of the path not covered by the shading remains transparent.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \path[
+    shading={conic},
+    shading colors={red,blue,green},
+    shading angle delta={135}
   ] (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}

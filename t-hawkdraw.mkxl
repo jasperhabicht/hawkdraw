@@ -13,8 +13,8 @@
 %% Standard ConTeXt module header:
 %D \module[
 %D         file=t-hawkdraw,
-%D      version=0.4.1,
-%D         date=2026-07-08,
+%D      version=0.4.2,
+%D         date=2026-07-13,
 %D        title=hawkdraw,
 %D     subtitle=A package for drawing vector graphics with the l3draw package and a TikZ-like syntax,
 %D       author=Jasper Habicht,

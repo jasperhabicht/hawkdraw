@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.4.1 2026-07-08
+% v0.4.2 2026-07-13
 
 % =====
 
@@ -48,6 +48,7 @@
 \fp_new:N \l_hawkdraw_shading_rotate_fp
 \fp_new:N \l_hawkdraw_shading_offset_fp
 \bool_new:N \l_hawkdraw_shading_circular_bool
+\fp_new:N \l_hawkdraw_shading_angle_delta_fp
 
 \dim_new:N \l_hawkdraw_shading_bbox_xmin_dim
 \dim_new:N \l_hawkdraw_shading_bbox_xmax_dim
@@ -95,6 +96,8 @@
     shading ~ circular      .bool_set:N     = \l_hawkdraw_shading_circular_bool ,
     shading ~ circular      .default:n      = { true } ,
     shading ~ circular      .initial:n      = { false } ,
+    shading ~ angle ~ delta .fp_set:N       = \l_hawkdraw_shading_angle_delta_fp ,
+    shading ~ angle ~ delta .initial:n      = { 360 } ,
 }
 
 \tl_new:N \l__hawkdraw_shading_color_value_tmp_tl
@@ -181,6 +184,9 @@
             . \clist_use:N \l_hawkdraw_shading_colors_clist
             \str_if_eq:nnT {#1} { radial } {
                 . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
+            }
+            \str_if_eq:nnT {#1} { conic } {
+                . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
             }
         }
     }
@@ -496,32 +502,39 @@
         % points (12 points, 2 * 16 bits each)
         \prg_replicate:nn { 2 } {
             \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
-                360 / ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
+                \l_hawkdraw_shading_angle_delta_fp / 
+                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
             }
         }
         \prg_replicate:nn { 2 } {
             \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
-                360 / ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
+                \l_hawkdraw_shading_angle_delta_fp / 
+                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
             }
         }
         \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
-            360 / ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1.75 )
+            \l_hawkdraw_shading_angle_delta_fp / 
+            ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1.75 )
         }
         \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
-            360 / ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1.25 )
+            \l_hawkdraw_shading_angle_delta_fp / 
+            ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1.25 )
         }
         \prg_replicate:nn { 2 } {
             \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
-                360 / ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1 )
+                \l_hawkdraw_shading_angle_delta_fp / 
+                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1 )
             }
         }
         \prg_replicate:nn { 3 } {
             \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
-                360 / ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1 )
+                \l_hawkdraw_shading_angle_delta_fp / 
+                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1 )
             }
         }
         \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
-            360 / ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
+            \l_hawkdraw_shading_angle_delta_fp / 
+            ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
         }
         % colors (4 colors, 3 * 8 bits each for RGB)
         \hawkdraw_hex_to_binary:e {
@@ -625,6 +638,7 @@
         c__hawkdraw_shading_
         conic
         . #1
+        . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
         _int
     } {
         \hawkdraw_shading_conic_color_set_values:Nn
@@ -634,6 +648,7 @@
         \hawkdraw_shading_set:nnn {
             conic
             . #1
+            . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
         } {
             /ShadingType ~ 6 ~
             \hawkdraw_case_color_space:nnn {
