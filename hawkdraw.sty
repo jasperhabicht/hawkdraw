@@ -681,7 +681,7 @@
 % ===
 
 \cs_new_protected:Npn \hawkdraw_point_parse_set:Nn #1#2 {
-    \exp_args:NNe \fp_set:Nn #1 { \hawkdraw_point_parse:n {#2} }
+    \fp_set:Nn #1 { \hawkdraw_point_parse:n {#2} }
 }
 
 \cs_new:Npn \hawkdraw_point_parse:n #1 {
