@@ -1318,14 +1318,20 @@ The following options can be set for the path:
 
 \begin{macrodef}
 !path/!|stroke|
+!path/!|stroke|={false}
 !path/!|fill|
-!path/!|clip|
+!path/!|fill|={false}
 \end{macrodef}
-These options add a stroke to the path, fill the path, or use the path as a clipping region for subsequent paths. They can be used in combination. As the clipping region affects all following paths, it is often useful to use it in combination with scopes (see \hyperlink{sec:scopes}{above}).
+These options add a stroke to the path or fill the path respectively. They do not require a value. Setting the value to \macro{false} resets a prior setting and removes the path stroke or fill.
 
 The command \macro{\stroke} is a shortcut for \macro{\path [stroke]}.
 
 The command \macro{\fill} is a shortcut for \macro{\path [fill]}.
+
+\begin{macrodef}
+!path/!|clip|={<boolean>}
+\end{macrodef}
+The option \macro{clip} sets the current path as a clipping region for subsequent paths. The option does not require a value but can be set explicitly to \macro{true} or \macro{false}. The option \macro{clip} can be used in combination with the options \macro{stroke} and \macro{fill}. As the clipping region affects all following paths, it is often useful to use it in combination with scopes (see \hyperlink{sec:scopes}{above}).
 
 The command \macro{\clip} is a shortcut for \macro{\path [clip]}.
 
