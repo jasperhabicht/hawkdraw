@@ -619,7 +619,7 @@
 
 \keys_define:nn { hawkdraw / path / point } {
     at                      .code:n         = {
-        \hawkdraw_point_parse_set:Nn \l_hawkdraw_point_at_fp {#1}
+        \hawkdraw_point_parse_set:Ne \l_hawkdraw_point_at_fp {#1}
         \tl_set:Nn \l_hawkdraw_point_at_name_tl {#1}
     } ,
     name                    .tl_set:N       = \l_hawkdraw_point_name_tl ,
@@ -683,6 +683,7 @@
 \cs_new_protected:Npn \hawkdraw_point_parse_set:Nn #1#2 {
     \fp_set:Nn #1 { \hawkdraw_point_parse:n {#2} }
 }
+\cs_generate_variant:Nn \hawkdraw_point_parse_set:Nn { Ne }
 
 \cs_new:Npn \hawkdraw_point_parse:n #1 {
     \prop_if_exist:cTF {
@@ -889,7 +890,7 @@
 }
 
 \cs_new_protected:cpn { __hawkdraw_path_process_ ( :w } ( #1 ) #2 \s__hawkdraw_stop {
-    \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_a_fp {#1}
+    \hawkdraw_point_parse_set:Ne \l__hawkdraw_point_a_fp {#1}
     \fp_gset_eq:NN \g_hawkdraw_path_point_first_fp \l__hawkdraw_point_a_fp
     \fp_gset_eq:NN \g_hawkdraw_path_point_last_fp \l__hawkdraw_point_a_fp
     \fp_gset:Nn \g_hawkdraw_path_slope_first_fp { nan }
@@ -917,7 +918,7 @@
     \fp_gset_eq:NN \g_hawkdraw_path_previous_slope_fp \g_hawkdraw_path_slope_last_fp
     \str_set:Nn \l__hawkdraw_path_type_tl { line }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_point_last_fp
-    \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_a_fp {#2}
+    \hawkdraw_point_parse_set:Ne \l__hawkdraw_point_a_fp {#2}
     \fp_if_nan:nT { \g_hawkdraw_path_slope_first_fp } {
         \fp_gset:Nn \g_hawkdraw_path_slope_first_fp {
             \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
@@ -936,7 +937,7 @@
     \fp_gset_eq:NN \g_hawkdraw_path_previous_slope_fp \g_hawkdraw_path_slope_last_fp
     \str_set:Nn \l__hawkdraw_path_type_tl { line_orthogonal }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_point_last_fp
-    \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_b_fp {#2}
+    \hawkdraw_point_parse_set:Ne \l__hawkdraw_point_b_fp {#2}
     \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_a_fp {
         (
             \hawkdraw_tuple_use_i:V \l__hawkdraw_point_b_fp
@@ -963,7 +964,7 @@
     \fp_gset_eq:NN \g_hawkdraw_path_previous_slope_fp \g_hawkdraw_path_slope_last_fp
     \str_set:Nn \l__hawkdraw_path_type_tl { line_orthogonal }
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_point_last_fp
-    \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_b_fp {#2}
+    \hawkdraw_point_parse_set:Ne \l__hawkdraw_point_b_fp {#2}
     \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_a_fp {
         (
             \hawkdraw_tuple_use_i:V \l__hawkdraw_point_o_fp
@@ -999,14 +1000,14 @@
     % what do we do with #1?
     \fp_gset_eq:NN \g_hawkdraw_path_previous_slope_fp \g_hawkdraw_path_slope_last_fp
     \fp_set_eq:NN \l__hawkdraw_point_o_fp \g_hawkdraw_path_point_last_fp
-    \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_a_fp {#2}
+    \hawkdraw_point_parse_set:Ne \l__hawkdraw_point_a_fp {#2}
     \tl_trim_spaces_apply:nN {#3} \__hawkdraw_path_process_curve:n
 }
 
 \cs_new_protected:cpn { __hawkdraw_path_process_curve_ . :w } .. #1 ( #2 ) #3 \s__hawkdraw_stop {
     % what do we do with #1?
     \str_set:Nn \l__hawkdraw_path_type_tl { curve_quadratic }
-    \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_b_fp {#2}
+    \hawkdraw_point_parse_set:Ne \l__hawkdraw_point_b_fp {#2}
     \fp_if_nan:nT { \g_hawkdraw_path_slope_first_fp } {
         \fp_gset:Nn \g_hawkdraw_path_slope_first_fp {
             \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
@@ -1024,8 +1025,8 @@
 \cs_new_protected:cpn { __hawkdraw_path_process_curve_ & :w } & #1 ( #2 ) #3 .. #4 ( #5 ) #6 \s__hawkdraw_stop {
     % what do we do with #1, #3, #4?
     \str_set:Nn \l__hawkdraw_path_type_tl { curve_cubic }
-    \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_b_fp {#2}
-    \hawkdraw_point_parse_set:Nn \l__hawkdraw_point_c_fp {#5}
+    \hawkdraw_point_parse_set:Ne \l__hawkdraw_point_b_fp {#2}
+    \hawkdraw_point_parse_set:Ne \l__hawkdraw_point_c_fp {#5}
     \fp_if_nan:nT { \g_hawkdraw_path_slope_first_fp } {
         \fp_gset:Nn \g_hawkdraw_path_slope_first_fp {
             \hawkdraw_calculate_slope:nn { \l__hawkdraw_point_o_fp } { \l__hawkdraw_point_a_fp }
@@ -1190,7 +1191,7 @@
     relative                .default:n      = { true } ,
     relative                .initial:n      = { false } ,
     corner                  .code:n         = {
-        \hawkdraw_point_parse_set:Nn \l_hawkdraw_path_rectangle_corner_fp {#1}
+        \hawkdraw_point_parse_set:Ne \l_hawkdraw_path_rectangle_corner_fp {#1}
     } ,
     corner                  .initial:n      = { ( 1cm , 1cm ) } ,
 }
@@ -1227,7 +1228,7 @@
     relative                .default:n      = { true } ,
     relative                .initial:n      = { false } ,
     corner                  .code:n         = {
-        \hawkdraw_point_parse_set:Nn \l_hawkdraw_path_grid_corner_fp {#1}
+        \hawkdraw_point_parse_set:Ne \l_hawkdraw_path_grid_corner_fp {#1}
     } ,
     corner                  .initial:n      = { ( 1cm , 1cm ) } ,
 }
