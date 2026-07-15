@@ -986,7 +986,7 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used
   \stroke[color stroke={blue}]
      (0cm,0cm) rectangle[corner={(A)}] ;
   \stroke (0cm,0cm)
-    -- ({(\getpoint{A}) + (1cm,0cm)}) ;
+    -- ({\getpoint{A} + (1cm,0cm)}) ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1062,13 +1062,20 @@ Using the \macro{rescan} option, the node's contents are rescanned using the cur
 !path/node/!|at|={<tuple>}
 !path/node/!|at part|={<float>}
 !path/node/!|at distance|={<dimension>}
-!path/node/!|anchor|={<clist>}
 \end{macrodef}
-The node can be named by setting the \macro{name} option which can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}). Node names should not contain dots or dashes as these are reserved for referencing anchors. The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the options \macro{at part} or \macro{at distance} (see \hyperlink{key:atpart}{above}). The anchor is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{H} (which refers to the baseline of the node's contents), \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. Nodes where the width is set additionally provide the poles \macro{T} and \macro{B} that refer to the top and bottom baseline of the node's contents respectively.
+The node can be named by setting the \macro{name} option which can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}). The position of the node can be adjusted with the \macro{at} option which accepts a point (a tuple) or with the options \macro{at part} or \macro{at distance} (see \hyperlink{key:atpart}{above}).
+
+\begin{macrodef}
+!path/node/!|anchor|={<clist>}
+!path/node/!|anchor|={<float>}
+\end{macrodef}
+The anchor of a node is specified with the \macro{anchor} option which accepts a comma-separated list of at most two poles that define the anchor point as their intersection (see the explanations on coffins). Available poles are \macro{t}, \macro{b}, \macro{H} (which refers to the baseline of the node's contents), \macro{l}, \macro{r}, \macro{vc} and \macro{hc}. Nodes where the width is set additionally provide the poles \macro{T} and \macro{B} that refer to the top and bottom baseline of the node's contents respectively.
 
 It is possible to reference a point where two poles of the node intersect by appending the node name with the relevant poles concatenated with a dash and separated by a dot from the node name. For example, if a node is named \macro{foo}, the point where the top and left pole of the node intersect can be referenced by \macro{(foo[t,l])}.
 
-It is also possible to reference a point where a line starting from the center of the node and having a specific angle intersects with the node's border. For example, if a node is named \macro{foo}, the point where a line with an angle of \num{30} degrees intersects with the node's border can be referenced by \macro{(foo[30])}.
+The \macro{anchor} option also accepts a unit-less floating-point number that defines as anchor the point where a line starting from the center of the node and having an angle as specified by this number intersects with the node's border.
+
+It is also possible to reference such an anchor point. For example, if a node is named \macro{foo}, the point where a line with an angle of \num{30} degrees intersects with the node's border can be referenced by \macro{(foo[30])}.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}

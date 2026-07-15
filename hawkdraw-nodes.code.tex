@@ -69,7 +69,8 @@
 \coffin_new:N \l_hawkdraw_node_coffin
 \coffin_new:N \l_hawkdraw_node_frame_coffin
 
-\clist_new:N \l_hawkdraw_node_anchor_clist
+\clist_new:N \l_hawkdraw_node_anchor_poles_clist
+\fp_new:N \l_hawkdraw_node_anchor_degree_fp
 \dim_new:N \l_hawkdraw_node_width_dim
 \clist_new:N \l_hawkdraw_node_padding_clist
 \dim_new:N \l_hawkdraw_node_padding_left_dim
@@ -89,7 +90,14 @@
 \cs_generate_variant:Nn \coffin_attach:NnnNnnnn { NnnNnnVV }
 
 \keys_define:nn { hawkdraw / path / node } {
-    anchor                  .clist_set:N    = \l_hawkdraw_node_anchor_clist ,
+    anchor                  .code:n         = {
+        \int_compare:nNnTF { \clist_count:n {#1} } > { 1 } {
+            \clist_set:Nn \l_hawkdraw_node_anchor_poles_clist {#1}
+            \fp_set:Nn \l_hawkdraw_node_anchor_degree_fp { nan }
+        } {
+            \fp_set:Nn \l_hawkdraw_node_anchor_degree_fp {#1}
+        }
+    } ,
     anchor                  .initial:n      = { hc , vc } ,
     width                   .code:n         = {
         \bool_set_true:N \l__hawkdraw_node_vbox_bool
@@ -213,13 +221,13 @@
         }
         \__hawkdraw_node_set_padding:
         \__hawkdraw_node_set_frame:V \l__hawkdraw_keys_unprocessed_clist
+        \dim_set:Nn \l__hawkdraw_node_width_dim {
+            \coffin_wd:N \l_hawkdraw_node_frame_coffin
+        }
+        \dim_set:Nn \l__hawkdraw_node_height_dim {
+            \coffin_ht_plus_dp:N \l_hawkdraw_node_frame_coffin
+        }
         \tl_if_blank:VF \l_hawkdraw_point_name_tl {
-            \dim_set:Nn \l__hawkdraw_node_width_dim {
-                \coffin_wd:N \l_hawkdraw_node_frame_coffin
-            }
-            \dim_set:Nn \l__hawkdraw_node_height_dim {
-                \coffin_ht_plus_dp:N \l_hawkdraw_node_frame_coffin
-            }
             \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
                 { frame } \l_hawkdraw_node_frame_tl
             \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
@@ -278,7 +286,7 @@
                             \l_hawkdraw_node_frame_coffin
                             \l_hawkdraw_point_name_tl {##1} {####1}
                             { \l_hawkdraw_point_at_fp }
-                            \l_hawkdraw_node_anchor_clist
+                            \l_hawkdraw_node_anchor_poles_clist
                     }
                 } {
                     \clist_map_inline:Nn \c__hawkdraw_node_hhpoles_clist {
@@ -286,15 +294,45 @@
                             \l_hawkdraw_node_frame_coffin
                             \l_hawkdraw_point_name_tl {##1} {####1}
                             { \l_hawkdraw_point_at_fp }
-                            \l_hawkdraw_node_anchor_clist
+                            \l_hawkdraw_node_anchor_poles_clist
                     }
                 }
             }
         }
+        \fp_if_nan:nF { \l_hawkdraw_node_anchor_degree_fp } {
+            \fp_sub:Nn \l_hawkdraw_point_at_fp {
+                \use:c {
+                    hawkdraw_node_frame_point_
+                    \l_hawkdraw_node_frame_tl
+                    :nnnn
+                } {
+                    ( 0pt , 0pt )
+                } {
+                    0.5 \l__hawkdraw_node_width_dim
+                } {
+                    0.5 \l__hawkdraw_node_height_dim
+                } {
+                    \l_hawkdraw_node_anchor_degree_fp
+                }
+            }
+        }
+        \tl_if_blank:VF \l_hawkdraw_point_name_tl {
+            \prop_if_exist:cF {
+                g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
+            } {
+                \prop_new_linked:c {
+                    g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
+                }
+            }
+            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+                { point } \l_hawkdraw_point_at_fp
+            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+                { slope } \l_hawkdraw_point_slope_fp            
+        }
         \draw_coffin_use:NeeV \l_hawkdraw_node_frame_coffin {
-            \clist_item:Nn \l_hawkdraw_node_anchor_clist { 1 }
+            \clist_item:Nn \l_hawkdraw_node_anchor_poles_clist { 1 }
         } {
-            \clist_item:Nn \l_hawkdraw_node_anchor_clist { 2 }
+            \clist_item:Nn \l_hawkdraw_node_anchor_poles_clist { 2 }
         } \l_hawkdraw_point_at_fp
         \tag_socket_use:n { hawkdraw / node / end }
     \draw_scope_end:
