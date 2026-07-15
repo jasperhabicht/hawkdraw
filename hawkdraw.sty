@@ -757,8 +757,12 @@
     }
 }
 
-\cs_new:Npn \__hawkdraw_point_parse_trim:w ( #1 ) \s__hawkdraw_stop {
-    #1
+\cs_new:Npn \__hawkdraw_point_parse_trim:w ( #1 ) #2 \s__hawkdraw_stop {
+    \tl_if_empty:nTF {#2} {
+        #1
+    } {
+        ( #1 ) #2
+    }
 }
 
 \cs_new:Npn \__hawkdraw_point_parse_polar:w #1 > #2 \s__hawkdraw_stop {
