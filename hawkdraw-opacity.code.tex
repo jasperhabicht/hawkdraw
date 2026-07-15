@@ -151,35 +151,55 @@
         } {
             \hawkdraw_support_pdflastxform:
         }
-
-        \hbox_set_to_wd:Nnn \l__hawkdraw_softmask_ref_box {
-            \box_wd:c { g_hawkdraw_softmask_ #1 _box }
-        } {
-            \vbox_to_ht:nn {
-                \box_ht_plus_dp:c { g_hawkdraw_softmask_ #1 _box }
-            } {
-                \skip_vertical:n { 0pt plus 1fil }
-                \hawkdraw_support_pdfliteral:n {
-                    /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~ Do
-                }
-            }
-            \skip_horizontal:n { 0pt plus 1fil }
+        \pdf_object_new:n {
+            hawkdraw_softmask_res_ #1
         }
-        \hawkdraw_support_pdfxform:nnN {
-            /Group ~ << ~
-                /S ~ /Transparency ~
-                /CS ~ /DeviceGray ~
-            >>
-        } {
+        \pdf_object_write:nne {
+            hawkdraw_softmask_res_ #1
+        } { dict } {
             /XObject ~ << ~
                 /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~
                     \pdfxform_ref:n { hawkdraw_softmask_ #1 } ~
             >>
-        } \l__hawkdraw_softmask_ref_box
+        }
+        \pdf_object_unnamed_write:ne { stream } {
+            {
+                /Type ~ /XObject ~
+                /Subtype ~ /Form ~
+                /Group ~ << ~
+                    /S ~ /Transparency ~
+                    /CS ~ /DeviceGray
+                >> ~
+                /BBox ~ [ ~
+                    0 ~ 
+                    0 ~ 
+                    \dim_to_decimal_in_bp:n {
+                        \box_wd:c { g_hawkdraw_softmask_ #1 _box }
+                    } ~
+                    \dim_to_decimal_in_bp:n {
+                        \box_ht_plus_dp:c { g_hawkdraw_softmask_ #1 _box }
+                    } ~
+                ] ~
+                /FormType ~ 1 ~
+                /Matrix ~ [ ~
+                    1 ~ 0 ~ 0 ~ 1 ~ 0 ~ 0 ~
+                ] ~
+                /Resources ~ \pdf_object_ref:n {
+                    hawkdraw_softmask_res_ #1
+                } ~
+            } {
+                /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~ Do
+            }
+        }
         \int_const:cn {
             c__hawkdraw_softmask_object_ #1 _int
         } {
-            \hawkdraw_support_pdflastxform:
+            \hawkdraw_support_pdflastobj:
+        }
+        \tl_const:cn {
+            c__hawkdraw_softmask_object_ref_ #1 _tl
+        } {
+            \pdf_object_ref_last:
         }
 
         \pdfmanagement_add:nee {
@@ -193,7 +213,9 @@
             << ~
                 /SMask ~ << ~
                     /S ~ /Luminosity ~
-                    /G ~ \int_use:c { c__hawkdraw_softmask_object_ #1 _int } ~ 0 ~ R ~
+                    /G ~ \use:c {
+                        c__hawkdraw_softmask_object_ref_ #1 _tl
+                    } ~
                 >> ~
             >>
         }
