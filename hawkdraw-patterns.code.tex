@@ -71,9 +71,9 @@
         \draw_suspend_end:
     }
 
+    % We need to prevent to include the page resources for /Pattern here
     \hawkdraw_support_pdfxform:nnN { } { }
         \l__hawkdraw_pattern_box
-
     \int_const:cn {
         c__hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2} _int
     } {
