@@ -50,6 +50,10 @@
                 }
                 \fp_set:Nn \l_hawkdraw_path_opacity_stroke_fp { 1.0 }
                 \fp_set:Nn \l_hawkdraw_path_opacity_fill_fp { 1.0 }
+                \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+                    \opacity_stroke:n { 1.0 }
+                    \opacity_fill:n { 1.0 }
+                }
                 #1
             \draw_end:
             \dim_gset_eq:NN

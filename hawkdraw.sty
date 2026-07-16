@@ -264,6 +264,9 @@
 
 \clist_new:N \l_hawkdraw_path_use_clist
 \bool_new:N \g__hawkdraw_path_use_clip_bool
+
+\tl_new:N \l__hawkdraw_path_options_tl
+
 \tl_new:N \l_hawkdraw_path_color_stroke_tl
 \tl_new:N \l_hawkdraw_path_color_fill_tl
 \fp_new:N \l_hawkdraw_path_opacity_stroke_fp
@@ -298,8 +301,6 @@
 \cs_generate_variant:Nn \opacity_select:n { V }
 \cs_generate_variant:Nn \opacity_fill:n { V }
 \cs_generate_variant:Nn \opacity_stroke:n { V }
-\cs_generate_variant:Nn \draw_set_linewidth:n { V }
-\cs_generate_variant:Nn \draw_set_miterlimit:n { V }
 \cs_generate_variant:Nn \draw_set_dash_pattern:nn { VV }
 \cs_generate_variant:Nn \draw_path_corner_arc:nn { ee }
 \cs_generate_variant:Nn \draw_path_use_clear:n { e }
@@ -360,55 +361,100 @@
     clip                    .default:n      = { true } ,
     clip                    .initial:n      = { false } ,
     % ===
-    color ~ stroke          .tl_set:N       = \l_hawkdraw_path_color_stroke_tl ,
-    color ~ stroke          .initial:n      = { . } ,
-    color ~ fill            .tl_set:N       = \l_hawkdraw_path_color_fill_tl ,
-    color ~ fill            .initial:n      = { . } ,
-    opacity ~ stroke        .fp_set:N       = \l_hawkdraw_path_opacity_stroke_fp ,
-    opacity ~ stroke        .initial:n      = { 1 } ,
-    opacity ~ fill          .fp_set:N       = \l_hawkdraw_path_opacity_fill_fp ,
-    opacity ~ fill          .initial:n      = { 1 } ,
+    color ~ stroke          .code:n         = {
+        \tl_set:Nn \l_hawkdraw_path_color_stroke_tl {#1}
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \color_stroke:e {#1}
+        }
+    } ,
+    color ~ fill            .code:n         = {
+        \tl_set:Nn \l_hawkdraw_path_color_fill_tl {#1}
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \color_fill:e {#1}
+        }
+    } ,
+    opacity ~ stroke        .code:n         = {
+        \fp_set:Nn \l_hawkdraw_path_opacity_stroke_fp {#1}
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \opacity_stroke:n { \fp_eval:n {#1} }
+        }
+    } ,
+    opacity ~ fill          .code:n         = {
+        \fp_set:Nn \l_hawkdraw_path_opacity_fill_fp {#1}
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \opacity_fill:n { \fp_eval:n {#1} }
+        }
+    } ,
     % ===
-    line ~ width            .dim_set:N      = \l_hawkdraw_path_linewidth_dim ,
-    line ~ width            .initial:V      = \l_draw_default_linewidth_dim ,
+    line ~ width            .code:n         = {
+        \dim_set:Nn \l_hawkdraw_path_linewidth_dim {#1}
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \draw_set_linewidth:n {#1}
+        }
+    } ,
     line ~ cap              .choice: ,
     line ~ cap / butt       .code:n         = {
         \tl_set:Nn \l_hawkdraw_path_cap_tl { butt }
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \draw_set_cap_butt:
+        }
     } ,
     line ~ cap / round      .code:n         = {
         \tl_set:Nn \l_hawkdraw_path_cap_tl { round }
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \draw_set_cap_round:
+        }
     } ,
     line ~ cap / rectangle  .code:n         = {
         \tl_set:Nn \l_hawkdraw_path_cap_tl { rectangle }
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \draw_set_cap_rectangle:
+        }
     } ,
-    line ~ cap              .initial:n      = { butt } ,
     line ~ join             .choice: ,
     line ~ join / miter     .code:n         = {
         \tl_set:Nn \l_hawkdraw_path_join_tl { miter }
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \draw_set_join_miter:
+        }
     } ,
     line ~ join / round     .code:n         = {
         \tl_set:Nn \l_hawkdraw_path_join_tl { round }
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \draw_set_join_round:
+        }
     } ,
     line ~ join / bevel     .code:n         = {
         \tl_set:Nn \l_hawkdraw_path_join_tl { bevel }
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \draw_set_join_bevel:
+        }
     } ,
-    line ~ join             .initial:n      = { miter } ,
-    miter ~ limit           .fp_set:N       = \l_hawkdraw_path_miterlimit_fp ,
-    miter ~ limit           .initial:n      = { 10 } ,
+    miter ~ limit           .code:n         = {
+        \fp_set:Nn \l_hawkdraw_path_miterlimit_fp {#1}
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \draw_set_miter_limit:n {#1}
+        }
+    } ,
+    fill ~ rule             .choice: ,
+    fill ~ rule / even-odd  .code:n        = {
+        \tl_set:Nn \l_hawkdraw_path_fill_rule_tl { evenodd }
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \draw_set_evenodd_rule:
+        }
+    } ,
+    fill ~ rule / non-zero  .code:n         = {
+        \tl_set:Nn \l_hawkdraw_path_fill_rule_tl { nonzero }
+        \tl_put_right:Nn \l__hawkdraw_path_options_tl {
+            \draw_set_nonzero_rule:
+        }
+    } ,
     dash ~ pattern          .clist_set:N    = \l_hawkdraw_path_dash_pattern_clist ,
     dash ~ pattern          .initial:n      = { } ,
     dash ~ phase            .dim_set:N      = \l_hawkdraw_path_dash_phase_dim ,
     dash ~ phase            .initial:n      = { 0pt } ,
     corner ~ arc            .clist_set:N    = \l_hawkdraw_path_corner_arc_clist ,
     corner ~ arc            .initial:n      = { 0pt } ,
-    fill ~ rule             .choice: ,
-    fill ~ rule / even-odd  .code:n        = {
-        \tl_set:Nn \l_hawkdraw_path_fill_rule_tl { evenodd }
-    } ,
-    fill ~ rule / non-zero  .code:n         = {
-        \tl_set:Nn \l_hawkdraw_path_fill_rule_tl { nonzero }
-    } ,
-    fill ~ rule             .initial:n      = { non-zero } ,
     % ===
     shift                   .code:n         = {
         \draw_transform_shift:n {#1}
@@ -444,18 +490,12 @@
 
 \cs_new_protected:Npn \hawkdraw_path_set_options: {
     \hook_use:n { hawkdraw / options / before }
-    \tl_if_eq:NnF \l_hawkdraw_path_color_stroke_tl { . } {
-        \color_stroke:e { \l_hawkdraw_path_color_stroke_tl }
+    \tl_use:N \l__hawkdraw_path_options_tl
+    \tl_clear:N \l__hawkdraw_path_options_tl
+    \clist_if_empty:NF \l_hawkdraw_path_dash_pattern_clist {
+        \draw_set_dash_pattern:VV \l_hawkdraw_path_dash_pattern_clist
+            \l_hawkdraw_path_dash_phase_dim
     }
-    \tl_if_eq:NnF \l_hawkdraw_path_color_fill_tl { . } {
-        \color_fill:e { \l_hawkdraw_path_color_fill_tl }
-    }
-    \opacity_stroke:V \l_hawkdraw_path_opacity_stroke_fp
-    \opacity_fill:V \l_hawkdraw_path_opacity_fill_fp
-    \draw_set_linewidth:V \l_hawkdraw_path_linewidth_dim
-    \draw_set_miterlimit:V \l_hawkdraw_path_miterlimit_fp
-    \use:c { draw_set_cap_ \l_hawkdraw_path_cap_tl : }
-    \use:c { draw_set_join_ \l_hawkdraw_path_join_tl : }
     \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_corner_arc_clist } > { 1 } {
         \draw_path_corner_arc:ee {
             \clist_item:Nn \l_hawkdraw_path_corner_arc_clist { 1 }
@@ -469,9 +509,6 @@
             \clist_item:Nn \l_hawkdraw_path_corner_arc_clist { 1 }
         }
     }
-    \use:c { draw_set_ \l_hawkdraw_path_fill_rule_tl _rule: }
-    \draw_set_dash_pattern:VV \l_hawkdraw_path_dash_pattern_clist
-        \l_hawkdraw_path_dash_phase_dim
     \hook_use:n { hawkdraw / options / after }
 }
 
