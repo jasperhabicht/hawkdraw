@@ -27,7 +27,7 @@
 
 \prop_new:N \g_hawkdraw_pattern_default_keys_prop
 \clist_new:N \l_hawkdraw_pattern_keys_clist
-\box_new:N \l_hawkdraw_pattern_box
+\box_new:N \l__hawkdraw_pattern_box
 \dim_new:N \l__hawkdraw_pattern_width_dim
 \dim_new:N \l__hawkdraw_pattern_height_dim
 \fp_new:N \l_hawkdraw_pattern_tile_size_fp
@@ -53,10 +53,7 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_pattern_set:nn #1#2 {
-    \pdfxform_new:nnn {
-        hawkdraw_pattern_
-        #1 . \str_mdfive_hash:n {#2}
-    } { } {
+    \hbox_set:Nn \l__hawkdraw_pattern_box {
         \draw_suspend_begin:
             \draw_begin:
                 \draw_set_baseline:n { 0pt }
@@ -73,87 +70,66 @@
             \draw_end:
         \draw_suspend_end:
     }
+
+    \hawkdraw_support_pdfxform:nnN { } { }
+        \l__hawkdraw_pattern_box
+
     \int_const:cn {
         c__hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2} _int
     } {
         \hawkdraw_support_pdflastxform:
     }
-}
-
-\cs_new_protected:Npn \hawkdraw_pattern_use:nn #1#2 {
-    \prop_if_in:NnF \g_hawkdraw_pattern_default_keys_prop {#1} {
-        \msg_warning:nnn { hawkdraw } { pattern-unknown } {#1}
-    }
-    \pdfxform_if_exist:nF {
-        hawkdraw_pattern_
-        #1 . \str_mdfive_hash:n {#2}
-    } {
-        \hawkdraw_pattern_set:nn {#1} {#2}
-    }
 
     \pdf_object_new:n {
-        hawkdraw_pattern_object_
+        hawkdraw_pattern_
         #1 . \str_mdfive_hash:n {#2}
     }
     \pdf_object_write:nne {
-        hawkdraw_pattern_object_
+        hawkdraw_pattern_
         #1 . \str_mdfive_hash:n {#2}
-    } {
-        stream
-    } {
+    } { stream } {
         {
             /Type ~ /Pattern ~
             /PatternType ~ 1 ~
             /PaintType ~ 1 ~
             /TilingType ~ 1 ~
-            /BBox ~ [
+            /BBox ~ [ ~
                 0 ~ 0 ~ 
                 \dim_to_decimal_in_bp:n {
-                    \pdfxform_wd:n {
-                        hawkdraw_pattern_
-                        #1 . \str_mdfive_hash:n {#2}
+                    \fp_to_dim:n {
+                        \hawkdraw_tuple_use_i:V \l_hawkdraw_pattern_tile_size_fp
                     }
                 } ~
                 \dim_to_decimal_in_bp:n {
-                    \pdfxform_ht:n {
-                        hawkdraw_pattern_
-                        #1 . \str_mdfive_hash:n {#2}
-                    } +
-                    \pdfxform_dp:n {
-                        hawkdraw_pattern_
-                        #1 . \str_mdfive_hash:n {#2}
+                    \fp_to_dim:n {
+                        \hawkdraw_tuple_use_ii:V \l_hawkdraw_pattern_tile_size_fp
                     }
-                }
+                } ~
             ] ~
             /XStep ~ 
                 \dim_to_decimal_in_bp:n {
-                    \pdfxform_wd:n {
-                        hawkdraw_pattern_
-                        #1 . \str_mdfive_hash:n {#2}
+                    \fp_to_dim:n {
+                        \hawkdraw_tuple_use_i:V \l_hawkdraw_pattern_tile_size_fp
                     }
                 } ~
             /YStep ~
                 \dim_to_decimal_in_bp:n {
-                    \pdfxform_ht:n {
-                        hawkdraw_pattern_
-                        #1 . \str_mdfive_hash:n {#2}
-                    } +
-                    \pdfxform_dp:n {
-                        hawkdraw_pattern_
-                        #1 . \str_mdfive_hash:n {#2}
+                    \fp_to_dim:n {
+                        \hawkdraw_tuple_use_ii:V \l_hawkdraw_pattern_tile_size_fp
                     }
                 } ~
-            /Matrix ~ [ 1 ~ 0 ~ 0 ~ 1 ~ 0 ~ 0 ] ~
+            /Matrix ~ [ ~
+                1 ~ 0 ~ 0 ~ 1 ~ 0 ~ 0 ~
+            ] ~
             /Resources ~ << ~
                 /XObject ~ << ~
                     /hawkdrawPatternObj
                     \int_use:c {
                         c__hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2} _int
                     } ~
-                    \pdfxform_ref:n {
-                        hawkdraw_pattern_
-                        #1 . \str_mdfive_hash:n {#2}
-                    } ~
+                    \int_use:c {
+                        c__hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2} _int
+                    } ~ 0 ~ R ~
                 >> ~
             >>
         } {
@@ -170,6 +146,17 @@
     } {
         \hawkdraw_support_pdflastobj:
     }
+}
+
+\cs_new_protected:Npn \hawkdraw_pattern_use:nn #1#2 {
+    \prop_if_in:NnF \g_hawkdraw_pattern_default_keys_prop {#1} {
+        \msg_warning:nnn { hawkdraw } { pattern-unknown } {#1}
+    }
+    \int_if_exist:cF {
+        c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+    } {
+        \hawkdraw_pattern_set:nn {#1} {#2}
+    }
     
     \pdfmanagement_add:nee {
         Page / Resources / Pattern
@@ -180,7 +167,8 @@
         }
     } {
         \pdf_object_ref:n {
-            hawkdraw_pattern_object_ #1 . \str_mdfive_hash:n {#2}
+            hawkdraw_pattern_
+            #1 . \str_mdfive_hash:n {#2}
         }
     }
 
