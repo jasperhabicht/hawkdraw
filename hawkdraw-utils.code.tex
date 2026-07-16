@@ -23,11 +23,15 @@
     \sys_if_engine_pdftex:T {
         \tex_pdfliteral:D {#1}
     }
+    \sys_if_engine_xetex:T {
+        \tex_special:D { pdf: content ~ #1 }
+    }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfliteral:n { e }
 
+\int_new:N \g__hawkdraw_support_pdfxform_int
 \cs_new_protected:Npn \hawkdraw_support_pdfxform:nnN #1#2#3 {
-    \bool_lazy_or:nnT {
+    \bool_lazy_or:nnTF {
         \sys_if_engine_luatex_p:
     } {
         \sys_if_engine_pdftex_p:
@@ -38,6 +42,27 @@
         }
         resources {#2}
         #3
+    } {
+        \int_gincr:N \g__hawkdraw_support_pdfxform_int
+    }
+    \sys_if_engine_xetex:T {
+        \hook_gput_next_code:nn { shipout / background } {
+            \mode_leave_vertical:
+            \tex_special:D {
+                pdf: bxobj ~ @hawkdraw \int_use:N \g__hawkdraw_support_pdfxform_int \c_space_tl
+                width  ~ \box_wd:N #3 \c_space_tl
+                height ~ \box_ht:N #3 \c_space_tl
+                depth  ~ \box_dp:N #3
+            }
+            \box_set_wd:Nn #3 { \c_zero_dim }
+            \box_set_ht:Nn #3 { \c_zero_dim }
+            \box_set_dp:Nn #3 { \c_zero_dim }
+            \box_use_drop:N #3
+            \tex_special:D { pdf: put ~ @resources ~ << #2 >> }
+            \tl_if_empty:nF {#1} {
+                \tex_special:D { pdf: exobj ~ << #1 >> }
+            }
+        }
     }
 }
 
@@ -48,7 +73,9 @@
         \sys_if_engine_pdftex_p:
     } {
         \tex_pdflastxform:D
-    } { 0 }
+    } {
+        \int_use:N \g__hawkdraw_support_pdfxform_int
+    }
 }
 
 \cs_new_protected:Npn \hawkdraw_support_pdfxform_use:N #1 {
@@ -58,6 +85,11 @@
         \sys_if_engine_pdftex_p:
     } {
         \tex_pdfrefxform:D \int_use:N #1 \scan_stop:
+    }
+    \sys_if_engine_xetex:T {
+        \tex_special:D {
+            pdf: uxobj ~ @hawkdraw \int_use:N #1 \scan_stop:
+        }
     }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfxform_use:N { c }
@@ -70,9 +102,13 @@
     } {
         \int_use:N #1 \c_space_tl 0 ~ R
     }
+    \sys_if_engine_xetex:T {
+        @hawkdraw \int_use:N #1 \scan_stop:
+    }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfxform_ref:N { c }
 
+% xetex missing
 \cs_new_protected:Npn \hawkdraw_support_pdfcolorstack:n #1 {
     \sys_if_engine_luatex:T {
         \tex_pdfextension:D colorstack ~ #1
