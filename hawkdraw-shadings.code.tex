@@ -502,38 +502,38 @@
         % points (12 points, 2 * 16 bits each)
         \prg_replicate:nn { 2 } {
             \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
-                \l_hawkdraw_shading_angle_delta_fp / 
+                \l_hawkdraw_shading_angle_delta_fp /
                 ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
             }
         }
         \prg_replicate:nn { 2 } {
             \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
-                \l_hawkdraw_shading_angle_delta_fp / 
+                \l_hawkdraw_shading_angle_delta_fp /
                 ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
             }
         }
         \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
-            \l_hawkdraw_shading_angle_delta_fp / 
+            \l_hawkdraw_shading_angle_delta_fp /
             ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1.75 )
         }
         \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
-            \l_hawkdraw_shading_angle_delta_fp / 
+            \l_hawkdraw_shading_angle_delta_fp /
             ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1.25 )
         }
         \prg_replicate:nn { 2 } {
             \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
-                \l_hawkdraw_shading_angle_delta_fp / 
+                \l_hawkdraw_shading_angle_delta_fp /
                 ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1 )
             }
         }
         \prg_replicate:nn { 3 } {
             \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
-                \l_hawkdraw_shading_angle_delta_fp / 
+                \l_hawkdraw_shading_angle_delta_fp /
                 ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1 )
             }
         }
         \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
-            \l_hawkdraw_shading_angle_delta_fp / 
+            \l_hawkdraw_shading_angle_delta_fp /
             ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
         }
         % colors (4 colors, 3 * 8 bits each for RGB)
@@ -582,7 +582,7 @@
     }
 }
 
-\seq_new:N \l__hawkdraw_shading_color_values_tmp_seq    
+\seq_new:N \l__hawkdraw_shading_color_values_tmp_seq
 
 \cs_new_protected:Npn \hawkdraw_shading_conic_color_set_values:Nn #1#2 {
     \seq_clear:N #1
