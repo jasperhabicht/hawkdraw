@@ -115,6 +115,7 @@
     Soft ~ mask ~ `#1` ~ undefined.
 }
 
+\int_new:N \g__hawkdraw_softmask_id_int
 \box_new:N \l__hawkdraw_softmask_ref_box
 
 \cs_generate_variant:Nn \draw_box_use:Nn { c }
@@ -125,6 +126,8 @@
     } {
         \msg_warning:nnn { hawkdraw } { softmask-defined } {#1}
     } {
+        \int_gincr:N \g__hawkdraw_softmask_id_int
+
         \box_new:c { g_hawkdraw_softmask_ #1 _box }
         \dim_new:c { g_hawkdraw_softmask_ #1 _bbox_xmin_dim }
         \dim_new:c { g_hawkdraw_softmask_ #1 _bbox_ymin_dim }
@@ -140,6 +143,12 @@
         \dim_gset_eq:cN { g_hawkdraw_softmask_ #1 _bbox_ymin_dim } {
             \g_draw_bb_ymin_dim
         }
+
+        \int_const:cn {
+            c__hawkdraw_softmask_obj_ #1 _int
+        } {
+            \g__hawkdraw_softmask_id_int
+        }
     }
 }
 
@@ -147,7 +156,7 @@
     \box_if_exist:cTF {
         g_hawkdraw_softmask_ #1 _box
     } {
-        \int_if_exist:cF { c__hawkdraw_softmask_object_ #1 _int } {
+        \int_if_exist:cF { c__hawkdraw_softmask_res_ #1 _int } {
             \pdfxform_new:nnn { hawkdraw_softmask_ #1 } { } {
                 \box_use:c { g_hawkdraw_softmask_ #1 _box }
             }
@@ -156,6 +165,7 @@
             } {
                 \hawkdraw_support_pdflastxform:
             }
+
             \pdf_object_new:n {
                 hawkdraw_softmask_res_ #1
             }
@@ -167,6 +177,7 @@
                         \pdfxform_ref:n { hawkdraw_softmask_ #1 } ~
                 >>
             }
+            
             \pdf_object_unnamed_write:ne { stream } {
                 {
                     /Type ~ /XObject ~
@@ -196,13 +207,8 @@
                     /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~ Do
                 }
             }
-            \int_const:cn {
-                c__hawkdraw_softmask_object_ #1 _int
-            } {
-                \hawkdraw_support_pdflastobj:
-            }
             \tl_const:cn {
-                c__hawkdraw_softmask_object_ref_ #1 _tl
+                c__hawkdraw_softmask_res_ #1 _tl
             } {
                 \pdf_object_ref_last:
             }
@@ -213,14 +219,14 @@
         } {
             hawkdraw Softmask
             \int_use:c {
-                c__hawkdraw_softmask_object_ #1 _int
+                c__hawkdraw_softmask_obj_ #1 _int
             }
         } {
             << ~
                 /SMask ~ << ~
                     /S ~ /Luminosity ~
                     /G ~ \use:c {
-                        c__hawkdraw_softmask_object_ref_ #1 _tl
+                        c__hawkdraw_softmask_res_ #1 _tl
                     } ~
                 >> ~
             >>
@@ -238,7 +244,7 @@
         \hawkdraw_support_pdfliteral:n {
             /hawkdraw Softmask
             \int_use:c {
-                c__hawkdraw_softmask_object_ #1 _int
+                c__hawkdraw_softmask_obj_ #1 _int
             }
             \c_space_tl gs
         }
