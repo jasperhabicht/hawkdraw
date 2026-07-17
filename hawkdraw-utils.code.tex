@@ -108,7 +108,7 @@
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfxform_ref:N { c }
 
-% xetex missing
+% xetex support missing
 \cs_new_protected:Npn \hawkdraw_support_pdfcolorstack:n #1 {
     \sys_if_engine_luatex:T {
         \tex_pdfextension:D colorstack ~ #1
