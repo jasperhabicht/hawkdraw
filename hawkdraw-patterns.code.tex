@@ -81,7 +81,7 @@
     \int_const:cn {
         c__hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2} _int
     } {
-        \hawkdraw_support_pdflastxform:
+        \hawkdraw_support_pdfxform_last:
     }
 
     \pdf_object_new:n {
@@ -130,7 +130,7 @@
                     /hawkdrawPatternObj \int_use:N \g__hawkdraw_pattern_id_int \c_space_tl
                     \hawkdraw_support_pdfxform_ref:c {
                         c__hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2} _int
-                    } \c_space_tl 0 ~ R ~
+                    } ~
                 >> ~
             >>
         } {
