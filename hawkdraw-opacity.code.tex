@@ -335,7 +335,7 @@
 \cs_new_protected:Npn \hawkdraw_blendmode_set:nn #1#2 {
     \int_if_exist:NF \c__hawkdraw_blendmode_stack_int {
         \int_const:Nn \c__hawkdraw_blendmode_stack_int {
-            \hawkdraw_support_pdfcolorstackinit:n {
+            \hawkdraw_support_pdfcolorstack_init:n {
                 page ~ direct ~ {
                     /hawkdraw Blendmode Normal ~ gs
                 }

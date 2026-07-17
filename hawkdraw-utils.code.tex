@@ -83,7 +83,7 @@
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfcolorstack:n { e }
 
-\cs_new_protected:Npn \hawkdraw_support_pdfcolorstackinit:n #1 {
+\cs_new_protected:Npn \hawkdraw_support_pdfcolorstack_init:n #1 {
     \bool_lazy_or:nnTF {
         \sys_if_engine_luatex_p:
     } {
