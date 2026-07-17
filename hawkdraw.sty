@@ -463,7 +463,7 @@
         \draw_transform_rotate:n {#1}
     } ,
     scale                   .code:n         = {
-        \int_compare:nNnTF { \clist_count:n {#1} } > { 1 } {
+        \int_compare:nNnTF { \clist_count:n {#1} } > { \c_one_int } {
             \draw_transform_xscale:n {
                 \clist_item:nn {#1} { 1 }
             }
@@ -475,7 +475,7 @@
         }
     } ,
     slant                   .code:n         = {
-        \int_compare:nNnTF { \clist_count:n {#1} } > { 1 } {
+        \int_compare:nNnTF { \clist_count:n {#1} } > { \c_one_int } {
             \draw_transform_xslant:n {
                 \clist_item:nn {#1} { 1 }
             }
@@ -496,7 +496,7 @@
         \draw_set_dash_pattern:VV \l_hawkdraw_path_dash_pattern_clist
             \l_hawkdraw_path_dash_phase_dim
     }
-    \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_corner_arc_clist } > { 1 } {
+    \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_corner_arc_clist } > { \c_one_int } {
         \draw_path_corner_arc:ee {
             \clist_item:Nn \l_hawkdraw_path_corner_arc_clist { 1 }
         } {
@@ -802,7 +802,7 @@
 }
 
 \cs_new:Npn \__hawkdraw_point_parse_polar:w #1 > #2 \s__hawkdraw_stop {
-    \int_compare:nNnTF { \clist_count:n {#2} } > { 1 } {
+    \int_compare:nNnTF { \clist_count:n {#2} } > { \c_one_int } {
         \draw_point_polar:nnn {
             \clist_item:nn {#1} { 1 }
         } {
@@ -815,7 +815,7 @@
 
 \exp_last_unbraced:NNNNo
 \cs_new:Npn \__hawkdraw_point_parse_polar_compat:w #1 \c_colon_str #2 \s__hawkdraw_stop {
-    \int_compare:nNnTF { \clist_count:n {#2} } > { 1 } {
+    \int_compare:nNnTF { \clist_count:n {#2} } > { \c_one_int } {
         \draw_point_polar:nnn {
             \clist_item:nn {#2} { 1 }
         } {
@@ -1112,7 +1112,7 @@
     radius ~ y              .initial:n      = { 1cm } ,
     radius                  .code:n         = {
         \bool_set_false:N \l_hawkdraw_path_arc_axes_bool
-        \int_compare:nNnTF { \clist_count:n {#1} } > { 1 } {
+        \int_compare:nNnTF { \clist_count:n {#1} } > { \c_one_int } {
             \dim_set:Nn \l_hawkdraw_path_arc_radius_x_dim {
                 \clist_item:nn {#1} { 1 }
             }
@@ -1290,7 +1290,7 @@
         \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 1 }
     }
     \dim_set:Nn \l__hawkdraw_path_grid_ystep_dim {
-        \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_grid_step_clist } > { 1 } {
+        \int_compare:nNnTF { \clist_count:N \l_hawkdraw_path_grid_step_clist } > { \c_one_int } {
             \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 2 }
         } {
             \clist_item:Nn \l_hawkdraw_path_grid_step_clist { 1 }
