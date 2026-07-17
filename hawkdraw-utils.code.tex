@@ -62,16 +62,16 @@
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfxform_use:N { c }
 
-\cs_new_protected:Npn \hawkdraw_support_pdxform_ref:N #1 {
+\cs_new:Npn \hawkdraw_support_pdfxform_ref:N #1 {
     \bool_lazy_or:nnT {
         \sys_if_engine_luatex_p:
     } {
         \sys_if_engine_pdftex_p:
     } {
-        \tex_pdfrefxform:D \int_use:N #1 \c_space_tl 0 ~ R
+        \int_use:N #1 \c_space_tl 0 ~ R
     }
 }
-\cs_generate_variant:Nn \hawkdraw_support_pdxform_ref:N { c }
+\cs_generate_variant:Nn \hawkdraw_support_pdfxform_ref:N { c }
 
 \cs_new_protected:Npn \hawkdraw_support_pdfcolorstack:n #1 {
     \sys_if_engine_luatex:T {
