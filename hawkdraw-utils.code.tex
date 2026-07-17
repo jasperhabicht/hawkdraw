@@ -26,15 +26,6 @@
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfliteral:n { e }
 
-\cs_new_protected:Npn \hawkdraw_support_pdflastobj: {
-    \sys_if_engine_luatex:T {
-        \tex_pdffeedback:D lastobj
-    }
-    \sys_if_engine_pdftex:T {
-        \tex_pdflastobj:D
-    }
-}
-
 \cs_new_protected:Npn \hawkdraw_support_pdfxform:nnN #1#2#3 {
     \bool_lazy_or:nnT {
         \sys_if_engine_luatex_p:
