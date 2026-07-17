@@ -536,7 +536,7 @@
     \fp_set_eq:NN \l_hawkdraw_softpath_shorten_point_previous_fp \l_hawkdraw_softpath_shorten_point_last_fp
     \fp_set:Nn \l_hawkdraw_softpath_shorten_point_last_fp { #1 , #2 }
     \bool_lazy_and:nnF {
-        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { 0pt }
+        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { \c_zero_dim }
     } {
         \l__hawkdraw_softpath_shorten_start_bool
     } {
@@ -561,7 +561,7 @@
 \cs_new_protected:Npn \__hawkdraw_softpath_shorten_line:nn #1#2 {
     \fp_set:Nn \l_hawkdraw_softpath_shorten_point_last_fp {#2}
     \bool_lazy_and:nnT {
-        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { 0pt }
+        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { \c_zero_dim }
     } {
         \l__hawkdraw_softpath_shorten_start_bool
     } {
@@ -581,7 +581,7 @@
         }
     }
     \bool_lazy_and:nnTF {
-        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_end_dim } > { 0pt }
+        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_end_dim } > { \c_zero_dim }
     } {
         \l__hawkdraw_softpath_shorten_end_bool
     } {
@@ -641,7 +641,7 @@
     \fp_set:Nn \l_hawkdraw_softpath_shorten_point_last_fp {#3}
     % quadratic curve
     \bool_lazy_and:nnTF {
-        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_end_dim } > { 0pt }
+        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_end_dim } > { \c_zero_dim }
     } {
         \l__hawkdraw_softpath_shorten_end_bool
     } {
@@ -658,7 +658,7 @@
             } {#1} {#2} {#3}
         }
         \bool_lazy_and:nnTF {
-            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { 0pt }
+            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { \c_zero_dim }
         } {
             \l__hawkdraw_softpath_shorten_start_bool
         } {
@@ -735,7 +735,7 @@
         }
     } {
         \bool_lazy_and:nnTF {
-            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { 0pt }
+            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { \c_zero_dim }
         } {
             \l__hawkdraw_softpath_shorten_start_bool
         } {
@@ -781,7 +781,7 @@
     \fp_set:Nn \l_hawkdraw_softpath_shorten_point_last_fp {#4}
     % cubic curve
     \bool_lazy_and:nnTF {
-        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_end_dim } > { 0pt }
+        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_end_dim } > { \c_zero_dim }
     } {
         \l__hawkdraw_softpath_shorten_end_bool
     } {
@@ -798,7 +798,7 @@
             } {#1} {#2} {#3} {#4}
         }
         \bool_lazy_and:nnTF {
-            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { 0pt }
+            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { \c_zero_dim }
         } {
             \l__hawkdraw_softpath_shorten_start_bool
         } {
@@ -954,7 +954,7 @@
         }
     } {
         \bool_lazy_and:nnTF {
-            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { 0pt }
+            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { \c_zero_dim }
         } {
             \l__hawkdraw_softpath_shorten_start_bool
         } {
@@ -1031,7 +1031,7 @@
             {#1} {#2} {#3} {#4}
     }
     \bool_lazy_and:nnTF {
-        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_end_dim } > { 0pt }
+        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_end_dim } > { \c_zero_dim }
     } {
         \l__hawkdraw_softpath_shorten_end_bool
     } {
@@ -1048,7 +1048,7 @@
             } {#1} {#2} {#3} {#4}
         }
         \bool_lazy_and:nnTF {
-            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { 0pt }
+            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { \c_zero_dim }
         } {
             \l__hawkdraw_softpath_shorten_start_bool
         } {
@@ -1097,7 +1097,7 @@
         }
     } {
         \bool_lazy_and:nnTF {
-            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { 0pt }
+            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { \c_zero_dim }
         } {
             \l__hawkdraw_softpath_shorten_start_bool
         } {
@@ -1148,7 +1148,7 @@
             {#1} {#2} {#3} {#4}
     }
     \bool_lazy_and:nnTF {
-        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_end_dim } > { 0pt }
+        \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_end_dim } > { \c_zero_dim }
     } {
         \l__hawkdraw_softpath_shorten_end_bool
     } {
@@ -1165,7 +1165,7 @@
             } {#1} {#2} {#3} {#4}
         }
         \bool_lazy_and:nnTF {
-            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { 0pt }
+            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { \c_zero_dim }
         } {
             \l__hawkdraw_softpath_shorten_start_bool
         } {
@@ -1214,7 +1214,7 @@
         }
     } {
         \bool_lazy_and:nnTF {
-            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { 0pt }
+            \dim_compare_p:nNn { \l_hawkdraw_softpath_shorten_start_dim } > { \c_zero_dim }
         } {
             \l__hawkdraw_softpath_shorten_start_bool
         } {
@@ -1703,7 +1703,7 @@
             \l__hawkdraw_softpath_offset_construct_cubic_tb_fp
     }
     % smoothen segment convergence
-    \int_compare:nNnT { \seq_count:N #1 } > { 1 } {
+    \int_compare:nNnT { \seq_count:N #1 } > { \c_one_int } {
         \int_step_inline:nnn { 2 } { \seq_count:N #1 } {
             \tl_set:Ne \l__hawkdraw_softpath_offset_construct_cubic_curve_i_tl {
                 \seq_item:Nn #1 { ##1 - 1 }
@@ -1904,7 +1904,7 @@
                 { 1 } {#3} {#1} {#2} {#4} {#5}
         }
     \seq_map_indexed_inline:Nn \l_hawkdraw_softpath_offset_construct_cubic_segments_seq {
-        \int_compare:nNnT {##1} = { 1 } {
+        \int_compare:nNnT {##1} = { \c_one_int } {
             \bool_if:NTF \l__hawkdraw_softpath_offset_moveto_bool {
                 \bool_set_false:N \l__hawkdraw_softpath_offset_moveto_bool
                 \fp_gset:Nn \g_hawkdraw_path_point_first_fp {

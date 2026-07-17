@@ -495,7 +495,7 @@
 
 \cs_new:Npn \__hawkdraw_shading_conic_stream_aux:nn #1#2 {
     % skip first entry in seq which is the start color
-    \int_compare:nNnF {#1} = { 1 } {
+    \int_compare:nNnF {#1} = { \c_one_int } {
         % flag (4 bits)
         \hawkdraw_hex_to_binary:n { 00 }
         % patch is pie segment going from 0 deg to 360 / ( n * 4 ) deg
@@ -588,7 +588,7 @@
     \seq_clear:N #1
     \seq_set_from_clist:Nn \l__hawkdraw_shading_color_values_tmp_seq {#2}
     \seq_map_indexed_inline:Nn \l__hawkdraw_shading_color_values_tmp_seq {
-        \int_compare:nNnTF {##1} = { 1 } {
+        \int_compare:nNnTF {##1} = { \c_one_int } {
             % first entry is the start color
             \__hawkdraw_shading_color_set_value:Nnnn #1 {##2} {##2} {##2}
         } {
