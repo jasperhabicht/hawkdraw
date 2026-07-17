@@ -143,12 +143,12 @@
     \int_const:cn {
         c__hawkdraw_shading_ #1 _int
     } {
-        \hawkdraw_support_pdflastxform:
+        \hawkdraw_support_pdfxform_last:
     }
 }
 
 \cs_new_protected:Npn \hawkdraw_shading_use:n #1 {
-    \hawkdraw_support_pdfrefxform:c {
+    \hawkdraw_support_pdfxform_use:c {
         c__hawkdraw_shading_ #1 _int
     }
 }
