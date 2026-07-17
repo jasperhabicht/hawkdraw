@@ -49,7 +49,7 @@
         \hook_gput_next_code:nn { shipout / background } {
             \mode_leave_vertical:
             \tex_special:D {
-                pdf: bxobj ~ @hawkdraw \int_use:N \g__hawkdraw_support_pdfxform_int \c_space_tl 
+                pdf: bxobj ~ @hawkdraw \int_use:N \g__hawkdraw_support_pdfxform_int \c_space_tl
                 width  ~ \box_wd:N #3 \c_space_tl
                 height ~ \box_ht:N #3 \c_space_tl
                 depth  ~ \box_dp:N #3
@@ -73,7 +73,7 @@
         \sys_if_engine_pdftex_p:
     } {
         \tex_pdflastxform:D
-    } { 
+    } {
         \int_use:N \g__hawkdraw_support_pdfxform_int
     }
 }

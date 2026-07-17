@@ -98,7 +98,7 @@
             /PaintType ~ 1 ~
             /TilingType ~ 1 ~
             /BBox ~ [ ~
-                0 ~ 0 ~ 
+                0 ~ 0 ~
                 \dim_to_decimal_in_bp:n {
                     \fp_to_dim:n {
                         \hawkdraw_tuple_use_i:V \l_hawkdraw_pattern_tile_size_fp
@@ -110,7 +110,7 @@
                     }
                 } ~
             ] ~
-            /XStep ~ 
+            /XStep ~
                 \dim_to_decimal_in_bp:n {
                     \fp_to_dim:n {
                         \hawkdraw_tuple_use_i:V \l_hawkdraw_pattern_tile_size_fp
@@ -155,7 +155,7 @@
     } {
         \hawkdraw_pattern_set:nn {#1} {#2}
     }
-    
+
     \pdfmanagement_add:nee {
         Page / Resources / Pattern
     } {
@@ -281,7 +281,7 @@
     \draw_path_moveto:n { 0pt , 0pt }
     \draw_path_lineto:n { 0pt , 5/3pt }
     \draw_path_lineto:n {
-        ( 0pt , 5/3pt ) + 
+        ( 0pt , 5/3pt ) +
         ( \draw_point_polar:nn { 10/3pt } { 30 } )
     }
     \draw_path_lineto:n {
