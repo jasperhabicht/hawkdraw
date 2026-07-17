@@ -24,7 +24,7 @@
         \tex_pdfliteral:D {#1}
     }
     \sys_if_engine_xetex:T {
-        \tex_special:D { pdf: #1 }
+        \tex_special:D { pdf: content ~ #1 }
     }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfliteral:n { e }
@@ -49,7 +49,7 @@
         \hook_gput_next_code:nn { shipout / background } {
             \mode_leave_vertical:
             \tex_special:D {
-                pdf: bxobj ~ @pdf.xform \int_use:N \g__hawkdraw_support_pdfxform_int \c_space_tl 
+                pdf: bxobj ~ @hawkdraw \int_use:N \g__hawkdraw_support_pdfxform_int \c_space_tl 
                 width  ~ \box_wd:N #3 \c_space_tl
                 height ~ \box_ht:N #3 \c_space_tl
                 depth  ~ \box_dp:N #3
@@ -77,6 +77,22 @@
         \int_use:N \g__hawkdraw_support_pdfxform_int
     }
 }
+
+\cs_new_protected:Npn \hawkdraw_support_pdfrefxform:N #1 {
+    \bool_lazy_or:nnT {
+        \sys_if_engine_luatex_p:
+    } {
+        \sys_if_engine_pdftex_p:
+    } {
+        \tex_pdfrefxform:D \int_use:N #1 \scan_stop:
+    }
+    \sys_if_engine_xetex:T {
+        \tex_special:D {
+            pdf: uxobj ~ @hawkdraw \int_use:N #1 \scan_stop:
+        }
+    }
+}
+\cs_generate_variant:Nn \hawkdraw_support_pdfrefxform:N { c }
 
 % xetex support missing
 \cs_new_protected:Npn \hawkdraw_support_pdfcolorstack:n #1 {
