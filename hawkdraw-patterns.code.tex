@@ -27,10 +27,12 @@
 
 \prop_new:N \g_hawkdraw_pattern_default_keys_prop
 \clist_new:N \l_hawkdraw_pattern_keys_clist
+\fp_new:N \l_hawkdraw_pattern_tile_size_fp
+
+\int_new:N \g__hawkdraw_pattern_id_int
 \box_new:N \l__hawkdraw_pattern_box
 \dim_new:N \l__hawkdraw_pattern_width_dim
 \dim_new:N \l__hawkdraw_pattern_height_dim
-\fp_new:N \l_hawkdraw_pattern_tile_size_fp
 
 \keys_define:nn { hawkdraw / path } {
     pattern                 .code:n         = {
@@ -53,6 +55,8 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_pattern_set:nn #1#2 {
+    \int_gincr:N \g__hawkdraw_pattern_id_int
+
     \hbox_set:Nn \l__hawkdraw_pattern_box {
         \draw_suspend_begin:
             \draw_begin:
@@ -123,28 +127,22 @@
             ] ~
             /Resources ~ << ~
                 /XObject ~ << ~
-                    /hawkdrawPatternObj
+                    /hawkdrawPatternObj \int_use:N \g__hawkdraw_pattern_id_int \c_space_tl
                     \int_use:c {
                         c__hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2} _int
-                    } ~
-                    \int_use:c {
-                        c__hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2} _int
-                    } ~ 0 ~ R ~
+                    } \c_space_tl 0 ~ R ~
                 >> ~
             >>
         } {
             q ~
-            /hawkdrawPatternObj
-            \int_use:c {
-                c__hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2} _int
-            } ~ Do ~
+            /hawkdrawPatternObj \int_use:N \g__hawkdraw_pattern_id_int \c_space_tl Do ~
             Q
         }
     }
     \int_const:cn {
         c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
     } {
-        \hawkdraw_support_pdflastobj:
+        \g__hawkdraw_pattern_id_int
     }
 }
 
