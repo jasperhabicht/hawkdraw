@@ -1,6 +1,7 @@
 .gitattributes export-ignore
 .gitignore export-ignore
 /examples export-ignore
+/build export-ignore
 
 *      text eol=lf
 *.mkxl linguist-language=tex
