@@ -9,6 +9,5 @@
 *.toml
 *.tuc
 *.zip
-context-sample*.pdf
 
 build/*
