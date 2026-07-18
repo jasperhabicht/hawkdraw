@@ -9,5 +9,3 @@
 *.toml
 *.tuc
 *.zip
-
-build/*
