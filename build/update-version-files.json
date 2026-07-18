@@ -4,24 +4,21 @@
         "pattern_version" : "^(\\\\ProvidesExplPackage \\{hawkdraw\\} \\{\\d{4}-\\d{2}-\\d{2}\\} \\{)\\d+\\.\\d+\\.\\d+(\\})" ,
         "replace_version" : "\\g<1>{version}\\g<2>" ,
         "pattern_date" : "^(\\\\ProvidesExplPackage \\{hawkdraw\\} \\{)\\d{4}-\\d{2}-\\d{2}(\\} \\{\\d+\\.\\d+\\.\\d+\\})" ,
-        "replace_date" : "\\g<1>{date}\\g<2>" ,
-        "date_format" : false
+        "replace_date" : "\\g<1>{date}\\g<2>"
     } ,
     {
         "file_ext" : "*.code.tex" ,
         "pattern_version" : "^% v\\d+\\.\\d+\\.\\d+ (\\d{4}-\\d{2}-\\d{2})" ,
         "replace_version" : "% v{version} \\g<1>" ,
         "pattern_date" : "^% v(\\d+\\.\\d+\\.\\d+) \\d{4}-\\d{2}-\\d{2}" ,
-        "replace_date" : "% v\\g<1> {date}" ,
-        "date_format" : false
+        "replace_date" : "% v\\g<1> {date}"
     } ,
     {
         "file_ext" : "*.mkxl" ,
         "pattern_version" : "^(%D\\s+version=)\\d+\\.\\d+\\.\\d+," ,
         "replace_version" : "\\g<1>{version}," ,
         "pattern_date" : "^(%D\\s+date=)\\d{4}-\\d{2}-\\d{2}," ,
-        "replace_date" : "\\g<1>{date}," ,
-        "date_format" : false
+        "replace_date" : "\\g<1>{date},"
     } ,
     {
         "file_ext" : "*.tex" ,

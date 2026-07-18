@@ -36,7 +36,7 @@ for replacement in update_replacements:
             count=1,
             flags=re.MULTILINE
         )
-        if replacement['date_format']:
+        if replacement.get('date_format', False):
             file_text = re.sub(
                 replacement['pattern_date'],
                 replacement['replace_date'].format(date=update_date_format),
