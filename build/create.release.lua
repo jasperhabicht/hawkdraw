@@ -1,0 +1,1 @@
+os.execute('cd .. && git archive --prefix=hawkdraw/ --output=hawkdraw.zip HEAD')
