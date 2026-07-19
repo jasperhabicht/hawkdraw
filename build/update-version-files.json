@@ -1,31 +1,23 @@
 [
     {
-        "file_ext" : "*.sty" ,
-        "pattern_version" : "^(\\\\ProvidesExplPackage \\{hawkdraw\\} \\{\\d{4}-\\d{2}-\\d{2}\\} \\{)\\d+\\.\\d+\\.\\d+(\\})" ,
-        "replace_version" : "\\g<1>{version}\\g<2>" ,
-        "pattern_date" : "^(\\\\ProvidesExplPackage \\{hawkdraw\\} \\{)\\d{4}-\\d{2}-\\d{2}(\\} \\{\\d+\\.\\d+\\.\\d+\\})" ,
-        "replace_date" : "\\g<1>{date}\\g<2>"
+        "pattern_file" : ".sty$" ,
+        "pattern_version" : "(\\ProvidesExplPackage {hawkdraw} {%d%d%d%d%-%d%d%-%d%d} {)%d+%.%d+%.%d+(})" ,
+        "pattern_date" : "(\\ProvidesExplPackage {hawkdraw} {)%d%d%d%d%-%d%d%-%d%d(} {%d+%.%d+%.%d+})"
     } ,
     {
-        "file_ext" : "*.code.tex" ,
-        "pattern_version" : "^% v\\d+\\.\\d+\\.\\d+ (\\d{4}-\\d{2}-\\d{2})" ,
-        "replace_version" : "% v{version} \\g<1>" ,
-        "pattern_date" : "^% v(\\d+\\.\\d+\\.\\d+) \\d{4}-\\d{2}-\\d{2}" ,
-        "replace_date" : "% v\\g<1> {date}"
+        "pattern_file" : ".code.tex$" ,
+        "pattern_version" : "(% v)%d+%.%d+%.%d+( %d%d%d%d%-%d%d%-%d%d\n)" ,
+        "pattern_date" : "(% v%d+%.%d+%.%d+ )%d%d%d%d%-%d%d%-%d%d(\n)"
     } ,
     {
-        "file_ext" : "*.mkxl" ,
-        "pattern_version" : "^(%D\\s+version=)\\d+\\.\\d+\\.\\d+," ,
-        "replace_version" : "\\g<1>{version}," ,
-        "pattern_date" : "^(%D\\s+date=)\\d{4}-\\d{2}-\\d{2}," ,
-        "replace_date" : "\\g<1>{date},"
+        "pattern_file" : ".mkxl$" ,
+        "pattern_version" : "(%%D%s+version=)%d+%.%d+%.%d+(,)" ,
+        "pattern_date" : "(%%D%s+date=)%d%d%d%d%-%d%d%-%d%d(,)"
     } ,
     {
-        "file_ext" : "*.tex" ,
-        "pattern_version" : "^(\\\\def\\\\hawkdrawfileversion\\{)\\d+\\.\\d+\\.\\d+(\\})" ,
-        "replace_version" : "\\g<1>{version}\\g<2>" ,
-        "pattern_date" : "^(\\\\def\\\\hawkdrawfiledate\\{)\\d{1,2} [A-Za-z]+ \\d{4}(\\})" ,
-        "replace_date" : "\\g<1>{date}\\g<2>" ,
+        "pattern_file" : ".tex$" ,
+        "pattern_version" : "(\\def\\hawkdrawfileversion{)%d+%.%d+%.%d+(})" ,
+        "pattern_date" : "(\\def\\hawkdrawfiledate{)%d+ %u%a+ %d%d%d%d(})" ,
         "date_format" : true
     }
 ]
