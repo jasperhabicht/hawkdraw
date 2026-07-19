@@ -1,3 +1,28 @@
+-- File: update-version.lua
+-- Copyright 2026 Jasper Habicht (mail(at)jasperhabicht.de).
+
+-- Update version number and date in all relevant files in the project repo.
+
+-- Run texlua from within `build` subdirectory with following command:
+-- update-version.lua <version> <date>
+
+-- Format of <version>: <major>.<minor>.<patch>
+-- -- <major>, <minor>, <patch>: one or more digits.
+
+-- Format of <date>: <year>-<month>-<day>
+-- -- <year>: four digits
+-- -- <month>, <day>: two digits.
+
+-- Replacement patterns in `update-version-files.json` in `build` subdirectory.
+-- For each file type, the following entries are given:
+-- "pattern_file": Lua pattern to identify the file type by extension.
+-- "pattern_version": Lua pattern for replacement of version.
+-- "pattern_daze": Lua pattern for replacement of date.
+-- "date_format" (optional): Boolean, date will be formatted naturally if set.
+
+-- "pattern_version", "pattern_date": part before and after version or date
+-- -- as group in parenthesis and in replacement as `%1` and `%2`.
+
 if #arg ~= 2 then
     error('Usage: update-version.lua <version> <date>.')
 end
@@ -45,3 +70,5 @@ for i = 1, #update_replacements do
         end
     end
 end
+
+-- EOF
