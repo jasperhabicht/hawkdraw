@@ -1,5 +1,5 @@
 if #arg ~= 2 then
-    error('Usage: update-version.py <version> <date>.')
+    error('Usage: update-version.lua <version> <date>.')
 end
 
 local update_version = arg[1]
