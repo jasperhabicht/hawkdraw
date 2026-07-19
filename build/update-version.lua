@@ -43,7 +43,7 @@ local _, _, date_year, date_month, date_day =
 local update_date_format = string.format('%d', date_day) .. ' ' ..
     os.date('%B %Y', os.time{year=date_year, month=date_month, day=date_day})
 
-package.path = package.path .. ';C:/texlive/2026/texmf-dist/tex/luatex/lualibs/?.lua'
+kpse.set_program_name('kpsewhich')
 require('lualibs')
 local json_file = io.open('update-version-files.json', 'rb')
 local json_data = json_file:read('*a')
