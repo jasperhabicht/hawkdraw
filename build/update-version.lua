@@ -59,10 +59,12 @@ for i = 1, #update_replacements do
             local update_data = update_file:read('*a')
             update_file:close()
             update_data = string.gsub(update_data, update_replacements[i]['pattern_version'], '%1' .. update_version .. '%2', 1)
-            if update_replacements[i]['date_format'] then
-                update_data = string.gsub(update_data, update_replacements[i]['pattern_date'], '%1' .. update_date_format .. '%2', 1)
-            else
-                update_data = string.gsub(update_data, update_replacements[i]['pattern_date'], '%1' .. update_date .. '%2', 1)
+            if not update_replacements[i]['ignore_date'] then 
+                if update_replacements[i]['date_format'] then
+                    update_data = string.gsub(update_data, update_replacements[i]['pattern_date'], '%1' .. update_date_format .. '%2', 1)
+                else
+                    update_data = string.gsub(update_data, update_replacements[i]['pattern_date'], '%1' .. update_date .. '%2', 1)
+                end
             end
             local update_file = io.open(dir_file, 'wb')
             update_file:write(update_data)
