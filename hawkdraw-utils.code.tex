@@ -30,6 +30,7 @@
 \cs_generate_variant:Nn \hawkdraw_support_pdfliteral:n { e }
 
 \int_new:N \g__hawkdraw_support_pdfxform_int
+\box_new:N \l__hawkdraw_support_pdfxform_box
 \cs_new_protected:Npn \hawkdraw_support_pdfxform:nnN #1#2#3 {
     \bool_lazy_or:nnTF {
         \sys_if_engine_luatex_p:
@@ -46,23 +47,57 @@
         \int_gincr:N \g__hawkdraw_support_pdfxform_int
     }
     \sys_if_engine_xetex:T {
+        \dim_const:cn {
+            c__hawkdraw_support_pdfxform_
+            \int_use:N \g__hawkdraw_support_pdfxform_int 
+            _wd_dim
+        } {
+            \box_wd:N #3
+        }
+        \dim_const:cn {
+            c__hawkdraw_support_pdfxform_
+            \int_use:N \g__hawkdraw_support_pdfxform_int 
+            _ht_dim
+        } {
+            \box_ht:N #3
+        }
+        \dim_const:cn {
+            c__hawkdraw_support_pdfxform_
+            \int_use:N \g__hawkdraw_support_pdfxform_int 
+            _dp_dim
+        } {
+            \box_dp:N #3
+        }
+        \box_set_wd:Nn #3 { \c_zero_dim }
+        \box_set_ht:Nn #3 { \c_zero_dim }
+        \box_set_dp:Nn #3 { \c_zero_dim }
         \hook_gput_next_code:nn { shipout / background } {
             \mode_leave_vertical:
             \tex_special:D {
-                pdf: bxobj ~ @hawkdraw \int_use:N \g__hawkdraw_support_pdfxform_int \c_space_tl
-                width  ~ \box_wd:N #3 \c_space_tl
-                height ~ \box_ht:N #3 \c_space_tl
-                depth  ~ \box_dp:N #3
+                pdf: ~ bxobj ~
+                    @hawkdraw.xobj \int_use:N \g__hawkdraw_support_pdfxform_int \c_space_tl
+                width  ~
+                    \dim_use:c { c__hawkdraw_support_pdfxform_
+                        \int_use:N \g__hawkdraw_support_pdfxform_int 
+                        _wd_dim
+                    } \c_space_tl
+                height ~
+                    \dim_use:c { c__hawkdraw_support_pdfxform_
+                        \int_use:N \g__hawkdraw_support_pdfxform_int 
+                        _ht_dim
+                    } \c_space_tl
+                depth  ~
+                    \dim_use:c { c__hawkdraw_support_pdfxform_
+                        \int_use:N \g__hawkdraw_support_pdfxform_int 
+                        _dp_dim
+                    }
             }
-            \box_set_wd:Nn #3 { \c_zero_dim }
-            \box_set_ht:Nn #3 { \c_zero_dim }
-            \box_set_dp:Nn #3 { \c_zero_dim }
             \box_use_drop:N #3
-            \tex_special:D { pdf: put ~ @resources ~ << #2 >> }
+            \tex_special:D { pdf: ~ put ~ @resources ~ << #2 >> }
             \tl_if_empty:nTF {#1} {
-                \tex_special:D { pdf: exobj }
+                \tex_special:D { pdf: ~ exobj }
             } {
-                \tex_special:D { pdf: exobj ~ << #1 >> }
+                \tex_special:D { pdf: ~ exobj ~ << #1 >> }
             }
         }
     }
@@ -89,9 +124,21 @@
         \tex_pdfrefxform:D \int_use:N #1 \scan_stop:
     }
     \sys_if_engine_xetex:T {
-        \tex_special:D {
-            pdf: uxobj ~ @hawkdraw \int_use:N #1 \scan_stop:
+        \hbox_set:Nn \l__hawkdraw_support_pdfxform_box {
+            \tex_special:D {
+                pdf: ~ uxobj ~ @hawkdraw.xobj \int_use:N #1 \scan_stop:
+            }
         }
+        \box_set_wd:Nn \l__hawkdraw_support_pdfxform_box {
+            \use:c { c__hawkdraw_support_pdfxform_ \int_use:N #1 _wd_dim }
+        }
+        \box_set_ht:Nn \l__hawkdraw_support_pdfxform_box {
+            \use:c { c__hawkdraw_support_pdfxform_ \int_use:N #1 _ht_dim }
+        }
+        \box_set_dp:Nn \l__hawkdraw_support_pdfxform_box {
+            \use:c { c__hawkdraw_support_pdfxform_ \int_use:N #1 _dp_dim }
+        }
+        \box_use_drop:N \l__hawkdraw_support_pdfxform_box
     }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfxform_use:N { c }
@@ -105,7 +152,7 @@
         \int_use:N #1 \c_space_tl 0 ~ R
     }
     \sys_if_engine_xetex:T {
-        @hawkdraw \int_use:N #1 \scan_stop:
+        @hawkdraw.xobj \int_use:N #1 \scan_stop:
     }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfxform_ref:N { c }
