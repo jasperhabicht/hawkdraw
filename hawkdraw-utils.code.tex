@@ -59,7 +59,9 @@
             \box_set_dp:Nn #3 { \c_zero_dim }
             \box_use_drop:N #3
             \tex_special:D { pdf: put ~ @resources ~ << #2 >> }
-            \tl_if_empty:nF {#1} {
+            \tl_if_empty:nTF {#1} {
+                \tex_special:D { pdf: exobj }
+            } {
                 \tex_special:D { pdf: exobj ~ << #1 >> }
             }
         }
