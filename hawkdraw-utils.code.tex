@@ -126,7 +126,7 @@
     \sys_if_engine_xetex:T {
         \hbox_set:Nn \l__hawkdraw_support_pdfxform_box {
             \tex_special:D {
-                pdf: ~ uxobj ~ @hawkdraw.xobj \int_use:N #1 \scan_stop:
+                pdf: ~ uxobj ~ @hawkdraw.xobj \int_use:N #1
             }
         }
         \box_set_wd:Nn \l__hawkdraw_support_pdfxform_box {
@@ -152,7 +152,7 @@
         \int_use:N #1 \c_space_tl 0 ~ R
     }
     \sys_if_engine_xetex:T {
-        @hawkdraw.xobj \int_use:N #1 \scan_stop:
+        @hawkdraw.xobj \int_use:N #1
     }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfxform_ref:N { c }
