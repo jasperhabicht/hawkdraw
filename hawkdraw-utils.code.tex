@@ -24,10 +24,23 @@
         \tex_pdfliteral:D {#1}
     }
     \sys_if_engine_xetex:T {
-        \tex_special:D { pdf: code ~ #1 }
+        \tex_special:D { pdf: content ~ #1 }
     }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfliteral:n { e }
+
+\cs_new_protected:Npn \hawkdraw_support_pdfliteral_direct:n #1 {
+    \sys_if_engine_luatex:T {
+        \tex_pdfextension:D literal {#1}
+    }
+    \sys_if_engine_pdftex:T {
+        \tex_pdfliteral:D {#1}
+    }
+    \sys_if_engine_xetex:T {
+        \tex_special:D { pdf: code ~ #1 }
+    }
+}
+\cs_generate_variant:Nn \hawkdraw_support_pdfliteral_direct:n { e }
 
 \cs_new_protected:Npn \hawkdraw_support_pdf_write_stream:nnn #1#2#3 {
     \sys_if_engine_xetex:TF {
