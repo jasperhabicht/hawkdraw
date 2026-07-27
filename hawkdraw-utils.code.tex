@@ -123,7 +123,7 @@
     }
 }
 
-\cs_new_protected:Npn \hawkdraw_support_pdfxform_last: {
+\cs_new:Npn \hawkdraw_support_pdfxform_last: {
     \bool_lazy_or:nnTF {
         \sys_if_engine_luatex_p:
     } {
@@ -131,7 +131,7 @@
     } {
         \tex_pdflastxform:D
     } {
-        \g__hawkdraw_support_pdfxform_int
+        \int_use:N \g__hawkdraw_support_pdfxform_int
     }
 }
 
