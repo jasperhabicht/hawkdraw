@@ -69,7 +69,6 @@
 
 \keys_define:nn { hawkdraw / path } {
     shading                 .code:n         = {
-        \__hawkdraw_error_unsupported:n { Shading }
         \tl_put_right:Nn \l_hawkdraw_path_preactions_tl {
             \hawkdraw_scope_reset_bb_begin:
                 \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
@@ -124,11 +123,7 @@
             #2
         }
     } {
-        \pdf_object_write:nne {
-            hawkdraw_shading_ #1
-        } { stream } {
-            {#2} {#3}
-        }
+        \hawkdraw_support_pdf_write_stream:nnn {#1} {#2} {#3}
     }
     \hawkdraw_support_pdfxform:nnN { } {
         % no need to set up a pattern dictionary
@@ -489,15 +484,13 @@
             \l__hawkdraw_shading_color_values_seq
             \__hawkdraw_shading_conic_stream_aux:nn
     }
-    \exp_args:Ne
-    \tl_analysis_log:n { \seq_use:Nn \l__hawkdraw_shading_color_values_seq { , } }
 }
 
 \cs_new:Npn \__hawkdraw_shading_conic_stream_aux:nn #1#2 {
     % skip first entry in seq which is the start color
     \int_compare:nNnF {#1} = { \c_one_int } {
         % flag (4 bits)
-        \hawkdraw_hex_to_binary:n { 00 }
+        \hawkdraw_hex_to_stream:n { 00 }
         % patch is pie segment going from 0 deg to 360 / ( n * 4 ) deg
         % points (12 points, 2 * 16 bits each)
         \prg_replicate:nn { 2 } {
@@ -537,20 +530,20 @@
             ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
         }
         % colors (4 colors, 3 * 8 bits each for RGB)
-        \hawkdraw_hex_to_binary:e {
+        \hawkdraw_hex_to_stream:e {
             \hawkdraw_color_pdf_to_hex:e {
                 \seq_item:Nn \l__hawkdraw_shading_color_values_seq { #1 - 1 }
             }
         }
-        \hawkdraw_hex_to_binary:e {
+        \hawkdraw_hex_to_stream:e {
             \hawkdraw_color_pdf_to_hex:e {
                 \seq_item:Nn \l__hawkdraw_shading_color_values_seq { #1 - 1 }
             }
         }
-        \hawkdraw_hex_to_binary:e {
+        \hawkdraw_hex_to_stream:e {
             \hawkdraw_color_pdf_to_hex:n {#2}
         }
-        \hawkdraw_hex_to_binary:e {
+        \hawkdraw_hex_to_stream:e {
             \hawkdraw_color_pdf_to_hex:n {#2}
         }
     }
@@ -558,7 +551,7 @@
 
 \cs_new:Npn \__hawkdraw_shading_conic_stream_point_polar:nn #1#2 {
     % get coordinates from shifted point polar and normalize to FFFF
-    \hawkdraw_hex_to_binary:e {
+    \hawkdraw_hex_to_stream:e {
         \int_format:nn {
             \fp_to_int:n {
                 \hawkdraw_tuple_use_i:n {
@@ -569,7 +562,7 @@
             }
         } { 0>4X }
     }
-    \hawkdraw_hex_to_binary:e {
+    \hawkdraw_hex_to_stream:e {
         \int_format:nn {
             \fp_to_int:n {
                 \hawkdraw_tuple_use_ii:n {
