@@ -29,7 +29,6 @@
 \clist_new:N \l_hawkdraw_pattern_keys_clist
 \fp_new:N \l_hawkdraw_pattern_tile_size_fp
 
-\int_new:N \g__hawkdraw_pattern_id_int
 \box_new:N \l__hawkdraw_pattern_box
 \dim_new:N \l__hawkdraw_pattern_width_dim
 \dim_new:N \l__hawkdraw_pattern_height_dim
@@ -55,8 +54,6 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_pattern_set:nn #1#2 {
-    \int_gincr:N \g__hawkdraw_pattern_id_int
-
     \hbox_set:Nn \l__hawkdraw_pattern_box {
         \draw_suspend_begin:
             \draw_begin:
@@ -79,7 +76,7 @@
     \hawkdraw_support_pdfxform:nnN { } { }
         \l__hawkdraw_pattern_box
     \int_const:cn {
-        c__hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2} _int
+        c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
     } {
         \hawkdraw_support_pdfxform_last:
     }
@@ -127,22 +124,25 @@
             ] ~
             /Resources ~ << ~
                 /XObject ~ << ~
-                    /hawkdrawPatternObj \int_use:N \g__hawkdraw_pattern_id_int \c_space_tl
+                    /hawkdrawPatternObj
+                    \int_use:c {
+                        c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+                    }
+                    \c_space_tl
                     \hawkdraw_support_pdfxform_ref:c {
-                        c__hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2} _int
+                        c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
                     } ~
                 >> ~
             >>
         } {
             q ~
-            /hawkdrawPatternObj \int_use:N \g__hawkdraw_pattern_id_int \c_space_tl Do ~
+            /hawkdrawPatternObj
+            \int_use:c {
+                c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+            }
+            \c_space_tl Do ~
             Q
         }
-    }
-    \int_const:cn {
-        c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
-    } {
-        \g__hawkdraw_pattern_id_int
     }
 }
 
