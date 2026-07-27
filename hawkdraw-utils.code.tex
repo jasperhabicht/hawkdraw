@@ -46,7 +46,7 @@
         }
     }
 }
-\cs_generate_variant:Nn \hawkdraw_support_pdf_write_stream:nnn { nne }
+\cs_generate_variant:Nn \hawkdraw_support_pdf_write_stream:nnn { nee }
 
 \int_new:N \g__hawkdraw_support_pdfxform_int
 \box_new:N \g__hawkdraw_support_pdfxform_tmp_box
@@ -246,16 +246,16 @@
         #1
     } {
         % PDFTeX and LuaTeX need the stream to be binary
-        \__hawkdraw_hex_to_stream:w #1 \q_stop
+        \__hawkdraw_hex_to_stream_aux:w #1 \q_stop
     }
 }
 \cs_generate_variant:Nn \hawkdraw_hex_to_stream:n { e }
 
-\cs_new:Npn \__hawkdraw_hex_to_stream:w #1 \q_stop {
-     \__hawkdraw_hex_to_stream:NNw #1 \q_stop
+\cs_new:Npn \__hawkdraw_hex_to_stream_aux:w #1 \q_stop {
+     \__hawkdraw_hex_to_stream_aux:NNw #1 \q_stop
 }
 
-\cs_new:Npn \__hawkdraw_hex_to_stream:NNw #1#2#3 \q_stop {
+\cs_new:Npn \__hawkdraw_hex_to_stream_aux:NNw #1#2#3 \q_stop {
     \sys_if_engine_luatex:T {
         \lua_now:e {
             token.put_next (
@@ -270,29 +270,31 @@
         \char_generate:nn { " #1#2 } { 12 }
     }
     \tl_if_empty:nF {#3} {
-        \__hawkdraw_hex_to_stream:w #3 \q_stop
+        \__hawkdraw_hex_to_stream_aux:w #3 \q_stop
     }
 }
 
 % ===
 
-\cs_new:Npn \__hawkdraw_tuple_use_i:w ( #1 , #2 ) {#1}
 \cs_new:Npn \hawkdraw_tuple_use_i:n #1 {
     \fp_to_dim:n {
         \exp_last_unbraced:Ne
-            \__hawkdraw_tuple_use_i:w { \fp_eval:n {#1} }
+            \__hawkdraw_tuple_use_i_aux:w { \fp_eval:n {#1} }
     }
 }
 \cs_generate_variant:Nn \hawkdraw_tuple_use_i:n { e , V }
 
-\cs_new:Npn \__hawkdraw_tuple_use_ii:w ( #1 , #2 ) {#2}
+\cs_new:Npn \__hawkdraw_tuple_use_i_aux:w ( #1 , #2 ) {#1}
+
 \cs_new:Npn \hawkdraw_tuple_use_ii:n #1 {
     \fp_to_dim:n {
         \exp_last_unbraced:Ne
-            \__hawkdraw_tuple_use_ii:w { \fp_eval:n {#1} }
+            \__hawkdraw_tuple_use_ii_aux:w { \fp_eval:n {#1} }
     }
 }
 \cs_generate_variant:Nn \hawkdraw_tuple_use_ii:n { e , V }
+
+\cs_new:Npn \__hawkdraw_tuple_use_ii_aux:w ( #1 , #2 ) {#2}
 
 \cs_new:Npn \__hawkdraw_cs_if_exist_use_secure:nnTF #1#2#3#4 {
     \exp_last_unbraced:Ne
