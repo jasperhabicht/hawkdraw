@@ -32,7 +32,6 @@
 \cs_new_protected:Npn \hawkdraw_support_pdf_write_stream:nnn #1#2#3 {
     \sys_if_engine_xetex:TF {
         % We need the hex-encoded stream here to be placed between < and > 
-        \exp_args:Ne
         \tex_special:D {
             pdf: stream ~ 
             \pdf_object_ref:n { hawkdraw_shading_ #1 } ~ 
