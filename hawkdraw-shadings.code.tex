@@ -57,12 +57,12 @@
 
 \exp_args_generate:n { NVVVV }
 
-\cs_set:Npn \hawkdraw_scope_reset_bb_begin: {
+\cs_set_protected:Npn \hawkdraw_scope_reset_bb_begin: {
     \draw_scope_begin:
         \__draw_scope_bb_begin:
         \bool_set_true:N \l_draw_bb_update_bool
 }
-\cs_set:Npn \hawkdraw_scope_reset_bb_end: {
+\cs_set_protected:Npn \hawkdraw_scope_reset_bb_end: {
         \__draw_scope_bb_end:
     \draw_scope_end:
 }

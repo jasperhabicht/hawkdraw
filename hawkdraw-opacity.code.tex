@@ -116,7 +116,6 @@
 }
 
 \int_new:N \g__hawkdraw_softmask_id_int
-\box_new:N \l__hawkdraw_softmask_ref_box
 
 \cs_generate_variant:Nn \draw_box_use:Nn { c }
 
@@ -137,12 +136,10 @@
                 \vbox:n {#2}
             }
         \group_end:
-        \dim_gset_eq:cN { g_hawkdraw_softmask_ #1 _bbox_xmin_dim } {
+        \dim_gset_eq:cN { g_hawkdraw_softmask_ #1 _bbox_xmin_dim }
             \g_draw_bb_xmin_dim
-        }
-        \dim_gset_eq:cN { g_hawkdraw_softmask_ #1 _bbox_ymin_dim } {
+        \dim_gset_eq:cN { g_hawkdraw_softmask_ #1 _bbox_ymin_dim }
             \g_draw_bb_ymin_dim
-        }
 
         \int_const:cn {
             c__hawkdraw_softmask_obj_ #1 _int
