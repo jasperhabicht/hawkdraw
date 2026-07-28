@@ -34,11 +34,11 @@
     } {
         \sys_if_engine_pdftex_p:
     } {
-        \msg_error:nnn { hawkdraw } { feature-unsupported }{ #1}
+        \msg_error:nnn { hawkdraw } { feature-unsupported } {#1}
     }
 }
 
-\NeedsTeXFormat{LaTeX2e}[2026-05-26]
+\NeedsTeXFormat { LaTeX2e } [ 2026-05-26 ]
 
 \cs_if_exist:NF \ProcessKeyOptions {
     \msg_critical:nn { hawkdraw } { old-kernel }
@@ -87,7 +87,7 @@
                 \g_draw_bb_ymin_dim
             }
             \c_space_tl
-            \dim_to_decimal_in_bp:n{
+            \dim_to_decimal_in_bp:n {
                 \property_ref:een {
                     draw. \int_use:N \g_draw_id_int
                 } { xpos } { 0 } sp
