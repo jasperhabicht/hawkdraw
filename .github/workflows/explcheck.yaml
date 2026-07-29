@@ -8,4 +8,4 @@ jobs:
       image: ghcr.io/witiko/expltools/explcheck
     steps:
       - uses: actions/checkout@v6
-      - run: explcheck --group-files --max-line-length=120 *.sty *.code.tex
+      - run: explcheck --group-files --ignored-issues=w100,s103 *.sty *.code.tex

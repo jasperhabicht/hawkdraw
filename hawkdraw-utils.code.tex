@@ -146,7 +146,7 @@
     }
 }
 
-\box_new:N \g__hawkdraw_support_pdfxform_tmp_box
+\box_new:N \l__hawkdraw_support_pdfxform_tmp_box
 \cs_new_protected:Npn \hawkdraw_support_pdfxform_use:N #1 {
     \bool_lazy_or:nnT {
         \sys_if_engine_luatex_p:
@@ -156,21 +156,21 @@
         \tex_pdfrefxform:D \int_use:N #1 \scan_stop:
     }
     \sys_if_engine_xetex:T {
-        \hbox_set:Nn \g__hawkdraw_support_pdfxform_tmp_box {
+        \hbox_set:Nn \l__hawkdraw_support_pdfxform_tmp_box {
             \tex_special:D {
                 pdf: uxobj ~ @hawkdraw.xobj \int_use:N #1
             }
         }
-        \box_set_wd:Nn \g__hawkdraw_support_pdfxform_tmp_box {
+        \box_set_wd:Nn \l__hawkdraw_support_pdfxform_tmp_box {
             \use:c { c__hawkdraw_support_pdfxform_ \int_use:N #1 _wd_dim }
         }
-        \box_set_ht:Nn \g__hawkdraw_support_pdfxform_tmp_box {
+        \box_set_ht:Nn \l__hawkdraw_support_pdfxform_tmp_box {
             \use:c { c__hawkdraw_support_pdfxform_ \int_use:N #1 _ht_dim }
         }
-        \box_set_dp:Nn \g__hawkdraw_support_pdfxform_tmp_box {
+        \box_set_dp:Nn \l__hawkdraw_support_pdfxform_tmp_box {
             \use:c { c__hawkdraw_support_pdfxform_ \int_use:N #1 _dp_dim }
         }
-        \box_use_drop:N \g__hawkdraw_support_pdfxform_tmp_box
+        \box_use_drop:N \l__hawkdraw_support_pdfxform_tmp_box
     }
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfxform_use:N { c }
