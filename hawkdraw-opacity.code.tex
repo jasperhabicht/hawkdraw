@@ -263,9 +263,9 @@
 \NewDocumentEnvironment { hawkdrawsoftmask } { m O{} +b } { } {
     \__hawkdraw_error_unsupported:n { Soft ~ mask }
     \hawkdraw_softmask_set:nn {#1} {
-        \begin{hawkdraw}[#2]
+        \begin { hawkdraw } [#2]
             #3
-        \end{hawkdraw}
+        \end { hawkdraw }
     }
 }
 
