@@ -1,0 +1,11 @@
+name: Check expl3 syntax of package files
+on:
+  push:
+jobs:
+  check-code:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/witiko/expltools/explcheck
+    steps:
+      - uses: actions/checkout@v6
+      - run: explcheck --group-files --max-line-length=120 *.sty *.code.tex
