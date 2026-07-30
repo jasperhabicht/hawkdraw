@@ -131,7 +131,7 @@
         \dim_new:c { g_hawkdraw_softmask_ #1 _bbox_xmin_dim }
         \dim_new:c { g_hawkdraw_softmask_ #1 _bbox_ymin_dim }
         \group_begin:
-            \dim_set:Nn \tex_parindent:D { 0pt }
+            \hawkdraw_set_parindent:n { 0pt }
             \hbox_gset:cn { g_hawkdraw_softmask_ #1 _box } {
                 \vbox:n {#2}
             }
@@ -260,7 +260,7 @@
     }
 }
 
-\NewDocumentEnvironment { hawkdrawsoftmask } { m O{} +b } { } {
+\NewDocumentEnvironment { hawkdrawsoftmask } { m O { } +b } { } {
     \__hawkdraw_error_unsupported:n { Soft ~ mask }
     \hawkdraw_softmask_set:nn {#1} {
         \begin { hawkdraw } [#2]

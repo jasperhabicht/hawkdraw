@@ -635,7 +635,7 @@
         blend ~ mode            .code:n     = { } ,
         soft ~ mask ~ use       .code:n     = { } ,
     }
-    \NewDocumentEnvironment { hawkdrawsoftmask } { m O{} +b } { } { }
+    \NewDocumentEnvironment { hawkdrawsoftmask } { m O { } +b } { } { }
 }
 
 % ===
@@ -1416,7 +1416,7 @@
     \clist_item:cn { g__hawkdraw_user_array_ #1 _clist } {#2}
 }
 
-\NewDocumentCommand \hawkdrawmap { O{} m } {
+\NewDocumentCommand \hawkdrawmap { O { } m } {
     \hawkdraw_map:nn {#1} {#2}
 }
 
@@ -1436,7 +1436,7 @@
         \l__hawkdraw_keys_unprocessed_clist
 }
 
-\NewDocumentEnvironment { hawkdraw } { O{} } {
+\NewDocumentEnvironment { hawkdraw } { O { } } {
     % ensure that relevant characters are not active
     \seq_clear:N \l__hawkdraw_chars_active_seq
     \int_step_inline:nnn { 32 } { 127 } {
@@ -1468,13 +1468,13 @@
             { \hawkdraw_point_parse:n {##1} } { \hawkdraw_point_parse:n {##2} }
             { \hawkdraw_point_parse:n {##3} } { \hawkdraw_point_parse:n {##4} }
     }
-    \NewExpandableDocumentCommand \getintersectioncircles { O{ 1 } m m m m } {
+    \NewExpandableDocumentCommand \getintersectioncircles { O { 1 } m m m m } {
         \draw_point_intersect_circles:nnnnn
             { \hawkdraw_point_parse:n {##2} } {##3}
             { \hawkdraw_point_parse:n {##4} } {##5}
             {##1}
     }
-    \NewExpandableDocumentCommand \getintersectionlinecircle { O{ 1 } m m m m } {
+    \NewExpandableDocumentCommand \getintersectionlinecircle { O { 1 } m m m m } {
         \draw_point_intersect_line_circle:nnnnn
             { \hawkdraw_point_parse:n {##2} } { \hawkdraw_point_parse:n {##3} }
             { \hawkdraw_point_parse:n {##4} } {##5}
@@ -1498,7 +1498,7 @@
             \fp_to_dim:N \g_hawkdraw_path_length_fp
         }
     }
-    \NewDocumentEnvironment { scope } { O{} +b } {
+    \NewDocumentEnvironment { scope } { O { } +b } {
         \draw_scope_begin:
             \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
             \keys_set_known:nnN { hawkdraw / scope } {##1}

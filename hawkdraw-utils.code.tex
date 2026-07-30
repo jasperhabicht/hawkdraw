@@ -14,7 +14,11 @@
 
 % v0.6.1 2026-07-30
 
-% The following commands currently only support PDFLaTeX and LuaLaTeX.
+\cs_new_protected:Npn \hawkdraw_set_parindent:n #1 {
+    \dim_set:Nn \tex_parindent:D {#1}
+}
+
+% ===
 
 \cs_new_protected:Npn \hawkdraw_support_pdfliteral:n #1 {
     \sys_if_engine_luatex:T {
@@ -219,9 +223,6 @@
 
 % ===
 
-% #1 : gray
-% #2 : rgb
-% #3 : cmyk
 \cs_new:Npn \hawkdraw_case_color_space:nnn #1#2#3 {
     \str_case:NnF \l_color_fixed_model_tl {
         { gray } {#1}
