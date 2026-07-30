@@ -94,27 +94,19 @@
             /BBox ~ [ ~
                 0 ~ 0 ~
                 \dim_to_decimal_in_bp:n {
-                    \fp_to_dim:n {
-                        \hawkdraw_tuple_use_i:V \l_hawkdraw_pattern_tile_size_fp
-                    }
+                    \box_wd:N \l__hawkdraw_pattern_box
                 } ~
                 \dim_to_decimal_in_bp:n {
-                    \fp_to_dim:n {
-                        \hawkdraw_tuple_use_ii:V \l_hawkdraw_pattern_tile_size_fp
-                    }
+                    \box_ht_plus_dp:N \l__hawkdraw_pattern_box
                 } ~
             ] ~
             /XStep ~
                 \dim_to_decimal_in_bp:n {
-                    \fp_to_dim:n {
-                        \hawkdraw_tuple_use_i:V \l_hawkdraw_pattern_tile_size_fp
-                    }
+                    \box_wd:N \l__hawkdraw_pattern_box
                 } ~
             /YStep ~
                 \dim_to_decimal_in_bp:n {
-                    \fp_to_dim:n {
-                        \hawkdraw_tuple_use_ii:V \l_hawkdraw_pattern_tile_size_fp
-                    }
+                    \box_ht_plus_dp:N \l__hawkdraw_pattern_box
                 } ~
             /Matrix ~ [ ~
                 1 ~ 0 ~ 0 ~ 1 ~ 0 ~ 0 ~
