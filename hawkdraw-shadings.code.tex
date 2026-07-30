@@ -21,8 +21,9 @@
 % ===
 
 % Shadings are defined as rectangular PDF XObjects. There are various types of shadings, but we only define
-% linear and radial shaings here having type 2 and 3 respectively. We define shadings as square with a size
-% of 100bp times 100bp. Shadings are defined by functions.
+% linear and radial shaings here having type 2, 3 and 6 respectively. Following the PGF approach, ee define
+% shadings as square with a size of 100bp times 100bp. Type 2 and 3 shadings are defined by functions, type
+% 6 shadings are defined by a binary stream.
 
 % In order to allow for rotation of shadings, we use the PGF approach of defining the shadings twice the
 % size of the path they should fill. Thus, we need to use multiple functions to define the shading, because
@@ -465,7 +466,7 @@
 % ===
 
 % We use a Coons patch mesh for conic shadings where multiple circular-segment shaped patches form a circle.
-% Two corners of the patch are at the center of the circle, the other to at the outer border forming a curve.
+% Two corners of the patch are at the center of the circle, the other two at the outer border forming a curve.
 % We use four patches for each color in order to be able to generate a circle (or at least an approximation)
 % with only two colors. Therefore, we need to interpolate a few colors so we end up with 2n + 1 colors.
 
@@ -476,7 +477,8 @@
 % We need to output a binary stream. It is theoretically possinle to output a hex stream and set the relevant
 % /Filter, but when PDFTeX compresses the stream, it simply appends a /Filter entry to the attributes of the
 % PDF object without taking into account an already existing /Filter entry which results in faulty syntax.
-% We need different approaches to output such a stream for PDFTeX and LuaTeX.
+% We need different approaches to output such a stream for PDFTeX and LuaTeX. Since dvipdfmx requires a hex
+% stream which it converts to a binary stream, we first create a hex stream.
 
 \cs_new_protected:Npn \hawkdraw_shading_conic_stream:N #1 {
     \tl_set:Ne #1 {
