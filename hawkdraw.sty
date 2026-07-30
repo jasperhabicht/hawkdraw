@@ -10,7 +10,7 @@
 %
 % This work has the LPPL maintenance status `maintained'.
 %
-\ProvidesExplPackage {hawkdraw} {2026-07-27} {0.6.0}
+\ProvidesExplPackage {hawkdraw} {2026-07-30} {0.6.1}
     {A package for drawing vector graphics with the l3draw package and a TikZ-like syntax.}
 
 \msg_new:nnn { hawkdraw } { old-kernel } {
@@ -678,18 +678,18 @@
     \fp_if_nan:nF { \l_hawkdraw_point_at_part_fp } {
         \fp_set:Nn \l_hawkdraw_point_at_fp {
             \cs_if_exist_use:cTF {
-                __hawkdraw_point_part_ \l__hawkdraw_path_type_tl :V
+                __hawkdraw_point_part_ \l__hawkdraw_path_type_tl :n
             } {
-                \l_hawkdraw_point_at_part_fp
+                { \l_hawkdraw_point_at_part_fp }
             } {
                 0pt , 0pt
             }
         }
         \fp_set:Nn \l_hawkdraw_point_slope_fp {
             \cs_if_exist_use:cTF {
-                __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_tl :V
+                __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_tl :n
             } {
-                \l_hawkdraw_point_at_part_fp
+                { \l_hawkdraw_point_at_part_fp }
             } {
                 0
             }

@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.6.0 2026-07-27
+% v0.6.1 2026-07-30
 
 % The following commands currently only support PDFLaTeX and LuaLaTeX.
 
@@ -62,18 +62,21 @@
 \cs_generate_variant:Nn \hawkdraw_support_pdf_write_stream:nnn { nee }
 
 \int_new:N \g__hawkdraw_support_pdfxform_int
+\box_new:N \l__hawkdraw_support_pdfxform_tmp_box
 \cs_new_protected:Npn \hawkdraw_support_pdfxform:nnN #1#2#3 {
     \bool_lazy_or:nnTF {
         \sys_if_engine_luatex_p:
     } {
         \sys_if_engine_pdftex_p:
     } {
+        % Copy to a temporary box in order to keep the original box
+        \box_set_eq:NN \l__hawkdraw_support_pdfxform_tmp_box #3
         \tex_immediate:D \tex_pdfxform:D
         \tl_if_empty:nF {#1} {
             attr {#1}
         }
         resources {#2}
-        #3
+        \l__hawkdraw_support_pdfxform_tmp_box
     } {
         \int_gincr:N \g__hawkdraw_support_pdfxform_int
     }
@@ -85,7 +88,7 @@
 }
 
 \cs_new_protected:Npn \__hawkdraw_support_pdfxform_aux:nnnN #1#2#3#4 {
-    % Copy to a new temporary box in order to set its size to zero
+    % Copy to a new temporary box in order to preserve the box contents
     \box_new:c { g__hawkdraw_support_pdfxform_ #1 _box }
     \box_gset_eq:cN { g__hawkdraw_support_pdfxform_ #1 _box } #4
     \dim_const:cn {
@@ -146,7 +149,6 @@
     }
 }
 
-\box_new:N \l__hawkdraw_support_pdfxform_tmp_box
 \cs_new_protected:Npn \hawkdraw_support_pdfxform_use:N #1 {
     \bool_lazy_or:nnT {
         \sys_if_engine_luatex_p:
@@ -365,7 +367,6 @@
         { \l__hawkdraw_point_o_fp }
         { \l__hawkdraw_point_a_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_line:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_line:nnn #1#2#3 {
     \hawkdraw_calculate_slope:nn {#2} {#3}
@@ -377,7 +378,6 @@
         { \l__hawkdraw_point_o_fp }
         { \l__hawkdraw_point_a_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_slope_line:n { V }
 
 % =
 
@@ -398,7 +398,6 @@
         { \l__hawkdraw_point_a_fp }
         { \l__hawkdraw_point_b_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_line_orthogonal:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_line_orthogonal:nnnn #1#2#3#4 {
     \fp_compare:nNnTF {#1} > { 0.5 } {
@@ -415,7 +414,6 @@
         { \l__hawkdraw_point_a_fp }
         { \l__hawkdraw_point_b_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_slope_line_orthogonal:n { V }
 
 % =
 
@@ -429,7 +427,6 @@
         { \l__hawkdraw_point_a_fp }
         { \l__hawkdraw_point_b_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_curve_quadratic:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_curve_quadratic:nnnn #1#2#3#4 {
     \fp_eval:n {
@@ -466,7 +463,6 @@
         { \l__hawkdraw_point_a_fp }
         { \l__hawkdraw_point_b_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_slope_curve_quadratic:n { V }
 
 % =
 
@@ -481,7 +477,6 @@
         { \l__hawkdraw_point_b_fp }
         { \l__hawkdraw_point_c_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_curve_cubic:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_curve_cubic:nnnnn #1#2#3#4#5 {
     \fp_eval:n {
@@ -527,7 +522,6 @@
         { \l__hawkdraw_point_b_fp }
         { \l__hawkdraw_point_c_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_slope_curve_cubic:n { V }
 
 % =
 
@@ -578,7 +572,6 @@
             { \l_hawkdraw_path_arc_angle_end_fp }
     }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_arc:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_arc:nnnnn #1#2#3#4#5 {
     \fp_eval:n {
@@ -623,7 +616,6 @@
             { \l_hawkdraw_path_arc_angle_end_fp }
     }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_slope_arc:n { V }
 
 % =
 
@@ -634,7 +626,6 @@
 \cs_new:Npn \__hawkdraw_point_part_circle:n #1 {
     \__hawkdraw_point_part_circle:nn { #1 } { \l_hawkdraw_path_circle_radius_dim }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_circle:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_circle:nn #1#2 {
     \fp_eval:n { #1 * 360 + 90 }
@@ -643,7 +634,6 @@
 \cs_new:Npn \__hawkdraw_point_part_slope_circle:n #1 {
     \__hawkdraw_point_part_slope_circle:nn {#1} { }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_slope_circle:n { V }
 
 % =
 
@@ -659,7 +649,6 @@
         { \l_hawkdraw_path_ellipse_vector_a_fp }
         { \l_hawkdraw_path_ellipse_vector_b_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_ellipse:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_ellipse:nnnn #1#2#3#4 {
     \fp_eval:n {
@@ -684,7 +673,6 @@
         { \l_hawkdraw_path_ellipse_vector_a_fp }
         { \l_hawkdraw_path_ellipse_vector_b_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_slope_ellipse:n { V }
 
 % =
 
@@ -733,7 +721,6 @@
         { \l__hawkdraw_point_o_fp }
         { \l__hawkdraw_point_a_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_rectangle:n { V }
 
 \cs_new:Npn \__hawkdraw_point_part_slope_rectangle:nnn #1#2#3 {
     \fp_compare:nNnTF {#1} > { 0.25 } {
@@ -757,17 +744,14 @@
         { \l__hawkdraw_point_o_fp }
         { \l__hawkdraw_point_a_fp }
 }
-\cs_generate_variant:Nn \__hawkdraw_point_part_slope_rectangle:n { V }
 
 % =
 
 \cs_set_eq:NN \__hawkdraw_point_part_grid:nnn \__hawkdraw_point_part_rectangle:nnn
 \cs_set_eq:NN \__hawkdraw_point_part_grid:n \__hawkdraw_point_part_rectangle:n
-\cs_generate_variant:Nn \__hawkdraw_point_part_grid:n { V }
 
 \cs_set_eq:NN \__hawkdraw_point_part_slope_grid:nnn \__hawkdraw_point_part_slope_rectangle:nnn
 \cs_set_eq:NN \__hawkdraw_point_part_slope_grid:n \__hawkdraw_point_part_slope_rectangle:n
-\cs_generate_variant:Nn \__hawkdraw_point_part_slope_grid:n { V }
 
 % =====
 
