@@ -20,8 +20,8 @@
 
 % ===
 
-% PDF treats shadings as patterns and hence as fill (or stroke). But we want to ensure that shadings are reusable. 
-% Thus we apply the PGF approach here.
+% PDF treats shadings as patterns and hence as fill (or stroke). But we want to ensure that shadings are reusable
+% for different sizes or rotations, thus we apply approach of PGF/TikZ here.
 
 % Shadings are defined as rectangular PDF XObjects. There are various types of shadings, but we only define
 % linear and radial shaings here having type 2, 3 and 6 respectively. Following the PGF approach, ee define
