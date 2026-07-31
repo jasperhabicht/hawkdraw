@@ -145,6 +145,7 @@
         \hawkdraw_support_pdfxform_last:
     }
 }
+\cs_generate_variant:Nn \hawkdraw_shading_set:nnn { e }
 
 \cs_new_protected:Npn \hawkdraw_shading_use:n #1 {
     \hawkdraw_support_pdfxform_use:c {
@@ -425,7 +426,7 @@
         \hawkdraw_shading_color_set_values:Nn
             \l__hawkdraw_shading_color_values_seq
             {#1}
-        \hawkdraw_shading_set:nnn {
+        \hawkdraw_shading_set:enn {
             radial
             . #1
             . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
@@ -643,7 +644,7 @@
             \l__hawkdraw_shading_color_values_seq
             {#1}
         \hawkdraw_shading_conic_stream:N \l_tmpa_tl
-        \hawkdraw_shading_set:nnn {
+        \hawkdraw_shading_set:enn {
             conic
             . #1
             . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }

@@ -33,8 +33,11 @@
 \int_new:N \g__hawkdraw_opacity_group_int
 \box_new:N \l__hawkdraw_opacity_group_box
 
+\cs_generate_variant:Nn \pdfxform_new:nnn { e }
+\cs_generate_variant:Nn \pdfxform_use:n { e }
+
 \cs_new_protected:Npn \hawkdraw_opacity_group_set_use:n #1 {
-    \pdfxform_new:nnn {
+    \pdfxform_new:enn {
         hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
     } {
         /Group ~ << ~
@@ -65,7 +68,7 @@
         \draw_suspend_end:
     }
     \hbox_set:Nn \l__hawkdraw_opacity_group_box {
-        \pdfxform_use:n {
+        \pdfxform_use:e {
             hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
         }
     }

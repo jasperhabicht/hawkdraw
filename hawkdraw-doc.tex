@@ -1667,7 +1667,7 @@ The options \macro{arrow start} and \macro{arrow end} set an arrow tip to the st
 !path/!|arrow end style set|={<options>}
 !path/!|arrow end style add|={<options>}
 \end{macrodef}
-Arrows can be styled by passing the relevant path options to the options \macro{arrow start style set} and \macro{arrow end style set}. The option \macro{arrow style set} sets the same style for start and end arrow tips.
+Arrows can be styled by adding the relevant path options to the options \macro{arrow start style set} and \macro{arrow end style set}. The option \macro{arrow style set} sets the same style for start and end arrow tips.
 
 The options \macro{arrow start style add}, \macro{arrow end style add} and \macro{arrow style add} append the relevant styles to the existing styles. All options that are available for paths are also available for arrow tips.
 
@@ -1681,7 +1681,7 @@ The options \macro{arrow start style add}, \macro{arrow end style add} and \macr
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-The following arrow tips are available, of these the last three, \macro{simple}, \macro{straight} and \macro{bar}, should be set together with the option \macro{arrow style set={stroke}}:
+The following arrow tips are available:
 
 \NewDocumentCommand{\arrowexample}{ m }{%
   \begin{hawkdraw}[baseline={0.5ex}]
@@ -1881,17 +1881,21 @@ Blend modes change the way colors of overlapping objects are combined.
 \begin{macrodef}
 !scope/!|blend mode|={<string>}
 \end{macrodef}
-The option \macro{blend mode} sets the blend mode of the current scope. The key takes as string one of the following values. Note that the option \macro{blend mode} is only available for scopes.
+The option \macro{blend mode} sets the blend mode of the current scope. The key takes as string one of the following values. Note that the option \macro{blend mode} is only available for scopes. Some PDF viewers render blend modes differently when they are not applied inside an opacity group, therefore, it is advised to use blend modes inside a blend mode in general.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \fill[color fill={red}] (0cm,0cm)
-    circle[radius={0.5cm}] ;
-  \begin{scope}[
-    blend mode={screen}
-  ]
-    \fill[color fill={blue}] (-1cm,-0.25cm)
-      rectangle[corner={1cm,0.25cm}] ;
+  \begin{scope}[opacity group]
+    \begin{scope}[
+      blend mode={screen}
+    ]
+      \fill[color fill={red}] (-0.25cm,0cm)
+        circle[radius={0.5cm}] ;
+      \fill[color fill={green}] (0.25cm,0cm)
+        circle[radius={0.5cm}] ;
+      \fill[color fill={blue}] (-1cm,-0.25cm)
+        rectangle[corner={1cm,0.25cm}] ;
+    \end{scope}
   \end{scope}
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -1900,11 +1904,15 @@ The following blend modes are available:
 
 \NewDocumentCommand{\blendmodeexample}{ m }{%
   \begin{hawkdraw}[baseline={0.5ex}]
-    \fill[color fill={red}] (0cm,0cm)
-      circle[radius={0.5cm}] ;
-    \begin{scope}[blend mode={#1}]
-      \fill[color fill={blue}] (-1cm,-0.25cm)
-        rectangle[corner={1cm,0.25cm}] ;
+    \begin{scope}[opacity group]
+      \begin{scope}[blend mode={#1}]
+        \fill[color fill={red}] (-0.25cm,0cm)
+         circle[radius={0.5cm}] ;
+        \fill[color fill={green}] (0.25cm,0cm)
+          circle[radius={0.5cm}] ;
+        \fill[color fill={blue}] (-1cm,-0.25cm)
+          rectangle[corner={1cm,0.25cm}] ;
+      \end{scope}
     \end{scope}
   \end{hawkdraw}%
 }
@@ -2074,6 +2082,8 @@ The \macro{\starthawkdraw} command can take options as argument. All options tha
   \end{scope}
 \stophawkdraw
 \end{codeexample}
+
+It is currently not possible to define soft masks with this approach.
 
 \begin{macrodef}
 |\setuphawkdraw|[<options>]

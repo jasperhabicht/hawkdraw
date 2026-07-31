@@ -268,6 +268,13 @@
 \fp_new:N \l_hawkdraw_path_opacity_fill_fp
 \dim_new:N \l_hawkdraw_path_linewidth_dim
 
+\tl_set:Nn \l_hawkdraw_path_color_stroke_tl { . }
+\tl_set:Nn \l_hawkdraw_path_color_fill_tl { . }
+\fp_set:Nn \l_hawkdraw_path_opacity_stroke_fp { 1.0 }
+\fp_set:Nn \l_hawkdraw_path_opacity_fill_fp { 1.0 }
+\dim_set_eq:NN \l_hawkdraw_path_linewidth_dim
+    \l_draw_default_linewidth_dim
+
 \tl_new:N \l_hawkdraw_path_cap_tl
 \tl_new:N \l_hawkdraw_path_join_tl
 \fp_new:N \l_hawkdraw_path_miterlimit_fp
