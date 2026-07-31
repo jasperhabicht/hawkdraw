@@ -25,16 +25,16 @@
 }
 
 \msg_new:nnn { hawkdraw } { feature-unsupported } {
-    #1 : ~ Feature ~ only ~ supported ~ with ~ PDFLaTeX ~ or ~ LuaLaTeX.
+    #1 : ~ Feature ~ not ~ supported ~ with ~ #2.
 }
 
-\cs_new_protected:Npn \__hawkdraw_error_unsupported:n #1 {
+\cs_new_protected:Npn \__hawkdraw_warning_unsupported:nn #1#2 {
     \bool_lazy_or:nnF {
         \sys_if_engine_luatex_p:
     } {
         \sys_if_engine_pdftex_p:
     } {
-        \msg_error:nnn { hawkdraw } { feature-unsupported } {#1}
+        \msg_warning:nnnn { hawkdraw } { feature-unsupported } {#1} {#2}
     }
 }
 
