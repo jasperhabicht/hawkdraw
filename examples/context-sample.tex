@@ -24,9 +24,32 @@
             height=1cm,
             options={layers={background,main}},
         ]
-            \fill[fill color={blue}] (0cm, 0cm) circle[radius={0.5cm}] ;
+            \fill[color fill={blue}] (0cm, 0cm) circle[radius={0.5cm}] ;
             \begin{scope}[layer={background}]
                 \fill (0.5cm, 0cm) circle[radius={0.5cm}] ;
+            \end{scope}
+        \stophawkdraw
+    \stopTEXpage
+
+    \startTEXpage
+        %% Copied from the manual
+        \starthawkdrawsoftmask[custom]
+            \fill[color fill={black!50}]
+                (0cm,0cm)
+                    circle[radius={0.5cm}] ;
+            \fill[color fill={black!25}]
+                (-1cm,-0.25cm)
+                    rectangle[corner={1cm,0.25cm}] ;
+        \stophawkdrawsoftmask
+
+        \starthawkdraw[background=,]
+            \begin{scope}[
+                soft mask use={custom}
+            ]
+                \path[
+                    shading={radial},
+                    shading colors={red,blue,green}
+                ] (0cm,0cm) circle[radius={0.75cm}] ;
             \end{scope}
         \stophawkdraw
     \stopTEXpage
