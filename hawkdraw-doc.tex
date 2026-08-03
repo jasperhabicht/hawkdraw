@@ -12,8 +12,8 @@
 %
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
-\def\hawkdrawfileversion{0.6.1}
-\def\hawkdrawfiledate{1 August 2026}
+\def\hawkdrawfileversion{0.7.0}
+\def\hawkdrawfiledate{3 August 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -297,6 +297,7 @@
 \changes{v0.5.0}{2026/07/20}{Fixing bug in pattern module; improving syntax parser; improving style setting mechanism; improving anchoring of nodes by degree; adding option to unset stroke and fill.}
 \changes{v0.6.0}{2026/07/27}{Overall code clean-up; improving support for XeTeX, dvipdfmx.}
 \changes{v0.6.1}{2026/08/01}{Fixing bug in pattern module; improving handling of blend modes and opacity groups.}
+\changes{v0.7.0}{2026/08/03}{Adding soft mask support to ConTeXt module.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -1842,7 +1843,7 @@ The option \macro{opacity group} sets the current scope to an opacity group. The
 
 Soft masks are used to create transparency effects by defining a mask that determines the opacity of different parts of an object. Soft masks are defined by a grayscale image or drawing where white parts in the soft mask are fully transparent while black parts are fully opaque.
 
-\begin{macrodef}
+\begin{macrodef}[][env:hawkdrawsoftmask]
 \\\begin{|hawkdrawsoftmask|}{<string>}[<options>]
 \end{|hawkdrawsoftmask|}
 \end{macrodef}
@@ -2083,7 +2084,12 @@ The \macro{\starthawkdraw} command can take options as argument. All options tha
 \stophawkdraw
 \end{codeexample}
 
-It is currently not possible to define soft masks with this approach.
+\begin{macrodef}
+|\starthawkdrawsoftmask|[<string>][<options>]
+|\stophawkdrawsoftmask|
+\end{macrodef}
+
+Using the macros \macro{\starthawkdrawsoftmask} and \macro{\stophawkdrawsoftmask} a soft mask can be defined. The two commands and the two arguments work in the same way as the environment \macro{hawkdrawsoftmask} as described \hyperlink{env:hawkdrawsoftmask}{above}.
 
 \begin{macrodef}
 |\setuphawkdraw|[<options>]

@@ -20,12 +20,12 @@
         "pattern_date" : "(\\def\\hawkdrawfiledate{)%d+ %u%a+ %d%d%d%d(})" ,
         "date_format" : true
     } ,
-    {   
+    {
         "pattern_file" : "^README%.md$" ,
         "pattern_version" : "(!%[Version )%d+%.%d+%.%d+(%])" ,
         "ignore_date" : true
     } ,
-    {   
+    {
         "pattern_file" : "^README%.md$" ,
         "pattern_version" : "(https://img%.shields%.io/badge/version%-)%d+%.%d+%.%d+(%-blue)" ,
         "ignore_date" : true
