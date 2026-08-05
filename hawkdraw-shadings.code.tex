@@ -47,6 +47,7 @@
 }
 
 \box_new:N \l_hawkdraw_shading_box
+\clist_new:N \l_hawkdraw_shading_path_use_clist
 
 \clist_new:N \l_hawkdraw_shading_colors_clist
 \fp_new:N \l_hawkdraw_shading_rotate_fp
@@ -86,7 +87,7 @@
                     \g_draw_bb_ymin_dim
                 \dim_set_eq:NN \l_hawkdraw_shading_bbox_ymax_dim
                     \g_draw_bb_ymax_dim
-                \hawkdraw_shading_fill:n {#1}
+                \hawkdraw_shading_apply:n {#1}
                 \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
             \hawkdraw_scope_reset_bb_end:
         }
@@ -101,6 +102,10 @@
     shading ~ circular      .initial:n      = { false } ,
     shading ~ angle ~ delta .fp_set:N       = \l_hawkdraw_shading_angle_delta_fp ,
     shading ~ angle ~ delta .initial:n      = { 360 } ,
+    shading ~ type          .code:n        = {
+        \clist_set:Nn \l_hawkdraw_shading_path_use_clist {#1}
+    },
+    shading ~ type          .initial:n     = { fill } ,
 }
 
 \tl_new:N \l__hawkdraw_shading_color_value_tmp_tl
@@ -130,8 +135,8 @@
         \hawkdraw_support_pdf_write_stream:nee {#1} {#2} {#3}
     }
     \hawkdraw_support_pdfxform:nnN { } {
-        % no need to set up a pattern dictionary
-        % because shadings are directly used via the sh operator
+        /Type ~ /Pattern ~
+        /PatternType ~ 2 ~
         /Shading ~ << ~
             /Sh ~
             \pdf_object_ref:n {
@@ -176,7 +181,7 @@
 }
 \cs_generate_variant:Nn \hawkdraw_shading_color_set_values:Nn { NV }
 
-\cs_new_protected:Npn \hawkdraw_shading_fill:n #1 {
+\cs_new_protected:Npn \hawkdraw_shading_apply:n #1 {
     \hawkdraw_shading_create:nV {#1} \l_hawkdraw_shading_colors_clist
     \hbox_set:Nn \l_hawkdraw_shading_box {
         \hawkdraw_shading_use:n {
