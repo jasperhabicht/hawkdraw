@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.7.0 2026-08-03
+% v0.7.0 2026-08-05
 
 % To improve rendering speed, we make use of PDF /Pattern objects. To this end, we first create an PDF
 % XObject from the pattern (unique to pattern type and options) which can be reused. Upon use, a new PDF
@@ -29,6 +29,7 @@
 \clist_new:N \l_hawkdraw_pattern_keys_clist
 \fp_new:N \l_hawkdraw_pattern_tile_size_fp
 \box_new:N \l__hawkdraw_pattern_box
+\clist_new:N \l_hawkdraw_pattern_path_use_clist
 
 \keys_define:nn { hawkdraw / path } {
     pattern                 .code:n         = {
@@ -37,7 +38,7 @@
                 \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
                 \tl_use:N \g_hawkdraw_softpath_original_tl
                 \hawkdraw_pattern_use:nV {#1} \l_hawkdraw_pattern_keys_clist
-                \draw_path_use_clear:n { fill }
+                \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_pattern_path_use_clist }
                 \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
             \draw_scope_end:
         }
@@ -48,6 +49,10 @@
     } ,
     pattern ~ tile ~ size   .fp_set:N      = \l_hawkdraw_pattern_tile_size_fp ,
     pattern ~ tile ~ size   .initial:n     = { ( 10pt , 10pt ) } ,
+    pattern ~ type          .code:n        = {
+        \clist_set:Nn \l_hawkdraw_pattern_path_use_clist {#1}
+    },
+    pattern ~ type          .initial:n     = { fill } ,
 }
 
 \cs_new_protected:Npn \hawkdraw_pattern_set:nn #1#2 {
@@ -159,13 +164,24 @@
         }
     }
 
-    \hawkdraw_support_pdfliteral_direct:n {
-        /Pattern ~ cs ~ /hawkdraw Pattern
-        \int_use:c {
-            c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+    \clist_if_in:NnT \l_hawkdraw_pattern_path_use_clist { fill } {
+        \hawkdraw_support_pdfliteral_direct:n {
+            /Pattern ~ cs ~ /hawkdraw Pattern
+            \int_use:c {
+                c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+            }
+            \c_space_tl scn ~
         }
-        \c_space_tl scn ~
     }
+    \clist_if_in:NnT \l_hawkdraw_pattern_path_use_clist { stroke } {
+        \hawkdraw_support_pdfliteral_direct:n {
+            /Pattern ~ CS ~ /hawkdraw Pattern
+            \int_use:c {
+                c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+            }
+            \c_space_tl SCN ~
+        }
+    }   
 }
 \cs_generate_variant:Nn \hawkdraw_pattern_use:nn { nV }
 

@@ -14,7 +14,7 @@
 %D \module[
 %D         file=t-hawkdraw,
 %D      version=0.7.0,
-%D         date=2026-08-03,
+%D         date=2026-08-05,
 %D        title=hawkdraw,
 %D     subtitle=A package for drawing vector graphics with the l3draw package and a TikZ-like syntax,
 %D       author=Jasper Habicht,

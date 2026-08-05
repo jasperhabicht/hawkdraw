@@ -13,7 +13,7 @@
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
 \def\hawkdrawfileversion{0.7.0}
-\def\hawkdrawfiledate{3 August 2026}
+\def\hawkdrawfiledate{5 August 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -297,7 +297,7 @@
 \changes{v0.5.0}{2026/07/20}{Fixing bug in pattern module; improving syntax parser; improving style setting mechanism; improving anchoring of nodes by degree; adding option to unset stroke and fill.}
 \changes{v0.6.0}{2026/07/27}{Overall code clean-up; improving support for XeTeX, dvipdfmx.}
 \changes{v0.6.1}{2026/08/01}{Fixing bug in pattern module; improving handling of blend modes and opacity groups.}
-\changes{v0.7.0}{2026/08/03}{Adding soft mask support to ConTeXt module.}
+\changes{v0.7.0}{2026/08/05}{Adding option to apply patterns to strokes; adding soft mask support to ConTeXt module.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -1767,6 +1767,22 @@ The option \macro{pattern tile size} accepts a tuple of two dimensions represent
   \path[
     pattern={dots},
     pattern style set={color fill=blue}
+  ]
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{macrodef}
+!path/!|pattern type|={<clist>}
+\end{macrodef}
+The option \macro{pattern type} accepts a comma-separated list of strings representing the types of patterns that should be used for the current path. The available pattern types are \macro{fill} and \macro{stroke}. The default pattern type is \macro{fill}.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \path[
+    pattern={dots},
+    line width={10pt},
+    pattern type={stroke}
   ]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
