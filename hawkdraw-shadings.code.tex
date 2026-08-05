@@ -154,12 +154,10 @@
     \hawkdraw_support_pdfxform:nnN { } {
         /Type ~ /Pattern ~
         /PatternType ~ 2 ~
-        /Shading ~ << ~
-            /Sh ~
-            \pdf_object_ref:n {
-                hawkdraw_shading_ #1
-            } ~
-        >>
+        /Shading ~ 
+        \pdf_object_ref:n {
+            hawkdraw_shading_ #1
+        } ~
     } \l__hawkdraw_shading_object_box
     \int_const:cn {
         c__hawkdraw_shading_ #1 _int
