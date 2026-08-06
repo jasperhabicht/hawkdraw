@@ -97,6 +97,23 @@
     shading ~ circular      .initial:n      = { false } ,
 }
 
+\keys_define:nn { hawkdraw / path / node } {
+    shading                 .code:n         = {
+        \tl_put_right:Nn \l_hawkdraw_node_postactions_tl {
+            \draw_path_use:n { clip }
+            \dim_set_eq:NN \l_hawkdraw_shading_bbox_xmin_dim
+                \g_draw_bb_xmin_dim
+            \dim_set_eq:NN \l_hawkdraw_shading_bbox_xmax_dim
+                \g_draw_bb_xmax_dim
+            \dim_set_eq:NN \l_hawkdraw_shading_bbox_ymin_dim
+                \g_draw_bb_ymin_dim
+            \dim_set_eq:NN \l_hawkdraw_shading_bbox_ymax_dim
+                \g_draw_bb_ymax_dim
+            \hawkdraw_shading_fill:n {#1}
+        }
+    } ,
+}
+
 \tl_new:N \l__hawkdraw_shading_color_value_tmp_tl
 \clist_new:N \l__hawkdraw_shading_color_values_clist
 \box_new:N \l__hawkdraw_shading_object_box
