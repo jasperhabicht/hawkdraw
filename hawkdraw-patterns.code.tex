@@ -64,6 +64,15 @@
     } ,
 }
 
+\keys_define:nn { hawkdraw / path / node } {
+    pattern                 .code:n         = {
+        \tl_put_right:Nn \l_hawkdraw_node_postactions_tl {
+            \hawkdraw_pattern_use:nV {#1} \l_hawkdraw_pattern_keys_clist
+            \draw_path_use:e { \clist_use:N \l_hawkdraw_pattern_path_use_clist }
+        }
+    } ,
+}
+
 \cs_new_protected:Npn \hawkdraw_pattern_set:nn #1#2 {
     \hbox_set:Nn \l__hawkdraw_pattern_box {
         \draw_suspend_begin:
