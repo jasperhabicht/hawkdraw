@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.4.0 2026-07-01
+% v0.7.0 2026-08-05
 
 % =====
 
@@ -20,9 +20,13 @@
 
 % ===
 
+% PDF treats shadings as patterns and hence as fill (or stroke). But we want to ensure that shadings are
+% reusable for different sizes or rotations, thus we apply the approach of PGF/TikZ here.
+
 % Shadings are defined as rectangular PDF XObjects. There are various types of shadings, but we only define
-% linear and radial shaings here having type 2 and 3 respectively. We define shadings as square with a size
-% of 100bp times 100bp. Shadings are defined by functions.
+% linear and radial shaings here having type 2, 3 and 6 respectively. Following the PGF approach, ee define
+% shadings as square with a size of 100bp times 100bp. Type 2 and 3 shadings are defined by functions, type
+% 6 shadings are defined by a binary stream.
 
 % In order to allow for rotation of shadings, we use the PGF approach of defining the shadings twice the
 % size of the path they should fill. Thus, we need to use multiple functions to define the shading, because
@@ -48,6 +52,7 @@
 \fp_new:N \l_hawkdraw_shading_rotate_fp
 \fp_new:N \l_hawkdraw_shading_offset_fp
 \bool_new:N \l_hawkdraw_shading_circular_bool
+\fp_new:N \l_hawkdraw_shading_angle_delta_fp
 
 \dim_new:N \l_hawkdraw_shading_bbox_xmin_dim
 \dim_new:N \l_hawkdraw_shading_bbox_xmax_dim
@@ -56,19 +61,18 @@
 
 \exp_args_generate:n { NVVVV }
 
-\cs_set:Npn \hawkdraw_scope_reset_bb_begin: {
+\cs_set_protected:Npn \hawkdraw_scope_reset_bb_begin: {
     \draw_scope_begin:
         \__draw_scope_bb_begin:
+        \bool_set_true:N \l_draw_bb_update_bool
 }
-\cs_set:Npn \hawkdraw_scope_reset_bb_end: {
+\cs_set_protected:Npn \hawkdraw_scope_reset_bb_end: {
         \__draw_scope_bb_end:
     \draw_scope_end:
 }
 
-
 \keys_define:nn { hawkdraw / path } {
     shading                 .code:n         = {
-        \__hawkdraw_error_unsupported:n { Shading }
         \tl_put_right:Nn \l_hawkdraw_path_preactions_tl {
             \hawkdraw_scope_reset_bb_begin:
                 \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
@@ -95,6 +99,25 @@
     shading ~ circular      .bool_set:N     = \l_hawkdraw_shading_circular_bool ,
     shading ~ circular      .default:n      = { true } ,
     shading ~ circular      .initial:n      = { false } ,
+    shading ~ angle ~ delta .fp_set:N       = \l_hawkdraw_shading_angle_delta_fp ,
+    shading ~ angle ~ delta .initial:n      = { 360 } ,
+}
+
+\keys_define:nn { hawkdraw / path / node } {
+    shading                 .code:n         = {
+        \tl_put_right:Nn \l_hawkdraw_node_postactions_tl {
+            \draw_path_use:n { clip }
+            \dim_set_eq:NN \l_hawkdraw_shading_bbox_xmin_dim
+                \g_draw_bb_xmin_dim
+            \dim_set_eq:NN \l_hawkdraw_shading_bbox_xmax_dim
+                \g_draw_bb_xmax_dim
+            \dim_set_eq:NN \l_hawkdraw_shading_bbox_ymin_dim
+                \g_draw_bb_ymin_dim
+            \dim_set_eq:NN \l_hawkdraw_shading_bbox_ymax_dim
+                \g_draw_bb_ymax_dim
+            \hawkdraw_shading_fill:n {#1}
+        }
+    } ,
 }
 
 \keys_define:nn { hawkdraw / path / node } {
@@ -115,12 +138,12 @@
 }
 
 \tl_new:N \l__hawkdraw_shading_color_value_tmp_tl
-\clist_new:N \l__hawkdraw_shading_color_values_clist
+\seq_new:N \l__hawkdraw_shading_color_values_seq
 \box_new:N \l__hawkdraw_shading_object_box
 
 \cs_generate_variant:Nn \color_export:nnN { e }
 
-\cs_new_protected:Npn \hawkdraw_shading_set:nn #1#2 {
+\cs_new_protected:Npn \hawkdraw_shading_set:nnn #1#2#3 {
     \hbox_set_to_wd:Nnn \l__hawkdraw_shading_object_box { 100bp } {
         \vbox_to_ht:nn { 100bp } {
             \skip_vertical:n { 0pt plus 1fil }
@@ -128,31 +151,61 @@
         }
         \skip_horizontal:n { 0pt plus 1fil }
     }
+    \pdf_object_new:n {
+        hawkdraw_shading_ #1
+    }
+    \tl_if_empty:nTF {#3} {
+        \pdf_object_write:nne {
+            hawkdraw_shading_ #1
+        } { dict } {
+            #2
+        }
+    } {
+        \hawkdraw_support_pdf_write_stream:nee {#1} {#2} {#3}
+    }
     \hawkdraw_support_pdfxform:nnN { } {
+        % no need to set up a pattern dictionary
+        % because shadings are directly used via the sh operator
         /Shading ~ << ~
-            /Sh ~ << ~
-                #2
-            >> ~
+            /Sh ~
+            \pdf_object_ref:n {
+                hawkdraw_shading_ #1
+            } ~
         >>
     } \l__hawkdraw_shading_object_box
     \int_const:cn {
         c__hawkdraw_shading_ #1 _int
     } {
-        \hawkdraw_support_pdflastxform:
+        \hawkdraw_support_pdfxform_last:
     }
 }
+\cs_generate_variant:Nn \hawkdraw_shading_set:nnn { e }
 
 \cs_new_protected:Npn \hawkdraw_shading_use:n #1 {
-    \hawkdraw_support_pdfrefxform:c {
+    \hawkdraw_support_pdfxform_use:c {
         c__hawkdraw_shading_ #1 _int
     }
 }
 
-\cs_new_protected:Npn \hawkdraw_shading_color_set_values:Nn #1#2 {
-    \clist_map_inline:nn {#2} {
-        \color_export:enN {##1} { space-sep-rgb }
+\cs_new_protected:Npn \__hawkdraw_shading_color_set_value:Nnnn #1#2#3#4 {
+    \hawkdraw_case_color_space:nnn {
+        \tl_set:Ne \l__hawkdraw_shading_color_value_tmp_tl {#2}
+        \seq_put_right:NV #1 \l__hawkdraw_shading_color_value_tmp_tl
+    } {
+        \color_export:enN {#3} { space-sep-rgb }
             \l__hawkdraw_shading_color_value_tmp_tl
-        \clist_put_right:NV #1 \l__hawkdraw_shading_color_value_tmp_tl
+        \seq_put_right:NV #1 \l__hawkdraw_shading_color_value_tmp_tl
+    } {
+        \color_export:enN {#4} { space-sep-cmyk }
+            \l__hawkdraw_shading_color_value_tmp_tl
+        \seq_put_right:NV #1 \l__hawkdraw_shading_color_value_tmp_tl
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_shading_color_set_values:Nn #1#2 {
+    \seq_clear:N #1
+    \clist_map_inline:nn {#2} {
+        \__hawkdraw_shading_color_set_value:Nnnn #1 {##1} {##1} {##1}
     }
 }
 \cs_generate_variant:Nn \hawkdraw_shading_color_set_values:Nn { NV }
@@ -165,6 +218,9 @@
             . \clist_use:N \l_hawkdraw_shading_colors_clist
             \str_if_eq:nnT {#1} { radial } {
                 . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
+            }
+            \str_if_eq:nnT {#1} { conic } {
+                . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
             }
         }
     }
@@ -264,27 +320,23 @@
         /FunctionType ~ 2 ~
         /Domain ~ [ 0.0 ~ 100.0 ] ~
         /C0 ~ [
-            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
-                { 1 }
+            \seq_item:Nn \l__hawkdraw_shading_color_values_seq { 1 }
         ] ~
         /C1 ~ [
-            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
-                { 1 }
+            \seq_item:Nn \l__hawkdraw_shading_color_values_seq { 1 }
         ] ~
         /N ~ 1 ~
     >> ~
-    \int_step_function:nnN { 2 } { \clist_count:N \l__hawkdraw_shading_color_values_clist }
+    \int_step_function:nnN { 2 } { \seq_count:N \l__hawkdraw_shading_color_values_seq }
         \__hawkdraw_shading_linear_functions_aux:n
     << ~
         /FunctionType ~ 2 ~
         /Domain ~ [ 0.0 ~ 100.0 ] ~
         /C0 ~ [
-            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
-                { -1 }
+            \seq_item:Nn \l__hawkdraw_shading_color_values_seq { -1 }
         ] ~
         /C1 ~ [
-            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
-                { -1 }
+            \seq_item:Nn \l__hawkdraw_shading_color_values_seq { -1 }
         ] ~
         /N ~ 1 ~
     >> ~
@@ -296,12 +348,10 @@
         /FunctionType ~ 2 ~
         /Domain ~ [ 0.0 ~ 100.0 ] ~
         /C0 ~ [
-            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
-                { #1 - 1 }
+            \seq_item:Nn \l__hawkdraw_shading_color_values_seq { #1 - 1 }
         ] ~
         /C1 ~ [
-            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
-                {#1}
+            \seq_item:Nn \l__hawkdraw_shading_color_values_seq {#1}
         ] ~
         /N ~ 1 ~
     >> ~
@@ -315,14 +365,20 @@
         _int
     } {
         \hawkdraw_shading_color_set_values:Nn
-            \l__hawkdraw_shading_color_values_clist
+            \l__hawkdraw_shading_color_values_seq
             {#1}
-        \hawkdraw_shading_set:nn {
+        \hawkdraw_shading_set:nnn {
             linear
             . #1
         } {
             /ShadingType ~ 2 ~
-            /ColorSpace ~ /DeviceRGB ~
+            \hawkdraw_case_color_space:nnn {
+                /ColorSpace ~ /DeviceGray ~
+            } {
+                /ColorSpace ~ /DeviceRGB ~
+            } {
+                /ColorSpace ~ /DeviceCMYK ~
+            }
             /Domain ~ [ 0.0 ~ 100.0 ] ~
             /Coords ~ [ 0.0 ~ 0.0 ~ 0.0 ~ 100.0 ] ~
             /Extend ~ [ false ~ false ] ~
@@ -331,7 +387,7 @@
                 /Domain ~ [ 0.0 ~ 100.0 ] ~
                 /Functions ~ [ ~
                     \__hawkdraw_shading_linear_functions:V
-                        \l__hawkdraw_shading_color_values_clist
+                        \l__hawkdraw_shading_color_values_seq
                 ] ~
                 /Bounds ~ [
                     \__hawkdraw_shading_linear_bounds:n {#1}
@@ -342,7 +398,7 @@
                     }
                 ] ~
             >> ~
-        }
+        } { }
     }
 }
 
@@ -350,27 +406,25 @@
 
 \cs_new:Npn \__hawkdraw_shading_radial_bounds:n #1 {
     \int_step_tokens:nn { \clist_count:n {#1} - 1 } {
-        \__hawkdraw_shading_radial_bounds_aux:nn { \clist_count:n {#1} }
+        \__hawkdraw_shading_radial_bounds_aux:nn { \clist_count:n {#1} - 1 }
     }
 }
 
 \cs_new:Npn \__hawkdraw_shading_radial_bounds_aux:nn #1#2 {
-    \fp_format:nn { ( 50 / ( #1 + 1 ) ) * ( #2 ) } { .3 } ~
+    \fp_format:nn { ( 25 / ( #1 ) ) * ( #2 ) } { .3 } ~
 }
 
 \cs_new:Npn \__hawkdraw_shading_radial_functions:n #1 {
-    \int_step_function:nN { \clist_count:N \l__hawkdraw_shading_color_values_clist - 1 }
+    \int_step_function:nN { \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 }
         \__hawkdraw_shading_radial_functions_aux:n
     << ~
         /FunctionType ~ 2 ~
         /Domain ~ [ 0.0 ~ 50.0 ] ~
         /C0 ~ [
-            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
-                { -1 }
+            \seq_item:Nn \l__hawkdraw_shading_color_values_seq { -1 }
         ] ~
         /C1 ~ [
-            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
-                { -1 }
+            \seq_item:Nn \l__hawkdraw_shading_color_values_seq { -1 }
         ] ~
         /N ~ 1 ~
     >> ~
@@ -382,12 +436,10 @@
         /FunctionType ~ 2 ~
         /Domain ~ [ 0.0 ~ 50.0 ] ~
         /C0 ~ [
-            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
-                {#1}
+            \seq_item:Nn \l__hawkdraw_shading_color_values_seq {#1}
         ] ~
         /C1 ~ [
-            \clist_item:Nn \l__hawkdraw_shading_color_values_clist
-                { #1 + 1 }
+            \seq_item:Nn \l__hawkdraw_shading_color_values_seq { #1 + 1 }
         ] ~
         /N ~ 1 ~
     >> ~
@@ -406,15 +458,21 @@
         _int
     } {
         \hawkdraw_shading_color_set_values:Nn
-            \l__hawkdraw_shading_color_values_clist
+            \l__hawkdraw_shading_color_values_seq
             {#1}
-        \hawkdraw_shading_set:nn {
+        \hawkdraw_shading_set:enn {
             radial
             . #1
             . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
         } {
             /ShadingType ~ 3 ~
-            /ColorSpace ~ /DeviceRGB ~
+            \hawkdraw_case_color_space:nnn {
+                /ColorSpace ~ /DeviceGray ~
+            } {
+                /ColorSpace ~ /DeviceRGB ~
+            } {
+                /ColorSpace ~ /DeviceCMYK ~
+            }
             /Domain ~ [ 0.0 ~ 50.0 ] ~
             /Coords ~ [
                 \hawkdraw_shading_radial_offset:n {
@@ -428,7 +486,7 @@
                 /Domain ~ [ 0.0 ~ 50.0 ] ~
                 /Functions ~ [ ~
                     \__hawkdraw_shading_radial_functions:V
-                        \l__hawkdraw_shading_color_values_clist
+                        \l__hawkdraw_shading_color_values_seq
                 ] ~
                 /Bounds ~ [
                     \__hawkdraw_shading_radial_bounds:n {#1}
@@ -439,6 +497,221 @@
                     }
                 ] ~
             >> ~
+        } { }
+    }
+}
+
+% ===
+
+% We use a Coons patch mesh for conic shadings where multiple circular-segment shaped patches form a circle.
+% Two corners of the patch are at the center of the circle, the other two at the outer border forming a curve.
+% We use four patches for each color in order to be able to generate a circle (or at least an approximation)
+% with only two colors. Therefore, we need to interpolate a few colors so we end up with 2n + 1 colors.
+
+% In theory we can use patches with different flags and reduce the size of the stream, but in practice this
+% means that the path direction of every second patch needs to be reversed. Since we don't need a lot of
+% patches to create a conic shading, we just use flag-0 patches only.
+
+% We need to output a binary stream. It is theoretically possinle to output a hex stream and set the relevant
+% /Filter, but when PDFTeX compresses the stream, it simply appends a /Filter entry to the attributes of the
+% PDF object without taking into account an already existing /Filter entry which results in faulty syntax.
+% We need different approaches to output such a stream for PDFTeX and LuaTeX. Since dvipdfmx requires a hex
+% stream which it converts to a binary stream, we first create a hex stream.
+
+\cs_new_protected:Npn \hawkdraw_shading_conic_stream:N #1 {
+    \tl_set:Ne #1 {
+        \seq_map_indexed_function:NN
+            \l__hawkdraw_shading_color_values_seq
+            \__hawkdraw_shading_conic_stream_aux:nn
+    }
+}
+
+\cs_new:Npn \__hawkdraw_shading_conic_stream_aux:nn #1#2 {
+    % skip first entry in seq which is the start color
+    \int_compare:nNnF {#1} = { \c_one_int } {
+        % flag (4 bits)
+        \hawkdraw_hex_to_stream:n { 00 }
+        % patch is pie segment going from 0 deg to 360 / ( n * 4 ) deg
+        % points (12 points, 2 * 16 bits each)
+        \prg_replicate:nn { 2 } {
+            \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
+                \l_hawkdraw_shading_angle_delta_fp /
+                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
+            }
+        }
+        \prg_replicate:nn { 2 } {
+            \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
+                \l_hawkdraw_shading_angle_delta_fp /
+                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
+            }
+        }
+        \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
+            \l_hawkdraw_shading_angle_delta_fp /
+            ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1.75 )
+        }
+        \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
+            \l_hawkdraw_shading_angle_delta_fp /
+            ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1.25 )
+        }
+        \prg_replicate:nn { 2 } {
+            \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
+                \l_hawkdraw_shading_angle_delta_fp /
+                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1 )
+            }
+        }
+        \prg_replicate:nn { 3 } {
+            \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
+                \l_hawkdraw_shading_angle_delta_fp /
+                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1 )
+            }
+        }
+        \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
+            \l_hawkdraw_shading_angle_delta_fp /
+            ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
+        }
+        % colors (4 colors, 3 * 8 bits each for RGB)
+        \hawkdraw_hex_to_stream:e {
+            \hawkdraw_color_pdf_to_hex:e {
+                \seq_item:Nn \l__hawkdraw_shading_color_values_seq { #1 - 1 }
+            }
+        }
+        \hawkdraw_hex_to_stream:e {
+            \hawkdraw_color_pdf_to_hex:e {
+                \seq_item:Nn \l__hawkdraw_shading_color_values_seq { #1 - 1 }
+            }
+        }
+        \hawkdraw_hex_to_stream:e {
+            \hawkdraw_color_pdf_to_hex:n {#2}
+        }
+        \hawkdraw_hex_to_stream:e {
+            \hawkdraw_color_pdf_to_hex:n {#2}
+        }
+    }
+}
+
+\cs_new:Npn \__hawkdraw_shading_conic_stream_point_polar:nn #1#2 {
+    % get coordinates from shifted point polar and normalize to FFFF
+    \hawkdraw_hex_to_stream:e {
+        \int_format:nn {
+            \fp_to_int:n {
+                \hawkdraw_tuple_use_i:n {
+                    ( 50bp , 50bp ) + (
+                        \draw_point_polar:nn { ( #1 ) * 50bp } {#2}
+                    )
+                } / 100bp * 65535
+            }
+        } { 0>4X }
+    }
+    \hawkdraw_hex_to_stream:e {
+        \int_format:nn {
+            \fp_to_int:n {
+                \hawkdraw_tuple_use_ii:n {
+                    ( 50bp , 50bp ) + (
+                        \draw_point_polar:nn { ( #1 ) * 50bp } {#2}
+                    )
+                } / 100bp * 65535
+            }
+        } { 0>4X }
+    }
+}
+
+\seq_new:N \l__hawkdraw_shading_color_values_tmp_seq
+
+\cs_new_protected:Npn \hawkdraw_shading_conic_color_set_values:Nn #1#2 {
+    \seq_clear:N #1
+    \seq_set_from_clist:Nn \l__hawkdraw_shading_color_values_tmp_seq {#2}
+    \seq_map_indexed_inline:Nn \l__hawkdraw_shading_color_values_tmp_seq {
+        \int_compare:nNnTF {##1} = { \c_one_int } {
+            % first entry is the start color
+            \__hawkdraw_shading_color_set_value:Nnnn #1 {##2} {##2} {##2}
+        } {
+            \__hawkdraw_shading_color_set_value:Nnnn #1 {
+                \fp_to_decimal:n {
+                    0.75 * \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 } +
+                    0.25 * ##2
+                }
+            } {
+                \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 }
+                ! 75 ! ##2
+            } {
+                \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 }
+                ! 75 ! ##2
+            }
+            \__hawkdraw_shading_color_set_value:Nnnn #1 {
+                \fp_to_decimal:n {
+                    0.5 * \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 } +
+                    0.5 * ##2
+                }
+            } {
+                \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 }
+                ! 50 ! ##2
+            } {
+                \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 }
+                ! 50 ! ##2
+            }
+            \__hawkdraw_shading_color_set_value:Nnnn #1 {
+                \fp_to_decimal:n {
+                    0.25 * \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 } +
+                    0.75 * ##2
+                }
+            } {
+                \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 }
+                ! 25 ! ##2
+            } {
+                \seq_item:Nn \l__hawkdraw_shading_color_values_tmp_seq { ##1 - 1 }
+                ! 25 ! ##2
+            }
+            \__hawkdraw_shading_color_set_value:Nnnn #1 {##2} {##2} {##2}
+        }
+    }
+}
+
+\cs_new_protected:Npn \hawkdraw_shading_conic:n #1 {
+    \int_if_exist:cF {
+        c__hawkdraw_shading_
+        conic
+        . #1
+        . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
+        _int
+    } {
+        \hawkdraw_shading_conic_color_set_values:Nn
+            \l__hawkdraw_shading_color_values_seq
+            {#1}
+        \hawkdraw_shading_conic_stream:N \l_tmpa_tl
+        \hawkdraw_shading_set:enn {
+            conic
+            . #1
+            . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
+        } {
+            /ShadingType ~ 6 ~
+            \hawkdraw_case_color_space:nnn {
+                /ColorSpace ~ /DeviceGray ~
+            } {
+                /ColorSpace ~ /DeviceRGB ~
+            } {
+                /ColorSpace ~ /DeviceCMYK ~
+            }
+            /BitsPerCoordinate ~ 16 ~
+            /BitsPerComponent ~ 8 ~
+            /BitsPerFlag ~ 8 ~
+            /Decode ~ [ ~
+                0 ~ 100 ~
+                0 ~ 100 ~
+                \hawkdraw_case_color_space:nnn {
+                    0 ~ 1 ~
+                } {
+                    0 ~ 1 ~
+                    0 ~ 1 ~
+                    0 ~ 1 ~
+                } {
+                    0 ~ 1 ~
+                    0 ~ 1 ~
+                    0 ~ 1 ~
+                    0 ~ 1 ~
+                }
+            ] ~
+        } {
+            \tl_use:N \l_tmpa_tl
         }
     }
 }

@@ -12,7 +12,7 @@
 %
 % BOF
 
-% v0.4.0 2026-07-01
+% v0.7.0 2026-08-05
 
 \msg_new:nnn { hawkdraw } { plot-unknown } {
     Plot ~ function ~ `#1` ~ unknown.
@@ -110,11 +110,11 @@
 }
 
 \hawkdraw_plot_create:nn { sharp } { } {
-    \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 0 } {
+    \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { \c_zero_int } {
         \hawkdraw_softpath_build_moveto:n {
             \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 1 }
         }
-        \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 1 } {
+        \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { \c_one_int } {
             \int_step_inline:nnn { 2 } { \seq_count:N \g__hawkdraw_path_plot_points_seq } {
                 \hawkdraw_softpath_build_lineto:n {
                     \seq_item:Nn \g__hawkdraw_path_plot_points_seq {##1}
@@ -128,11 +128,11 @@
     % can be set via plot/smooth/tension
     tension = 0.15
 } {
-    \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 0 } {
+    \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { \c_zero_int } {
         \hawkdraw_softpath_build_moveto:n {
             \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 1 }
         }
-        \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { 1 } {
+        \int_compare:nNnT { \seq_count:N \g__hawkdraw_path_plot_points_seq } > { \c_one_int } {
             \int_compare:nNnTF { \seq_count:N \g__hawkdraw_path_plot_points_seq } < { 3 } {
                 \hawkdraw_softpath_build_lineto:n {
                     \seq_item:Nn \g__hawkdraw_path_plot_points_seq { 2 }

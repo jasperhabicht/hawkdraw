@@ -12,7 +12,14 @@
 %
 % BOF
 
-% v0.4.0 2026-07-01
+% v0.7.0 2026-08-05
+
+% To improve rendering speed, we make use of PDF /Pattern objects. To this end, we first create an PDF
+% XObject from the pattern (unique to pattern type and options) which can be reused. Upon use, a new PDF
+% Object is created with the required /Pattern attributes and with the XObject in the stream (via Do).
+% The pattern is then linked to the page attributes, And a literal is added into the code for the
+% postaction to the path. This makes it possible to use a fill and a pattern together, which otherwise
+% is not possible as PDF handles a /Pattern as fill.
 
 \msg_new:nnn { hawkdraw } { pattern-unknown } {
     Pattern ~ `#1` ~ unknown.
@@ -20,10 +27,9 @@
 
 \prop_new:N \g_hawkdraw_pattern_default_keys_prop
 \clist_new:N \l_hawkdraw_pattern_keys_clist
-\box_new:N \l_hawkdraw_pattern_box
-\dim_new:N \l__hawkdraw_pattern_width_dim
-\dim_new:N \l__hawkdraw_pattern_height_dim
 \fp_new:N \l_hawkdraw_pattern_tile_size_fp
+\box_new:N \l__hawkdraw_pattern_box
+\clist_new:N \l_hawkdraw_pattern_path_use_clist
 
 \keys_define:nn { hawkdraw / path } {
     pattern                 .code:n         = {
@@ -31,8 +37,8 @@
             \draw_scope_begin:
                 \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
                 \tl_use:N \g_hawkdraw_softpath_original_tl
-                \draw_path_use_clear:n { clip }
                 \hawkdraw_pattern_use:nV {#1} \l_hawkdraw_pattern_keys_clist
+                \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_pattern_path_use_clist }
                 \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
             \draw_scope_end:
         }
@@ -43,6 +49,19 @@
     } ,
     pattern ~ tile ~ size   .fp_set:N      = \l_hawkdraw_pattern_tile_size_fp ,
     pattern ~ tile ~ size   .initial:n     = { ( 10pt , 10pt ) } ,
+    pattern ~ type          .code:n        = {
+        \clist_set:Nn \l_hawkdraw_pattern_path_use_clist {#1}
+    },
+    pattern ~ type          .initial:n     = { fill } ,
+}
+
+\keys_define:nn { hawkdraw / path / node } {
+    pattern                 .code:n         = {
+        \tl_put_right:Nn \l_hawkdraw_node_postactions_tl {
+            \hawkdraw_pattern_use:nV {#1} \l_hawkdraw_pattern_keys_clist
+            \draw_path_use:e { \clist_use:N \l_hawkdraw_pattern_path_use_clist }
+        }
+    } ,
 }
 
 \keys_define:nn { hawkdraw / path / node } {
@@ -55,10 +74,7 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_pattern_set:nn #1#2 {
-    \pdfxform_new:nnn {
-        hawkdraw_pattern_
-        #1 . \str_mdfive_hash:n {#2}
-    } { } {
+    \hbox_set:Nn \l__hawkdraw_pattern_box {
         \draw_suspend_begin:
             \draw_begin:
                 \draw_set_baseline:n { 0pt }
@@ -75,12 +91,70 @@
             \draw_end:
         \draw_suspend_end:
     }
-}
 
-\cs_new_protected:Npn \hawkdraw_pattern_create:nnn #1#2#3 {
-    \prop_gput:Nnn \g_hawkdraw_pattern_default_keys_prop {#1} {#2}
-    \cs_new_protected:cpn { hawkdraw_pattern_ #1 : } {
-        #3
+    % We need to prevent including the page resources for /Pattern here
+    \hawkdraw_support_pdfxform:nnN { } { }
+        \l__hawkdraw_pattern_box
+    \int_const:cn {
+        c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+    } {
+        \hawkdraw_support_pdfxform_last:
+    }
+
+    \pdf_object_new:n {
+        hawkdraw_pattern_
+        #1 . \str_mdfive_hash:n {#2}
+    }
+    \pdf_object_write:nne {
+        hawkdraw_pattern_
+        #1 . \str_mdfive_hash:n {#2}
+    } { stream } {
+        {
+            /Type ~ /Pattern ~
+            /PatternType ~ 1 ~
+            /PaintType ~ 1 ~
+            /TilingType ~ 1 ~
+            /BBox ~ [ ~
+                0 ~ 0 ~
+                \dim_to_decimal_in_bp:n {
+                    \box_wd:N \l__hawkdraw_pattern_box
+                } ~
+                \dim_to_decimal_in_bp:n {
+                    \box_ht_plus_dp:N \l__hawkdraw_pattern_box
+                } ~
+            ] ~
+            /XStep ~
+                \dim_to_decimal_in_bp:n {
+                    \box_wd:N \l__hawkdraw_pattern_box
+                } ~
+            /YStep ~
+                \dim_to_decimal_in_bp:n {
+                    \box_ht_plus_dp:N \l__hawkdraw_pattern_box
+                } ~
+            /Matrix ~ [ ~
+                1 ~ 0 ~ 0 ~ 1 ~ 0 ~ 0 ~
+            ] ~
+            /Resources ~ << ~
+                /XObject ~ << ~
+                    /hawkdrawPatternObj
+                    \int_use:c {
+                        c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+                    }
+                    \c_space_tl
+                    \hawkdraw_support_pdfxform_ref:c {
+                        c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+                    } ~
+                >> ~
+            >>
+        } {
+            q ~
+            /hawkdrawPatternObj
+            \int_use:c {
+                c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+            }
+            \c_space_tl Do ~
+            Q
+        }
     }
 }
 
@@ -88,53 +162,53 @@
     \prop_if_in:NnF \g_hawkdraw_pattern_default_keys_prop {#1} {
         \msg_warning:nnn { hawkdraw } { pattern-unknown } {#1}
     }
-    \pdfxform_if_exist:nF {
-        hawkdraw_pattern_
-        #1 . \str_mdfive_hash:n {#2}
+    \int_if_exist:cF {
+        c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
     } {
         \hawkdraw_pattern_set:nn {#1} {#2}
     }
-    \hbox_set:Nn \l_hawkdraw_pattern_box {
-        \pdfxform_use:n {
+
+    \pdfmanagement_add:nee {
+        Page / Resources / Pattern
+    } {
+        hawkdraw Pattern
+        \int_use:c {
+            c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+        }
+    } {
+        \pdf_object_ref:n {
             hawkdraw_pattern_
             #1 . \str_mdfive_hash:n {#2}
         }
     }
-    \dim_set:Nn \l__hawkdraw_pattern_width_dim {
-        \box_wd:N \l_hawkdraw_pattern_box
-    }
-    \dim_set:Nn \l__hawkdraw_pattern_height_dim {
-        \box_ht_plus_dp:N \l_hawkdraw_pattern_box
-    }
-    \bool_set_false:N \l_draw_bb_update_bool
-    \int_step_inline:nnn {
-        \fp_to_int:n {
-            floor( \g_draw_bb_xmin_dim / \l__hawkdraw_pattern_width_dim )
-        }
-    } {
-        \fp_to_int:n {
-            floor( \g_draw_bb_xmax_dim / \l__hawkdraw_pattern_width_dim )
-        }
-    } {
-        \int_step_inline:nnn {
-            \fp_to_int:n {
-                floor( \g_draw_bb_ymin_dim / \l__hawkdraw_pattern_height_dim )
+
+    \clist_if_in:NnT \l_hawkdraw_pattern_path_use_clist { fill } {
+        \hawkdraw_support_pdfliteral_direct:n {
+            /Pattern ~ cs ~ /hawkdraw Pattern
+            \int_use:c {
+                c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
             }
-        } {
-            \fp_to_int:n {
-                floor( \g_draw_bb_ymax_dim / \l__hawkdraw_pattern_height_dim )
-            }
-        } {
-            \draw_box_use:Nn \l_hawkdraw_pattern_box {
-                ##1 * \l__hawkdraw_pattern_width_dim
-                ,
-                ####1 * \l__hawkdraw_pattern_height_dim
-            }
+            \c_space_tl scn ~
         }
     }
-    \bool_set_true:N \l_draw_bb_update_bool
+    \clist_if_in:NnT \l_hawkdraw_pattern_path_use_clist { stroke } {
+        \hawkdraw_support_pdfliteral_direct:n {
+            /Pattern ~ CS ~ /hawkdraw Pattern
+            \int_use:c {
+                c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+            }
+            \c_space_tl SCN ~
+        }
+    }   
 }
 \cs_generate_variant:Nn \hawkdraw_pattern_use:nn { nV }
+
+\cs_new_protected:Npn \hawkdraw_pattern_create:nnn #1#2#3 {
+    \prop_gput:Nnn \g_hawkdraw_pattern_default_keys_prop {#1} {#2}
+    \cs_new_protected:cpn { hawkdraw_pattern_ #1 : } {
+        #3
+    }
+}
 
 % ===
 
@@ -230,7 +304,7 @@
     \draw_path_moveto:n { 0pt , 0pt }
     \draw_path_lineto:n { 0pt , 5/3pt }
     \draw_path_lineto:n {
-        ( 0pt , 5/3pt ) + 
+        ( 0pt , 5/3pt ) +
         ( \draw_point_polar:nn { 10/3pt } { 30 } )
     }
     \draw_path_lineto:n {
@@ -264,6 +338,38 @@
         ( \draw_point_polar:nn { 20/3pt } { -30 } )
     }
     \draw_path_use_clear:n { stroke }
+}
+
+\hawkdraw_pattern_create:nnn { dinner } {
+    pattern ~ tile ~ size = {
+        22.25pt ,
+        22.25pt
+    }
+} {
+    \draw_transform_scale:n { 10 }
+    \color_select:nn { rgb } { 0.925 , 0.85 , 0.075 }
+    \draw_path_moveto:n { 0.513 , 1.145 }
+    \draw_path_curveto:nnn { 0.267 , 1.102 } { -0.125 , 0.657 } { 0.289 , 0.261 }
+    \draw_path_curveto:nnn { 0.704 , -0.135 } { 2.863 , 0.130 } { 1.818 , 1.419 }
+    \draw_path_curveto:nnn { 0.938 , 0.946 } { 1.240 , 1.379 } { 0.513 , 1.145 }
+    \draw_path_close:
+    \draw_path_ellipse:nnn { 0.90 , 1.50 } { 0.50 , 0 } { 0 , 0.625 }
+    \draw_path_use_clear:n { fill }
+    \color_select:nn { rgb } { 0.875 , 0.5 , 0.125 }
+    \draw_path_moveto:n { 0.406 , 1.472 }
+    \draw_path_curveto:nnn { 0.643 , 1.530 } { 0.541 , 1.303 } { 0.910 , 1.370 }
+    \draw_path_curveto:nnn { 0.083 , 0.850 } { 0.269 , 1.369 } { 0.406 , 1.472 }
+    \draw_path_close:
+    \draw_path_use_clear:n { fill }
+    \color_select:nn { rgb } { 1 , 1 , 0.85 }
+    \draw_transform_rotate:n { -20 }
+    \draw_path_ellipse:nnn { -0.06 , 1.74 } { 0.0786 , 0 } { 0 , 0.1143 }
+    \draw_path_ellipse:nnn { 0.23 , 1.7675 } { 0.0893 , 0 } { 0 , 0.125 }
+    \draw_path_use_clear:n { fill }
+    \color_select:nn { rgb } { 0 , 0 , 0 }
+    \draw_path_ellipse:nnn { -0.03 , 1.73 } { 0.0286 , 0 } { 0 , 0.0643 }
+    \draw_path_ellipse:nnn { 0.26 , 1.7575 } { 0.0357 , 0 } { 0 , 0.0714 }
+    \draw_path_use_clear:n { fill }
 }
 
 %EOF

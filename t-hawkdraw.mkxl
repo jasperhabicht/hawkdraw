@@ -13,8 +13,8 @@
 %% Standard ConTeXt module header:
 %D \module[
 %D         file=t-hawkdraw,
-%D      version=0.4.0,
-%D         date=2026-07-01,
+%D      version=0.7.0,
+%D         date=2026-08-05,
 %D        title=hawkdraw,
 %D     subtitle=A package for drawing vector graphics with the l3draw package and a TikZ-like syntax,
 %D       author=Jasper Habicht,
@@ -52,7 +52,11 @@
     local variables do
         local namespace = tokens.getters.macro("????hawkdraw") .. ":"
         variables = table.setmetatableindex({}, function(t, k)
-            return tokens.getters.macro(namespace .. k)
+            if k == "masks" then
+                return buffers.raw("hawkdraw_combined_softmasks")
+            else
+                return tokens.getters.macro(namespace .. k)
+            end
         end)
     end
 
@@ -79,6 +83,23 @@
         end,
     }
 
+    interfaces.implement {
+        name = "stophawkdrawsoftmask",
+        public = true,
+        protected = true,
+        actions = function()
+            local name = tokens.getters.macro("m_hawkdraw_softmask_name")
+            local options = tokens.getters.macro("m_hawkdraw_softmask_options")
+            local content = buffers.raw("hawkdraw_current_softmask")
+
+            buffers.append("hawkdraw_combined_softmasks", ([[
+                \noexpand\begin{hawkdrawsoftmask}{%s}[%s]
+                    %s
+                \noexpand\end{hawkdrawsoftmask}
+            ]]):format(name, options, content))
+        end,
+    }
+
     -- Define a new "hawkdraw" runner that compiles the provided buffer with
     -- pdfLaTeX. This function is smart and only recompiles the code if the
     -- buffer's content has changed; otherwise, it uses the cached PDF.
@@ -96,9 +117,11 @@
 %% The code that we will prepend and append to the user-provided content. Once
 %% again, we use an underscore in the name to mark it as private.
 \startbuffer[hawkdraw_before]
+    \DocumentMetadata{}
     \documentclass{standalone}
     \usepackage{hawkdraw}
     \begin{document}
+    %masks%
     \begin{hawkdraw}[%options%]
 \stopbuffer
 
@@ -155,6 +178,30 @@
     }
     \hawkdrawparameter\c!after
     \egroup
+\stoptexdefinition
+
+%% Soft masks
+\lettonothing\m_hawkdraw_softmask_name
+\lettonothing\m_hawkdraw_softmask_options
+
+%% The name is never typeset, so even though it's mandatory, we should still use
+%% square brackets for it; see <https://tex.stackexchange.com/a/745669> for
+%% further details. The options are optional though.
+\starttexdefinition tolerant protected starthawkdrawsoftmask[#1][#2]
+    \ifarguments
+        %% Errors in ConTeXt are essentially just polite suggestions, so
+        %% users can ignore them fairly easily. \errmessage still works though,
+        %% so you can use that instead if you want to show a "real" error
+        %% message.
+        \showargumenterror{1}{\number\inputlineno}
+    \or
+        \cdef\m_hawkdraw_softmask_name{#1}
+        \lettonothing\m_hawkdraw_softmask_options
+    \or
+        \cdef\m_hawkdraw_softmask_name{#1}
+        \cdef\m_hawkdraw_softmask_options{#2}
+    \fi
+    \grabbufferdata[hawkdraw_current_softmask][starthawkdrawsoftmask][stophawkdrawsoftmask]
 \stoptexdefinition
 
 \stopmodule

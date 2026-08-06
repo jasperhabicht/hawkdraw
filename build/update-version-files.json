@@ -1,0 +1,33 @@
+[
+    {
+        "pattern_file" : "%.sty$" ,
+        "pattern_version" : "(\\ProvidesExplPackage {hawkdraw} {%d%d%d%d%-%d%d%-%d%d} {)%d+%.%d+%.%d+(})" ,
+        "pattern_date" : "(\\ProvidesExplPackage {hawkdraw} {)%d%d%d%d%-%d%d%-%d%d(} {%d+%.%d+%.%d+})"
+    } ,
+    {
+        "pattern_file" : "%.code%.tex$" ,
+        "pattern_version" : "(% v)%d+%.%d+%.%d+( %d%d%d%d%-%d%d%-%d%d\n)" ,
+        "pattern_date" : "(% v%d+%.%d+%.%d+ )%d%d%d%d%-%d%d%-%d%d(\n)"
+    } ,
+    {
+        "pattern_file" : "%.mkxl$" ,
+        "pattern_version" : "(%%D%s+version=)%d+%.%d+%.%d+(,)" ,
+        "pattern_date" : "(%%D%s+date=)%d%d%d%d%-%d%d%-%d%d(,)"
+    } ,
+    {
+        "pattern_file" : "%-doc%.tex$" ,
+        "pattern_version" : "(\\def\\hawkdrawfileversion{)%d+%.%d+%.%d+(})" ,
+        "pattern_date" : "(\\def\\hawkdrawfiledate{)%d+ %u%a+ %d%d%d%d(})" ,
+        "date_format" : true
+    } ,
+    {
+        "pattern_file" : "^README%.md$" ,
+        "pattern_version" : "(!%[Version )%d+%.%d+%.%d+(%])" ,
+        "ignore_date" : true
+    } ,
+    {
+        "pattern_file" : "^README%.md$" ,
+        "pattern_version" : "(https://img%.shields%.io/badge/version%-)%d+%.%d+%.%d+(%-blue)" ,
+        "ignore_date" : true
+    }
+]
