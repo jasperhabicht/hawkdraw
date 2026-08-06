@@ -1163,7 +1163,32 @@ Using the \macro{padding} option, the padding between the border of the node and
 !path/node/!|color text|={<color>}
 !path/node/!|opacity text|={<float>}
 \end{macrodef}
-Using the \macro{color text} option, the color of the node contents is set. The default text color is the current (text) color. The option \macro{text opacity} sets the text opacity. The floating-point number should be in the range of \num{0} and \num{1}. The default text opacity is \num{1} (fully opaque).
+Using the \macro{color text} option, the color of the node contents is set (fill and stroke if applicable). The default text color is the current (text) color. The option \macro{text opacity} sets the text opacity. The floating-point number should be in the range of \num{0} and \num{1}. The default text opacity is \num{1} (fully opaque).
+
+\begin{macrodef}
+!path/node/!|color text fill|={<color>}
+!path/node/!|color text stroke|={<color>}
+!path/node/!|opacity text fill|={<float>}
+!path/node/!|opacity text stroke|={<float>}
+\end{macrodef}
+Using the options \macro{color text fill} and \macro{color text stroke}, the fill and stroke colors of the node contents are set specifically. Using the options \macro{opacity text fill} and \macro{opacity text stroke}, the fill and stroke opacity of the node contents are set specifically.
+
+\begin{macrodef}
+!path/node/!|text rendering|={<clist>}
+\end{macrodef}
+The option \macro{text rendering} sets the text rendering mode of the node contents. The value is a comma-separated list of one to three modes \macro{fill}, \macro{stroke} and \macro{clip}. The option also accepts the value \macro{none}. Using \macro{clip}, the text is used as a clipping path on the node's background.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \node[
+      padding={0pt},
+      pattern={dots},
+      color text fill={yellow},
+      color text stroke={red},
+      text rendering={fill, stroke, clip}
+    ] {foo} ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
 
 Note that \macro{\DocumentMetadata{}} needs to be set in order to activate support for PDF transparency.
 
