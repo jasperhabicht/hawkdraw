@@ -18,6 +18,10 @@
     Node ~ frame ~ `#1` ~ unknown.
 }
 
+\msg_new:nnn { hawkdraw } { text-mode-unknown } {
+    Text ~ mode ~ `#1` ~ unknown.
+}
+
 \clist_const:Nn \c__hawkdraw_node_vpoles_clist {
     l , hc , r
 }
@@ -68,8 +72,11 @@
 \bool_new:N \l__hawkdraw_node_vbox_bool
 \coffin_new:N \l_hawkdraw_node_coffin
 \coffin_new:N \l_hawkdraw_node_frame_coffin
-\tl_new:N \l_hawkdraw_node_preactions_tl
 \tl_new:N \l_hawkdraw_node_postactions_tl
+
+\int_new:N \l__hawkdraw_node_text_mode_int
+\bool_new:N \l__hawkdraw_node_text_mode_clip_bool
+\tl_new:N \l__hawkdraw_node_text_mode_clip_contents_tl
 
 \clist_new:N \l_hawkdraw_node_anchor_poles_clist
 \fp_new:N \l_hawkdraw_node_anchor_degree_fp
@@ -79,8 +86,10 @@
 \dim_new:N \l_hawkdraw_node_padding_right_dim
 \dim_new:N \l_hawkdraw_node_padding_top_dim
 \dim_new:N \l_hawkdraw_node_padding_bottom_dim
-\tl_new:N \l_hawkdraw_node_color_text_tl
-\fp_new:N \l_hawkdraw_node_opacity_text_fp
+\tl_new:N \l_hawkdraw_node_color_text_fill_tl
+\fp_new:N \l_hawkdraw_node_opacity_text_fill_fp
+\tl_new:N \l_hawkdraw_node_color_text_stroke_tl
+\fp_new:N \l_hawkdraw_node_opacity_text_stroke_fp
 \tl_new:N \l_hawkdraw_node_frame_tl
 \bool_new:N \l_hawkdraw_node_sloped_bool
 \bool_new:N \l_hawkdraw_node_flipped_bool
@@ -90,6 +99,17 @@
 \cs_generate_variant:Nn \keys_set_known:nnN { nV }
 \cs_generate_variant:Nn \draw_coffin_use:Nnnn { NeeV }
 \cs_generate_variant:Nn \coffin_attach:NnnNnnnn { NnnNnnVV }
+
+\prop_const_from_keyval:Nn \c__hawkdraw_text_mode_prop {
+    fill                 = 0 ,
+    stroke               = 1 ,
+    fill ~ stroke        = 2 ,
+    none                 = 3 ,
+    fill ~ clip          = 4 ,
+    stroke ~ clip        = 5 ,
+    fill ~ stroke ~ clip = 6 ,
+    clip                 = 7 ,
+}
 
 \keys_define:nn { hawkdraw / path / node } {
     anchor                  .code:n         = {
@@ -107,10 +127,24 @@
     } ,
     padding                 .clist_set:N    = \l_hawkdraw_node_padding_clist ,
     padding                 .initial:n      = { 5pt } ,
-    color ~ text            .tl_set:N       = \l_hawkdraw_node_color_text_tl ,
-    color ~ text            .initial:n      = { . } ,
-    opacity ~ text          .fp_set:N       = \l_hawkdraw_node_opacity_text_fp ,
-    opacity ~ text          .initial:n      = { 1 } ,
+    color ~ text            .code:n         = {
+        \tl_set:Nn \l_hawkdraw_node_color_text_fill_tl {#1}
+        \tl_set_eq:NN \l_hawkdraw_node_color_text_stroke_tl
+            \l_hawkdraw_node_color_text_fill_tl
+    } ,
+    opacity ~ text          .code:n         = {
+        \fp_set:Nn \l_hawkdraw_node_opacity_text_fill_fp {#1}
+        \fp_set_eq:NN \l_hawkdraw_node_opacity_text_stroke_fp
+            \l_hawkdraw_node_opacity_text_fill_fp
+    } ,
+    color ~ text ~ fill     .tl_set:N       = \l_hawkdraw_node_color_text_fill_tl ,
+    color ~ text ~ fill     .initial:n      = { . } ,
+    opacity ~ text ~ fill   .fp_set:N       = \l_hawkdraw_node_opacity_text_fill_fp ,
+    opacity ~ text ~ fill   .initial:n      = { 1 } ,
+    color ~ text ~ stroke   .tl_set:N       = \l_hawkdraw_node_color_text_stroke_tl ,
+    color ~ text ~ stroke   .initial:n      = { . } ,
+    opacity ~ text ~ stroke .fp_set:N       = \l_hawkdraw_node_opacity_text_stroke_fp ,
+    opacity ~ text ~ stroke .initial:n      = { 1 } ,
     frame                   .tl_set:N       = \l_hawkdraw_node_frame_tl ,
     frame                   .initial:n      = { rectangle } ,
     sloped                  .bool_set:N     = \l_hawkdraw_node_sloped_bool ,
@@ -119,7 +153,23 @@
     flipped                 .default:n      = { true } ,
     rescan                  .bool_set:N     = \l_hawkdraw_node_rescan_bool ,
     rescan                  .default:n      = { true } ,
+    text ~ mode             .code:n         = {
+        \prop_if_in:NnTF \c__hawkdraw_text_mode_prop {#1} {
+            \int_set:Nn \l__hawkdraw_node_text_mode_int {
+                \prop_item:Nn \c__hawkdraw_text_mode_prop {#1}
+            }
+            \int_compare:nNnT {
+                \l__hawkdraw_node_text_mode_int
+            } > { 3 } {
+                \bool_set_true:N \l__hawkdraw_node_text_mode_clip_bool
+            }
+        } {
+            \msg_warning:nnn { hawkdraw } { text-mode-unknown } {#1}
+        }
+    } ,
 }
+
+% ===
 
 \hawkdraw_operator_construct_arg:nN { node } \hawkdraw_node:nn
 
@@ -131,8 +181,10 @@
             \char_set_catcode_active:n {##1}
         }
     }
-    \color_select:e { \l_hawkdraw_node_color_text_tl }
-    \opacity_select:V \l_hawkdraw_node_opacity_text_fp
+    \color_fill:e { \l_hawkdraw_node_color_text_fill_tl }
+    \opacity_fill:V \l_hawkdraw_node_opacity_text_fill_fp
+    \color_stroke:e { \l_hawkdraw_node_color_text_stroke_tl }
+    \opacity_stroke:V \l_hawkdraw_node_opacity_text_stroke_fp
     \normalfont
     \hook_use:n { hawkdraw / node / begin }
     \bool_if:NTF \l_hawkdraw_node_rescan_bool {
@@ -150,9 +202,6 @@
 
 \cs_new_protected:Npn \hawkdraw_node:nn #1#2 {
     \draw_scope_begin:
-        % if text clip
-        \pdfliteral { 7 ~ Tr ~ } % too late already
-        % if
         \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_point_last_fp
         \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_slope_last_fp
         \fp_set:Nn \l_hawkdraw_point_at_part_fp { nan }
@@ -225,12 +274,23 @@
             }
         }
         \__hawkdraw_node_set_padding:
-        % if text clip
-        \tl_put_right:Nn \l_hawkdraw_node_preactions_tl {
-            \draw_coffin_use:Nnn \l_hawkdraw_node_coffin { hc } { vc }
+        \bool_if:NTF \l__hawkdraw_node_text_mode_clip_bool {
+            \tl_put_right:Nn \l__hawkdraw_node_text_mode_clip_contents_tl {
+                \hawkdraw_support_pdfliteral:n {
+                    \int_use:N \l__hawkdraw_node_text_mode_int \c_space_tl Tr ~
+                }
+                % \draw_coffin_use:Nn creates a scope which breaks rendering
+                \hbox_to_zero:n {
+                    \coffin_typeset:Nnnnn \l_hawkdraw_node_coffin
+                        { hc } { vc } { 0pt } { 0pt }
+                }
+                \hawkdraw_support_pdfliteral:n { 0 ~ Tr ~ }
+            }
+        } {
+            \hawkdraw_support_pdfliteral:n {
+                \int_use:N \l__hawkdraw_node_text_mode_int \c_space_tl Tr ~
+            }
         }
-        \coffin_clear:N \l_hawkdraw_node_coffin
-        % fi
         \__hawkdraw_node_set_frame:V \l__hawkdraw_keys_unprocessed_clist
         \dim_set:Nn \l__hawkdraw_node_width_dim {
             \coffin_wd:N \l_hawkdraw_node_frame_coffin
@@ -245,6 +305,9 @@
                 { width } \l__hawkdraw_node_width_dim
             \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
                 { height } \l__hawkdraw_node_height_dim
+        }
+        \bool_if:NT \l__hawkdraw_node_text_mode_clip_bool {
+            \coffin_clear:N \l_hawkdraw_node_coffin
         }
         \coffin_attach:NnnNnnnn
             \l_hawkdraw_node_frame_coffin { hc } { vc }
@@ -470,7 +533,9 @@
         \draw_suspend_begin:
             \tag_socket_use:n { hawkdraw / node / frame / begin }
             \draw_begin:
-                \tl_use:N \l_hawkdraw_node_preactions_tl
+                \bool_if:NT \l__hawkdraw_node_text_mode_clip_bool {
+                    \tl_use:N \l__hawkdraw_node_text_mode_clip_contents_tl
+                }
                 \keys_set_exclude_groups:nnn { hawkdraw / path } { tag }
                     {#1}
                 \hawkdraw_path_set_options:
