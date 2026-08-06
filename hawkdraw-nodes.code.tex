@@ -68,6 +68,7 @@
 \bool_new:N \l__hawkdraw_node_vbox_bool
 \coffin_new:N \l_hawkdraw_node_coffin
 \coffin_new:N \l_hawkdraw_node_frame_coffin
+\tl_new:N \l_hawkdraw_node_postactions_tl
 
 \clist_new:N \l_hawkdraw_node_anchor_poles_clist
 \fp_new:N \l_hawkdraw_node_anchor_degree_fp
@@ -473,6 +474,7 @@
                 }
                 \draw_path_use:n { }
                 \bool_set_false:N \l_draw_bb_update_bool
+                \tl_use:N \l_hawkdraw_node_postactions_tl
                 \clist_remove_duplicates:N \l_hawkdraw_path_use_clist
                 \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }
             \draw_end:
