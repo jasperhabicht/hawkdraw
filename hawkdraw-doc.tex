@@ -1221,6 +1221,8 @@ The option \macro{text rendering} sets the text rendering mode of the node conte
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
+Note that if the text rendering mode is set to \macro{clip}, the node's frame and background are clipped by the node's contents and therefore not visible. On the other hand, the node's contents are not visible if the text rendering mode is set to \macro{none}.
+
 \begin{macrodef}
 !path/node/!|frame|={<string>}
 \end{macrodef}

@@ -297,13 +297,15 @@
             }
         }
         \__hawkdraw_node_set_padding:
+        % If text rendering mode is set to clip, we place the contents before the frame is drawn, so that
+        % the contents are clipped to the frame. Otherwise, we place the contents after the frame is drawn.
         \bool_if:NTF \l__hawkdraw_node_text_rendering_clip_bool {
             \tl_put_right:Nn \l__hawkdraw_node_text_rendering_clip_contents_tl {
                 \hawkdraw_support_pdfliteral:n {
                     \int_use:N \l__hawkdraw_node_text_rendering_int \c_space_tl Tr ~
                 }
-                % \draw_coffin_use:Nn creates a scope which breaks rendering
                 \hbox_to_zero:n {
+                    % \draw_coffin_use:Nn creates a scope which breaks rendering
                     \coffin_typeset:Nnnnn \l_hawkdraw_node_coffin
                         { hc } { vc } { 0pt } { 0pt }
                 }
@@ -329,6 +331,8 @@
             \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
                 { height } \l__hawkdraw_node_height_dim
         }
+        % Clear the contents box if the text rendering mode is set to clip since it is already
+        % placed in the frame box via \l__hawkdraw_node_text_rendering_clip_contents_tl.
         \bool_if:NT \l__hawkdraw_node_text_rendering_clip_bool {
             \coffin_clear:N \l_hawkdraw_node_coffin
         }
