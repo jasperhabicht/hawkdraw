@@ -101,7 +101,7 @@
 \cs_generate_variant:Nn \draw_coffin_use:Nnnn { NeeV }
 \cs_generate_variant:Nn \coffin_attach:NnnNnnnn { NnnNnnVV }
 
-\cs_new:Npn \hawkdraw_node_text_rendering_int_set:Nn #1#2 {
+\cs_new_protected:Npn \hawkdraw_node_text_rendering_int_set:Nn #1#2 {
     \clist_if_in:nnTF {#2} { none } {
         \int_set:Nn #1 { 3 }
     } {
