@@ -49,10 +49,12 @@
     } ,
     pattern ~ tile ~ size   .fp_set:N      = \l_hawkdraw_pattern_tile_size_fp ,
     pattern ~ tile ~ size   .initial:n     = { ( 10pt , 10pt ) } ,
+    pattern ~ tile ~ size   .groups:n      = { pattern / tile } ,
     pattern ~ type          .code:n        = {
         \clist_set:Nn \l_hawkdraw_pattern_path_use_clist {#1}
     },
     pattern ~ type          .initial:n     = { fill } ,
+    pattern ~ type   .groups:n      = { pattern / tile } ,
 }
 
 \keys_define:nn { hawkdraw / path / node } {
@@ -82,10 +84,11 @@
                 \keys_set:ne { hawkdraw / path } {
                     \prop_item:Nn \g_hawkdraw_pattern_default_keys_prop {#1}
                 }
-                \keys_set:nn { hawkdraw / path } {#2}
-                \hawkdraw_path_set_options:
+                \keys_set_groups:nnn { hawkdraw / path } { pattern / tile } {#2}
                 \draw_path_rectangle:nn { 0pt , 0pt } { \l_hawkdraw_pattern_tile_size_fp }
                 \draw_path_use_clear:n { }
+                \keys_set_exclude_groups:nnn { hawkdraw / path } { pattern / tile } {#2}
+                \hawkdraw_path_set_options:
                 \bool_set_false:N \l_draw_bb_update_bool
                 \use:c { hawkdraw_pattern_ #1 : }
             \draw_end:
