@@ -291,6 +291,31 @@
 
 % ===
 
+% #1 : x shift
+% #2 : y shift
+% #3 : rotation
+% #4 : x scale
+% #5 : y scale
+\cs_new:Npn \hawkdraw_pdf_cm:nnnnn #1#2#3#4#5
+  {
+    \dim_to_decimal_in_bp:n {
+        \fp_to_dim:n { ( #4 ) * cosd ( #3 ) }
+    } ~
+    \dim_to_decimal_in_bp:n {
+        \fp_to_dim:n { ( #4 ) * sind ( #3 ) }
+    } ~
+    \dim_to_decimal_in_bp:n {
+        \fp_to_dim:n { -1 * ( #5 ) * sind ( #3 ) }
+    } ~
+    \dim_to_decimal_in_bp:n {
+        \fp_to_dim:n { ( #5 ) * cosd ( #3 ) }
+    } ~
+    \dim_to_decimal_in_bp:n {#1} ~
+    \dim_to_decimal_in_bp:n {#2}
+  }
+
+% ===
+
 \cs_new:Npn \hawkdraw_tuple_use_i:n #1 {
     \fp_to_dim:n {
         \exp_last_unbraced:Ne
