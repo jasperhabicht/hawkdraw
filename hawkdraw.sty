@@ -51,6 +51,7 @@
 % ===
 
 \bool_new:N \l__hawkdraw_bidi_bool
+\tl_new:N \l__hawkdraw_bidi_textdir_tl
 
 \keys_define:nn { hawkdraw / global } {
     bidi                    .bool_set:N = \l__hawkdraw_bidi_bool ,
@@ -60,7 +61,6 @@
 
 \ProcessKeyOptions [ hawkdraw / global ]
 
-\tl_new:N \l__hawkdraw_bidi_textdir_tl
 \bool_if:NT \l__hawkdraw_bidi_bool {
     \sys_if_engine_luatex:TF {
         \hook_gput_code:nnn { env / hawkdraw / begin } { . } {
