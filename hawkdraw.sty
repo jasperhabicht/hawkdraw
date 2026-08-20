@@ -52,6 +52,7 @@
 
 \bool_new:N \l__hawkdraw_bidi_bool
 \tl_new:N \l__hawkdraw_bidi_textdir_tl
+\tl_new:N \l__hawkdraw_bidi_pardir_tl
 
 \keys_define:nn { hawkdraw / global } {
     bidi                    .bool_set:N = \l__hawkdraw_bidi_bool ,
@@ -65,10 +66,13 @@
     \sys_if_engine_luatex:TF {
         \hook_gput_code:nnn { env / hawkdraw / begin } { . } {
             \tl_set:NV \l__hawkdraw_bidi_textdir_tl \tex_textdir:D
+            \tl_set:NV \l__hawkdraw_bidi_pardir_tl \tex_pardir:D
             \tex_textdir:D TLT
+            \tex_pardir:D TLT
         }
         \hook_gput_code:nnn { hawkdraw / node / begin } { . } {
             \tex_textdir:D \l__hawkdraw_bidi_textdir_tl
+            \tex_pardir:D \l__hawkdraw_bidi_pardir_tl
         }
     }
 } {

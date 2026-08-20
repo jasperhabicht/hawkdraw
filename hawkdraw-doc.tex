@@ -2102,11 +2102,11 @@ For example, \macro{tagging-setup={alt={Water (H20)}, tag={Formula}}} would tag 
 \begin{macrodef}
 !global/!|bidi|={<boolean>}
 \end{macrodef}
-The \macro{hawkdraw} package supports bidirectionality when used with LuaTeX as bidirectional typesetting support is built into this engine. To enable it, load the package with the \macro{bidi} option in the document preamble.
+The \macro{hawkdraw} package supports for bidirectional typesetting when used with LuaTeX. To enable it, load the package with the \macro{bidi} option in the document preamble.
 
-In general, a right-to-left context also affects horizontal dimensions which in turn affect how paths are rendered. This means that a \macro{hawkdraw} environment should placed in a left-to-right context while the contents of nodes should retain the right-to-left context. With LuaTeX and the above option active, these changes are done automatically.
+In general, a right-to-left context affects horizontal dimensions which also affects how paths are rendered. This can result in unintended output and means that \macro{hawkdraw} environments should always be placed in a left-to-right context. On the other hand, the contents of nodes should retain the original text direction in most cases. This means that an optimal approach is to store the current text direction, set the text direction to left-to-right for the drawing and reset the original text direction for each node content.
 
-For other compilation engines such as PDFLaTeX or XeLaTeX, the following code can be inserted into the document preamble to implement a similar technique inserting commands to set and unset the direction into the relevant hooks.
+With LuaTeX and the above option active, these changes are done automatically. For other compilation engines such as PDFLaTeX or XeLaTeX, the following code can be inserted into the document preamble to implement a similar technique inserting commands to set and unset the direction into the relevant hooks.
 
 \begin{codeexample}
 \AddToHook{env/hawkdraw/begin}{\beginL}
