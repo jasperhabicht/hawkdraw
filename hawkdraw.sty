@@ -10,7 +10,7 @@
 %
 % This work has the LPPL maintenance status `maintained'.
 %
-\ProvidesExplPackage {hawkdraw} {2026-08-05} {0.7.0}
+\ProvidesExplPackage {hawkdraw} {2026-08-20} {0.7.1}
     {A package for drawing vector graphics with the l3draw package and a TikZ-like syntax.}
 
 \msg_new:nnn { hawkdraw } { old-kernel } {
@@ -26,6 +26,10 @@
 
 \msg_new:nnn { hawkdraw } { feature-unsupported } {
     #1 : ~ Feature ~ not ~ supported ~ with ~ #2.
+}
+
+\msg_new:nnn { hawkdraw } { option-unsupported } {
+    Option . `#1` ~ only ~ supported ~ with ~ LuaTeX.
 }
 
 \cs_new_protected:Npn \__hawkdraw_warning_unsupported:nn #1#2 {
@@ -46,7 +50,30 @@
 
 % ===
 
-\ProcessKeyOptions [ ]
+\bool_new:N \l__hawkdraw_bidi_bool
+
+\keys_define:nn { hawkdraw / global } {
+    bidi                    .bool_set:N = \l__hawkdraw_bidi_bool ,
+    bidi                    .default:n  = { true } ,
+    bidi                    .initial:n  = { false }
+}
+
+\ProcessKeyOptions [ hawkdraw / global ]
+
+\tl_new:N \l__hawkdraw_bidi_textdir_tl
+\bool_if:NT \l__hawkdraw_bidi_bool {
+    \sys_if_engine_luatex:TF {
+        \hook_gput_code:nnn { env / hawkdraw / begin } { . } {
+            \tl_set:NV \l__hawkdraw_bidi_textdir_tl \tex_textdir:D
+            \tex_textdir:D TLT
+        }
+        \hook_gput_code:nnn { hawkdraw / node / begin } { . } {
+            \tex_textdir:D \l__hawkdraw_bidi_textdir_tl
+        }
+    }
+} {
+    \msg_warning:nnn { hawkdraw } { option-unsupported } { bidi }
+}
 
 \RequirePackage { l3draw }
 
@@ -119,7 +146,7 @@
 
 \NewTaggingSocketPlug { hawkdraw / picture / init } { default } {
     \tl_set:Nn \l_hawkdraw_tag_mode_tl { text }
-    \keys_set:nn { hawkdraw / tag } {#1}
+    \keys_set_known:nn { hawkdraw / tag } {#1}
     \exp_args:NnV \AssignTaggingSocketPlug { hawkdraw / picture / begin }
         \l_hawkdraw_tag_mode_tl
     \exp_args:NnV \AssignTaggingSocketPlug { hawkdraw / picture / end }
