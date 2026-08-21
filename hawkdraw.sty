@@ -66,7 +66,7 @@
 \bool_if:NT \l__hawkdraw_bidi_bool {
     \sys_if_engine_luatex:TF {
         \hook_gput_code:nnn { env / hawkdraw / begin } { . } {
-            \tl_set:NV \l__hawkdraw_bidi_bodydir_tl \tex_pardirection:D
+            \tl_set:NV \l__hawkdraw_bidi_bodydir_tl \tex_bodydirection:D
             \tl_set:NV \l__hawkdraw_bidi_pardir_tl \tex_pardirection:D
             \tl_set:NV \l__hawkdraw_bidi_textdir_tl \tex_textdirection:D
             \tex_bodydirection:D 0
