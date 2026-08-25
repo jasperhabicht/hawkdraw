@@ -18,6 +18,16 @@
     \dim_set:Nn \tex_parindent:D {#1}
 }
 
+\clist_inline_map:nn { body , par , text } {
+    \cs_new_protected:cpn { hawkdraw_get_ #1 dir:N } ##1 {
+        \tl_gset_eq:Nc ##1 { tex_ #1 direction:D }
+    }
+    \cs_new_protected:cpn { hawkdraw_set_ #1 dir:n } ##1 {
+        \use:c { tex_ #1 direction:D } ##1 \scan_stop:
+    }
+    \cs_generate_variant:cn { hawkdraw_set_ #1 dir:n } { V }
+}
+
 % ===
 
 \cs_new_protected:Npn \hawkdraw_support_pdfliteral:n #1 {
