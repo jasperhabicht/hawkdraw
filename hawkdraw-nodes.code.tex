@@ -562,6 +562,9 @@
     }
 }
 
+\dim_new:N \l_hawkdraw_node_natural_width_dim
+\dim_new:N \l_hawkdraw_node_natural_height_dim
+
 \cs_new_protected:Npn \__hawkdraw_node_set_frame:n #1 {
     \hcoffin_set:Nn \l_hawkdraw_node_frame_coffin {
         \draw_suspend_begin:
@@ -571,8 +574,10 @@
                     \tl_use:N \l__hawkdraw_node_text_rendering_clip_contents_tl
                 }
 
-                \cs_if_exist_use:cTF { hawkdraw_node_frame_set_ \l_hawkdraw_node_frame_tl :NNVVVV } {
+                \cs_if_exist_use:cTF { hawkdraw_node_frame_set_ \l_hawkdraw_node_frame_tl :NNNNVVVV } {
                     \l__hawkdraw_node_frame_path_tl
+                    \l_hawkdraw_node_natural_width_dim
+                    \l_hawkdraw_node_natural_height_dim
                     \l_hawkdraw_node_coffin
                     \l_hawkdraw_node_padding_left_dim
                     \l_hawkdraw_node_padding_right_dim
@@ -604,20 +609,17 @@
 }
 \cs_generate_variant:Nn \__hawkdraw_node_set_frame:n { V }
 
-\dim_new:N \l_hawkdraw_node_natural_width_dim
-\dim_new:N \l_hawkdraw_node_natural_height_dim
-
 \cs_new_protected:Npn \hawkdraw_node_create_frame:nnn #1#2#3 {
-    \cs_new_protected:cpn { hawkdraw_node_frame_set_ #1 :NNnnnn } ##1##2##3##4##5##6 {
-        \dim_set:Nn \l_hawkdraw_node_natural_width_dim {
-            \coffin_wd:N ##2 + ##3 + ##4
-        }
-        \dim_set:Nn \l_hawkdraw_node_natural_height_dim {
-            \coffin_ht_plus_dp:N ##2 + ##5 + ##6
-        }
+    \cs_new_protected:cpn { hawkdraw_node_frame_set_ #1 :NNNNnnnn } ##1##2##3##4##5##6##7##8 {
         \tl_set:Nn ##1 {#2}
+        \dim_set:Nn ##2 {
+            \coffin_wd:N ##4 + ##5 + ##6
+        }
+        \dim_set:Nn ##3 {
+            \coffin_ht_plus_dp:N ##4 + ##7 + ##8
+        }
     }
-    \cs_generate_variant:cn { hawkdraw_node_frame_set_ #1 :NNnnnn } { NNVVVV }
+    \cs_generate_variant:cn { hawkdraw_node_frame_set_ #1 :NNNNnnnn } { NNNNVVVV }
 
     \cs_new_protected:cpn { hawkdraw_node_frame_point_ #1 :nnnn } ##1##2##3##4 {
         #3
