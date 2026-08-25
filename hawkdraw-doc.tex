@@ -351,6 +351,7 @@ Similar to Ti\emph{k}Z, the \macro{hawkdraw} package makes use of key-value pair
   \macro{clist} & A comma-separated list is a list of strings that are separated by commas. Such a list can consist of no or only one item as well. If the relevant list can only have a maximum number of items, this is stated in the description of the relevant option. Note that a comma-separated list is typically not surrounded by parenthesis. \\
   \macro{options} & A key-value list consists of comma separated entities of options that may be followed by an equals sign and a value. A value can be another key-value list. \\
   \macro{color} & This means a color definition as specified by the \macro{l3color} module. Note that colors defined by the \macro{xcolor} package have no effect when using the \macro{hawkdraw} package. \\
+  \macro{code} & TeX code, typically with certain specifications as stated in the description of the relevant option. \\
   \emph{none} & Some options do not accept any data type as they are only executing some function. \\
   \bottomrule
 \end{longtable}
@@ -1206,6 +1207,23 @@ Using the options \macro{color text fill} and \macro{color text stroke}, the fil
 Using the options \macro{opacity text fill} and \macro{opacity text stroke}, the fill and stroke opacity of the node contents are set specifically.
 
 Note that \macro{\DocumentMetadata{}} needs to be set in order to activate support for PDF transparency.
+
+\begin{macrodef}
+!path/node/!|background|={<code>}
+\end{macrodef}
+The option \macro{background} can be used to set a background to the node. The code can, for example, include an image using the \macro{\includegraphics} command (for which to be available, the \macro{graphicx} package needs to be loaded).
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \node[
+      background={
+        \includegraphics{
+          example-image-duck
+        }
+      }
+    ] {\Huge foo} ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
 
 \begin{macrodef}
 !path/node/!|text rendering|={<clist>}

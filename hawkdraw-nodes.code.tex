@@ -14,7 +14,7 @@
 
 % v0.7.1 2026-08-20
 
-\msg_new:nnn { hawkdraw } { node-unknown } {
+\msg_new:nnn { hawkdraw } { frame-unknown } {
     Node ~ frame ~ `#1` ~ unknown.
 }
 
@@ -72,7 +72,11 @@
 \bool_new:N \l__hawkdraw_node_vbox_bool
 \coffin_new:N \l_hawkdraw_node_coffin
 \coffin_new:N \l_hawkdraw_node_frame_coffin
+\tl_new:N \l__hawkdraw_node_frame_path_tl
 \tl_new:N \l_hawkdraw_node_postactions_tl
+
+\bool_new:N \l__hawkdraw_node_background_bool
+\coffin_new:N \l_hawkdraw_node_background_coffin
 
 \int_new:N \l__hawkdraw_node_text_rendering_int
 \bool_new:N \l__hawkdraw_node_text_rendering_clip_bool
@@ -178,6 +182,10 @@
     flipped                 .default:n      = { true } ,
     rescan                  .bool_set:N     = \l_hawkdraw_node_rescan_bool ,
     rescan                  .default:n      = { true } ,
+    background              .code:n         = {
+        \bool_set_true:N \l__hawkdraw_node_background_bool
+        \hcoffin_set:Nn \l_hawkdraw_node_background_coffin {#1}
+    } ,
     text ~ rendering        .code:n         = {
         \hawkdraw_node_text_rendering_int_set:Nn \l__hawkdraw_node_text_rendering_int {#1}
         \int_compare:nNnT { \l__hawkdraw_node_text_rendering_int } < { 0 } {
@@ -562,19 +570,31 @@
                 \bool_if:NT \l__hawkdraw_node_text_rendering_clip_bool {
                     \tl_use:N \l__hawkdraw_node_text_rendering_clip_contents_tl
                 }
+
+                \tl_set:Nn \l__hawkdraw_node_frame_path_tl {
+                    \cs_if_exist_use:cTF { hawkdraw_node_frame_ \l_hawkdraw_node_frame_tl :NVVVV } {
+                        \l_hawkdraw_node_coffin
+                        \l_hawkdraw_node_padding_left_dim
+                        \l_hawkdraw_node_padding_right_dim
+                        \l_hawkdraw_node_padding_top_dim
+                        \l_hawkdraw_node_padding_bottom_dim
+                    } {
+                        \msg_warning:nnV { hawkdraw } { frame-unknown } \l_hawkdraw_node_frame_tl
+                    }
+                }
+
+                \bool_if:NT \l__hawkdraw_node_background_bool {
+                    \draw_scope_begin:
+                        \tl_use:N \l__hawkdraw_node_frame_path_tl
+                        \draw_path_use:n { clip }
+                        \draw_coffin_use:Nnn \l_hawkdraw_node_background_coffin { hc } { vc }
+                    \draw_scope_end:
+                }
+
                 \keys_set_exclude_groups:nnn { hawkdraw / path } { tag }
                     {#1}
                 \hawkdraw_path_set_options:
-                \cs_if_exist_use:cTF { hawkdraw_node_frame_ \l_hawkdraw_node_frame_tl :NVVVV } {
-                    \l_hawkdraw_node_coffin
-                    \l_hawkdraw_node_padding_left_dim
-                    \l_hawkdraw_node_padding_right_dim
-                    \l_hawkdraw_node_padding_top_dim
-                    \l_hawkdraw_node_padding_bottom_dim
-                } {
-                    \msg_warning:nnV { hawkdraw } { node-unknown } \l_hawkdraw_node_frame_tl
-                }
-                \draw_path_use:n { }
+                \tl_use:N \l__hawkdraw_node_frame_path_tl
                 \bool_set_false:N \l_draw_bb_update_bool
                 \tl_use:N \l_hawkdraw_node_postactions_tl
                 \clist_remove_duplicates:N \l_hawkdraw_path_use_clist
