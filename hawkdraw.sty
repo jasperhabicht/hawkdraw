@@ -526,7 +526,8 @@
     \cs_new_protected:cpn {
         __hawkdraw_path_process_ \tl_head:n {#1} :w
     } #1 ##1 \s__hawkdraw_stop {
-        \tl_if_head_eq_meaning:nNTF {##1} [ {
+        \exp_last_unbraced:Nf
+        \token_if_eq_meaning:NNTF { \tl_head:n {##1} } [ {
             \use:c { __hawkdraw_path_process_ #1 _options:w } ##1 \s__hawkdraw_stop
         } {
             #2 { }
@@ -545,7 +546,8 @@
     \cs_new_protected:cpn {
         __hawkdraw_path_process_ \tl_head:n {#1} :w
     } #1 ##1##2 \s__hawkdraw_stop {
-        \tl_if_head_eq_meaning:nNTF {##1} [ {
+        \exp_last_unbraced:Nf
+        \token_if_eq_meaning:NNTF { \tl_head:n {##1} } [ {
             \use:c { __hawkdraw_path_process_ #1 _options:w } ##1##2 \s__hawkdraw_stop
         } {
             #2 { } {##1}
@@ -574,7 +576,8 @@
     \cs_new_protected:cpn {
         __hawkdraw_path_process_ \tl_head:n {#1} _ \tl_item:nn {#1} { 2 } :w
     } #1 ##1 \s__hawkdraw_stop {
-        \tl_if_head_eq_meaning:nNTF {##1} [ {
+        \exp_last_unbraced:Nf
+        \token_if_eq_meaning:NNTF { \tl_head:n {##1} } [ {
             \use:c { __hawkdraw_path_process_ #1 _options:w } ##1 \s__hawkdraw_stop
         } {
             #2 { }
@@ -593,7 +596,8 @@
     \cs_new_protected:cpn {
         __hawkdraw_path_process_ \tl_head:n {#1} _ \tl_item:nn {#1} { 2 } :w
     } #1 ##1##2 \s__hawkdraw_stop {
-        \tl_if_head_eq_meaning:nNTF {##1} [ {
+        \exp_last_unbraced:Nf
+        \token_if_eq_meaning:NNTF { \tl_head:n {##1} } [ {
             \use:c { __hawkdraw_path_process_ #1 _options:w } ##1##2 \s__hawkdraw_stop
         } {
             #2 { } {##1}
