@@ -1808,11 +1808,6 @@ The option \macro{pattern} fills the current path with a pattern. The key takes 
 \end{macrodef}
 Patterns can be styled by passing the relevant path options to the options \macro{pattern style set} and \macro{pattern style add}. The option \macro{pattern style set} sets the style for the pattern of the current path. The options \macro{pattern style add} appends the relevant styles to the existing styles. All options that are available for paths are also available for patterns.
 
-\begin{macrodef}
-!path/!|pattern tile size|={<tuple>}
-\end{macrodef}
-The option \macro{pattern tile size} accepts a tuple of two dimensions representing the size of the pattern tile. The default size of a pattern tile is \qty{10}{\point}\,\texttimes\,\qty{10}{\point}. Transformations applied to the pattern via \macro{pattern style set} or \macro{pattern style add} don't affect the size of the pattern tile.
-
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \path[
@@ -1821,7 +1816,12 @@ The option \macro{pattern tile size} accepts a tuple of two dimensions represent
   ]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
-\end{codeexamplecolumns}
+\end{codeexamplecolumns} ja
+
+\begin{macrodef}
+!path/!|pattern tile size|={<tuple>}
+\end{macrodef}
+The option \macro{pattern tile size} accepts a tuple of two dimensions representing the size of the pattern tile. The default size of a pattern tile is \qty{10}{\point}\,\texttimes\,\qty{10}{\point}. Transformations applied to the pattern via \macro{pattern style set} or \macro{pattern style add} don't affect the size of the pattern tile.
 
 \begin{macrodef}
 !path/!|pattern type|={<clist>}
