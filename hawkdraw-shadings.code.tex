@@ -46,7 +46,6 @@
     Shading ~ `#1` ~ unknown.
 }
 
-\box_new:N \l_hawkdraw_shading_box
 \int_new:N \g__hawkdraw_shading_int
 \clist_new:N \l_hawkdraw_shading_path_use_clist
 
@@ -134,11 +133,6 @@
 
 \cs_generate_variant:Nn \color_export:nnN { e }
 
-%%%% TODO: 
-%%%% - Fix positioning of shading: We need the position of the current path.
-%%%% - Fix drawing of additional stroke / fill.
-%%%% - Try to make shadings as reusbable as possible.
-
 \cs_new_protected:Npn \hawkdraw_shading_set:nnn #1#2#3 {
     \tl_if_empty:nTF {#3} {
         \pdf_object_unnamed_write:ne { dict } {
@@ -178,14 +172,16 @@
         } ~
         /Matrix ~ [ ~
             \hawkdraw_pdf_cm:nnnnn {
-                0.5 * (
-                    \l_hawkdraw_shading_bbox_xmin_dim -
-                    \l_hawkdraw_shading_bbox_xmax_dim
+                \property_ref:ee { draw . \int_use:N \g_draw_id_int } { xpos } sp +
+                -0.5 * (
+                    \l_hawkdraw_shading_bbox_xmax_dim - 
+                    \l_hawkdraw_shading_bbox_xmin_dim
                 )
             } {
-                0.5 * (
-                    \l_hawkdraw_shading_bbox_ymin_dim -
-                    \l_hawkdraw_shading_bbox_ymax_dim
+                \property_ref:ee { draw . \int_use:N \g_draw_id_int } { ypos } sp -
+                -0.5 * (
+                    \l_hawkdraw_shading_bbox_ymax_dim - 
+                    \l_hawkdraw_shading_bbox_ymin_dim
                 )
             } {
                 \l_hawkdraw_shading_rotate_fp
