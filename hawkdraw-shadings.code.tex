@@ -133,6 +133,12 @@
 
 \cs_generate_variant:Nn \color_export:nnN { e }
 
+%%%% TODO: 
+%%%% - Fix positioning of shading.
+%%%% - Fix drawing of additional stroke / fill.
+%%%% - Avoid using internal variable \g__pdf_backend_object_int.
+%%%% - Try to make shadings as reusbable as possible.
+
 \cs_new_protected:Npn \hawkdraw_shading_set:nnn #1#2#3 {
     \pdf_object_new:n {
         hawkdraw_shading_res_ #1
@@ -146,6 +152,8 @@
     } {
         \hawkdraw_support_pdf_write_stream:nee {#1} {#2} {#3}
     }
+
+    %%%% The following should probably be already put into \hawkdraw_shading_use:n
     \pdf_object_new:n {
         hawkdraw_shading_ #1
     }
