@@ -13,7 +13,7 @@
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
 \def\hawkdrawfileversion{0.8.0}
-\def\hawkdrawfiledate{25 August 2026}
+\def\hawkdrawfiledate{1 September 2026}
 
 \usepackage[T1]{fontenc}
 \usepackage{Alegreya}
@@ -299,7 +299,7 @@
 \changes{v0.6.1}{2026/08/01}{Fixing bug in pattern module; improving handling of blend modes and opacity groups.}
 \changes{v0.7.0}{2026/08/05}{Adding option to apply patterns to strokes; adding pattern and shading support to nodes; adding support for text rendering modes; adding soft mask support to ConTeXt module.}
 \changes{v0.7.1}{2026/08/20}{Improving pattern module; fixing bug in tagging support; adding bidi support for LuaTeX.}
-\changes{v0.8.0}{2026/08/25}{Adding background to nodes; fixing bug in parser.}
+\changes{v0.8.0}{2026/09/01}{Adding background to nodes; fixing bug in parser; fixing bug in bidi support.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -2009,6 +2009,8 @@ The following blend modes are available:
 \end{longtable}
 
 \subsection{Linear, radial and conic shadings}
+
+The current PDF specification supports applying a shading as pattern to a path or filling a path with a shading directly. Using the first approach, it is possible to apply a shading to a path as fill or as stroke. But since the geometry of the shading is independent of that of the path, this requires two compilation runs as TeX needs to store the position of the current drawing in order to be able to position the shading correctly. Therefore, the \macro{hawkdraw} package makes use of the second approach which, however, means that shaidngs cannot applied as strokes to paths. 
 
 \begin{macrodef}
 !path/!|shading|={<string>}
