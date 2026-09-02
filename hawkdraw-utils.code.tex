@@ -12,10 +12,20 @@
 %
 % BOF
 
-% v0.7.0 2026-08-05
+% v0.8.0 2026-08-25
 
 \cs_new_protected:Npn \hawkdraw_set_parindent:n #1 {
     \dim_set:Nn \tex_parindent:D {#1}
+}
+
+\clist_map_inline:nn { body , par , text } {
+    \cs_new_protected:cpn { hawkdraw_get_ #1 dir:N } ##1 {
+        \tl_gset_eq:Nc ##1 { tex_ #1 direction:D }
+    }
+    \cs_new_protected:cpn { hawkdraw_set_ #1 dir:n } ##1 {
+        \use:c { tex_ #1 direction:D } ##1 \scan_stop:
+    }
+    \cs_generate_variant:cn { hawkdraw_set_ #1 dir:n } { V }
 }
 
 % ===
@@ -291,10 +301,35 @@
 
 % ===
 
+% #1 : x shift
+% #2 : y shift
+% #3 : rotation
+% #4 : x scale
+% #5 : y scale
+\cs_new:Npn \hawkdraw_pdf_cm:nnnnn #1#2#3#4#5
+  {
+    \dim_to_decimal_in_bp:n {
+        \fp_to_dim:n { ( #4 ) * cosd ( #3 ) }
+    } ~
+    \dim_to_decimal_in_bp:n {
+        \fp_to_dim:n { ( #4 ) * sind ( #3 ) }
+    } ~
+    \dim_to_decimal_in_bp:n {
+        \fp_to_dim:n { -1 * ( #5 ) * sind ( #3 ) }
+    } ~
+    \dim_to_decimal_in_bp:n {
+        \fp_to_dim:n { ( #5 ) * cosd ( #3 ) }
+    } ~
+    \dim_to_decimal_in_bp:n {#1} ~
+    \dim_to_decimal_in_bp:n {#2}
+  }
+
+% ===
+
 \cs_new:Npn \hawkdraw_tuple_use_i:n #1 {
     \fp_to_dim:n {
         \exp_last_unbraced:Ne
-            \__hawkdraw_tuple_use_i_aux:w { \fp_eval:n {#1} }
+        \__hawkdraw_tuple_use_i_aux:w { \fp_eval:n {#1} }
     }
 }
 \cs_generate_variant:Nn \hawkdraw_tuple_use_i:n { e , V }
@@ -304,7 +339,7 @@
 \cs_new:Npn \hawkdraw_tuple_use_ii:n #1 {
     \fp_to_dim:n {
         \exp_last_unbraced:Ne
-            \__hawkdraw_tuple_use_ii_aux:w { \fp_eval:n {#1} }
+        \__hawkdraw_tuple_use_ii_aux:w { \fp_eval:n {#1} }
     }
 }
 \cs_generate_variant:Nn \hawkdraw_tuple_use_ii:n { e , V }
