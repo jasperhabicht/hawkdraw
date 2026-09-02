@@ -29,7 +29,7 @@
 }
 
 \msg_new:nnn { hawkdraw } { option-unsupported } {
-    Option . `#1` ~ only ~ supported ~ with ~ LuaTeX.
+    Option ~ `#1` ~ only ~ supported ~ with ~ LuaTeX.
 }
 
 \cs_new_protected:Npn \__hawkdraw_warning_unsupported:nn #1#2 {
@@ -78,9 +78,9 @@
             \hawkdraw_set_pardir:V \l__hawkdraw_bidi_pardir_tl
             \hawkdraw_set_textdir:V \l__hawkdraw_bidi_textdir_tl
         }
+    } {
+        \msg_warning:nnn { hawkdraw } { option-unsupported } { bidi }
     }
-} {
-    \msg_warning:nnn { hawkdraw } { option-unsupported } { bidi }
 }
 
 \RequirePackage { l3draw }
