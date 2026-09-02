@@ -47,6 +47,7 @@
 }
 
 \box_new:N \l_hawkdraw_shading_box
+\int_new:N \g__hawkdraw_shading_int
 \clist_new:N \l_hawkdraw_shading_path_use_clist
 
 \clist_new:N \l_hawkdraw_shading_colors_clist
@@ -78,7 +79,7 @@
             \hawkdraw_scope_reset_bb_begin:
                 \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
                 \tl_use:N \g_hawkdraw_softpath_original_tl
-                \draw_path_use:n { clip }
+                \draw_path_use:n { }
                 \dim_set_eq:NN \l_hawkdraw_shading_bbox_xmin_dim
                     \g_draw_bb_xmin_dim
                 \dim_set_eq:NN \l_hawkdraw_shading_bbox_xmax_dim
@@ -112,7 +113,7 @@
 \keys_define:nn { hawkdraw / path / node } {
     shading                 .code:n         = {
         \tl_put_right:Nn \l_hawkdraw_node_postactions_tl {
-            \draw_path_use:n { clip }
+            \draw_path_use:n { }
             \dim_set_eq:NN \l_hawkdraw_shading_bbox_xmin_dim
                 \g_draw_bb_xmin_dim
             \dim_set_eq:NN \l_hawkdraw_shading_bbox_xmax_dim
@@ -134,63 +135,23 @@
 \cs_generate_variant:Nn \color_export:nnN { e }
 
 %%%% TODO: 
-%%%% - Fix positioning of shading.
+%%%% - Fix positioning of shading: We need the position of the current path.
 %%%% - Fix drawing of additional stroke / fill.
-%%%% - Avoid using internal variable \g__pdf_backend_object_int.
 %%%% - Try to make shadings as reusbable as possible.
 
 \cs_new_protected:Npn \hawkdraw_shading_set:nnn #1#2#3 {
-    \pdf_object_new:n {
-        hawkdraw_shading_res_ #1
-    }
     \tl_if_empty:nTF {#3} {
-        \pdf_object_write:nne {
-            hawkdraw_shading_res_ #1
-        } { dict } {
-            #2
+        \pdf_object_unnamed_write:ne { dict } {
+            #2 ~
+            /BBox ~ [ 0.0 ~ 0.0 ~ 100.0 ~ 100.0 ] ~
         }
     } {
         \hawkdraw_support_pdf_write_stream:nee {#1} {#2} {#3}
     }
-
-    %%%% The following should probably be already put into \hawkdraw_shading_use:n
-    \pdf_object_new:n {
-        hawkdraw_shading_ #1
-    }
-    \pdf_object_write:nne {
-        hawkdraw_shading_ #1
-    } { dict } {
-        /Type ~ /Pattern ~
-        /PatternType ~ 2 ~
-        /Shading ~ 
-        \pdf_object_ref:n {
-            hawkdraw_shading_res_ #1
-        } ~
-        /Matrix ~ [ ~
-            \hawkdraw_pdf_cm:nnnnn {
-                \l_hawkdraw_shading_bbox_xmin_dim
-            } {
-                \l_hawkdraw_shading_bbox_ymin_dim
-            } {
-                \l_hawkdraw_shading_rotate_fp
-            } {
-                100 * (
-                    \l_hawkdraw_shading_bbox_xmax_dim - 
-                    \l_hawkdraw_shading_bbox_xmin_dim
-                ) / 100bp
-            } {
-                100 * (
-                    \l_hawkdraw_shading_bbox_ymax_dim - 
-                    \l_hawkdraw_shading_bbox_ymin_dim
-                ) / 100bp
-            } ~
-        ] ~
-    }
-
-    \int_const:cn {
-        c__hawkdraw_shading_ #1 _int
+    \tl_const:cn {
+        c__hawkdraw_shading_ #1 _tl
     } {
-        \g__pdf_backend_object_int
+        \pdf_object_ref_last:
     }
 }
 \cs_generate_variant:Nn \hawkdraw_shading_set:nnn { e }
@@ -198,11 +159,12 @@
 \cs_new_protected:Npn \hawkdraw_shading_use:n #1 {
     \hawkdraw_shading_create:nV {#1} \l_hawkdraw_shading_colors_clist
 
-    \pdfmanagement_add:nee {
-        Page / Resources / Pattern
-    } {
-        hawkdraw Pattern
-        \int_use:c {
+    \int_gincr:N \g__hawkdraw_shading_int
+    \pdf_object_unnamed_write:ne { dict } {
+        /Type ~ /Pattern ~
+        /PatternType ~ 2 ~
+        /Shading ~ 
+        \tl_use:c {
             c__hawkdraw_shading_
             #1
             . \clist_use:N \l_hawkdraw_shading_colors_clist
@@ -212,55 +174,55 @@
             \str_if_eq:nnT {#1} { conic } {
                 . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
             }
-            _int
-        }
+            _tl
+        } ~
+        /Matrix ~ [ ~
+            \hawkdraw_pdf_cm:nnnnn {
+                0.5 * (
+                    \l_hawkdraw_shading_bbox_xmin_dim -
+                    \l_hawkdraw_shading_bbox_xmax_dim
+                )
+            } {
+                0.5 * (
+                    \l_hawkdraw_shading_bbox_ymin_dim -
+                    \l_hawkdraw_shading_bbox_ymax_dim
+                )
+            } {
+                \l_hawkdraw_shading_rotate_fp
+            } {
+                2 * (
+                    \l_hawkdraw_shading_bbox_xmax_dim - 
+                    \l_hawkdraw_shading_bbox_xmin_dim
+                ) / 100bp
+            } {
+                2 * (
+                    \l_hawkdraw_shading_bbox_ymax_dim - 
+                    \l_hawkdraw_shading_bbox_ymin_dim
+                ) / 100bp
+            } ~
+        ] ~
+    }
+
+    \pdfmanagement_add:nee {
+        Page / Resources / Pattern
     } {
-        \pdf_object_ref:n {
-            hawkdraw_shading_
-            #1
-            . \clist_use:N \l_hawkdraw_shading_colors_clist
-            \str_if_eq:nnT {#1} { radial } {
-                . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
-            }
-            \str_if_eq:nnT {#1} { conic } {
-                . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
-            }
-        }
+        hawkdraw Shading
+        \int_use:N \g__hawkdraw_shading_int
+    } {
+        \pdf_object_ref_last:
     }
 
     \clist_if_in:NnT \l_hawkdraw_shading_path_use_clist { fill } {
         \hawkdraw_support_pdfliteral_direct:n {
             /Pattern ~ cs ~ /hawkdraw Shading
-            \int_use:c {
-                c__hawkdraw_shading_
-                #1
-                . \clist_use:N \l_hawkdraw_shading_colors_clist
-                \str_if_eq:nnT {#1} { radial } {
-                    . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
-                }
-                \str_if_eq:nnT {#1} { conic } {
-                    . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
-                }
-                _int
-            }
+            \int_use:N \g__hawkdraw_shading_int
             \c_space_tl scn ~
         }
     }
     \clist_if_in:NnT \l_hawkdraw_shading_path_use_clist { stroke } {
         \hawkdraw_support_pdfliteral_direct:n {
             /Pattern ~ CS ~ /hawkdraw Shading
-            \int_use:c {
-                c__hawkdraw_shading_
-                #1
-                . \clist_use:N \l_hawkdraw_shading_colors_clist
-                \str_if_eq:nnT {#1} { radial } {
-                    . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
-                }
-                \str_if_eq:nnT {#1} { conic } {
-                    . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
-                }
-                _int
-            }
+            \int_use:N \g__hawkdraw_shading_int
             \c_space_tl SCN ~
         }
     }   
@@ -359,11 +321,11 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_shading_linear:n #1 {
-    \int_if_exist:cF {
+    \tl_if_exist:cF {
         c__hawkdraw_shading_
         linear
         . #1
-        _int
+        _tl
     } {
         \hawkdraw_shading_color_set_values:Nn
             \l__hawkdraw_shading_color_values_seq
@@ -451,12 +413,12 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_shading_radial:n #1 {
-    \int_if_exist:cF {
+    \tl_if_exist:cF {
         c__hawkdraw_shading_
         radial
         . #1
         . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
-        _int
+        _tl
     } {
         \hawkdraw_shading_color_set_values:Nn
             \l__hawkdraw_shading_color_values_seq
@@ -668,12 +630,12 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_shading_conic:n #1 {
-    \int_if_exist:cF {
+    \tl_if_exist:cF {
         c__hawkdraw_shading_
         conic
         . #1
         . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
-        _int
+        _tl
     } {
         \hawkdraw_shading_conic_color_set_values:Nn
             \l__hawkdraw_shading_color_values_seq

@@ -320,8 +320,8 @@
     \dim_to_decimal_in_bp:n {
         \fp_to_dim:n { ( #5 ) * cosd ( #3 ) }
     } ~
-    \dim_to_decimal_in_bp:n {#1} ~
-    \dim_to_decimal_in_bp:n {#2}
+    \dim_to_decimal_in_bp:n { \fp_to_dim:n {#1} } ~
+    \dim_to_decimal_in_bp:n { \fp_to_dim:n {#2} }
   }
 
 % ===
