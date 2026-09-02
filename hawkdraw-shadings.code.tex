@@ -173,13 +173,15 @@
         /Matrix ~ [ ~
             \hawkdraw_pdf_cm:nnnnn {
                 \property_ref:ee { draw . \int_use:N \g_draw_id_int } { xpos } sp +
-                -0.5 * (
+                \l_hawkdraw_shading_bbox_xmin_dim -
+                0.5 * (
                     \l_hawkdraw_shading_bbox_xmax_dim - 
                     \l_hawkdraw_shading_bbox_xmin_dim
                 )
             } {
-                \property_ref:ee { draw . \int_use:N \g_draw_id_int } { ypos } sp -
-                -0.5 * (
+                \property_ref:ee { draw . \int_use:N \g_draw_id_int } { ypos } sp +
+                \l_hawkdraw_shading_bbox_ymin_dim -
+                0.5 * (
                     \l_hawkdraw_shading_bbox_ymax_dim - 
                     \l_hawkdraw_shading_bbox_ymin_dim
                 )
