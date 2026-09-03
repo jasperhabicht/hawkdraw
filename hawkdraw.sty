@@ -1484,7 +1484,7 @@
         \l__hawkdraw_keys_unprocessed_clist
 }
 
-\NewDocumentEnvironment { hawkdraw } { O { } } {
+\NewDocumentEnvironment { hawkdraw } { O { } +b } {
     % ensure that relevant characters are not active
     \seq_clear:N \l__hawkdraw_chars_active_seq
     \int_step_inline:nnn { 32 } { 127 } {
@@ -1573,36 +1573,42 @@
     \tag_socket_use:n { hawkdraw / picture / begin }
     \tag_suspend:n { hawkdraw / picture }
     \nullfont
-    \draw_begin:
-        \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
-        \keys_set_known:nnN { hawkdraw / picture } {#1}
-            \l__hawkdraw_keys_unprocessed_clist
-        \keys_set_exclude_groups:nnV { hawkdraw / path } { tag }
-            \l__hawkdraw_keys_unprocessed_clist
-        \fp_if_nan:nF { \l_hawkdraw_picture_baseline_fp } {
-            \draw_set_baseline:n {
-                \fp_to_dim:n { \l_hawkdraw_picture_baseline_fp }
+    \pdfxform_new:enn {
+        hawkdraw_ \int_use:N \g_hawkdraw_picture_id_int
+    } { } {
+        \draw_begin:
+            \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
+            \keys_set_known:nnN { hawkdraw / picture } {#1}
+                \l__hawkdraw_keys_unprocessed_clist
+            \keys_set_exclude_groups:nnV { hawkdraw / path } { tag }
+                \l__hawkdraw_keys_unprocessed_clist
+            \fp_if_nan:nF { \l_hawkdraw_picture_baseline_fp } {
+                \draw_set_baseline:n {
+                    \fp_to_dim:n { \l_hawkdraw_picture_baseline_fp }
+                }
             }
-        }
-        \int_compare:nNnT { \clist_count:N \l_hawkdraw_picture_bb_clist } = { 4 } {
-            \draw_path_rectangle_corners:nn {
-                (
-                    \clist_item:Nn \l_hawkdraw_picture_bb_clist { 1 }
-                ,
-                    \clist_item:Nn \l_hawkdraw_picture_bb_clist { 2 }
-                )
-            } {
-                (
-                    \clist_item:Nn \l_hawkdraw_picture_bb_clist { 3 }
-                ,
-                    \clist_item:Nn \l_hawkdraw_picture_bb_clist { 4 }
-                )
+            \int_compare:nNnT { \clist_count:N \l_hawkdraw_picture_bb_clist } = { 4 } {
+                \draw_path_rectangle_corners:nn {
+                    (
+                        \clist_item:Nn \l_hawkdraw_picture_bb_clist { 1 }
+                    ,
+                        \clist_item:Nn \l_hawkdraw_picture_bb_clist { 2 }
+                    )
+                } {
+                    (
+                        \clist_item:Nn \l_hawkdraw_picture_bb_clist { 3 }
+                    ,
+                        \clist_item:Nn \l_hawkdraw_picture_bb_clist { 4 }
+                    )
+                }
+                \draw_path_replace_bb:
+                \bool_set_false:N \l_draw_bb_update_bool
             }
-            \draw_path_replace_bb:
-            \bool_set_false:N \l_draw_bb_update_bool
-        }
+            #2
+        \draw_end:
+    }
 } {
-    \draw_end:
+    \pdfxform_use:n { hawkdraw_ \int_use:N \g_hawkdraw_picture_id_int }
     \tag_resume:n { hawkdraw / picture }
     \tag_socket_use:nn { hawkdraw / picture / end } {
         \hawkdraw_tag_bb_attribute_use:

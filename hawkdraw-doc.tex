@@ -1826,7 +1826,7 @@ The option \macro{pattern tile size} accepts a tuple of two dimensions represent
 \begin{macrodef}
 !path/!|pattern type|={<clist>}
 \end{macrodef}
-The option \macro{pattern type} accepts a comma-separated list of strings representing the types of patterns that should be used for the current path. The available pattern types are \macro{fill} and \macro{stroke}. The default pattern type is \macro{fill}.
+The option \macro{pattern type} accepts a comma-separated list of strings representing the type of pattern that should be used for the current path. The available pattern types are \macro{fill} and \macro{stroke}. The default pattern type is \macro{fill}.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
@@ -2068,6 +2068,23 @@ The option \macro{shading angle delta} sets conic shadings to only extend to the
     shading colors={red,blue,green},
     shading angle delta={135}
   ] (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{macrodef}
+!path/!|shading type|={<clist>}
+\end{macrodef}
+The option \macro{shading type} accepts a comma-separated list of strings representing the type of shading that should be used for the current path. The available shading types are \macro{fill} and \macro{stroke}. The default shading type is \macro{fill}.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}
+  \path[
+    shading={linear},
+    shading colors={red,blue,green},
+    line width={10pt},
+    shading type={stroke}
+  ]
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
