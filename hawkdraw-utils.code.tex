@@ -301,28 +301,41 @@
 
 % ===
 
-% #1 : x shift
-% #2 : y shift
-% #3 : rotation
-% #4 : x scale
-% #5 : y scale
-\cs_new:Npn \hawkdraw_pdf_cm:nnnnn #1#2#3#4#5
-  {
+% #1 : center x
+% #2 : center y
+% #3 : scale x
+% #4 : scale y
+% #5 : rotation
+% #6 : shift x
+% #7 : shift y
+\cs_new:Npn \hawkdraw_pdf_cm:nnnnnnn #1#2#3#4#5#6#7 {
     \dim_to_decimal_in_bp:n {
-        \fp_to_dim:n { ( #4 ) * cosd ( #3 ) }
+        \fp_to_dim:n { ( #3 ) * cosd ( #5 ) }
     } ~
     \dim_to_decimal_in_bp:n {
-        \fp_to_dim:n { ( #4 ) * sind ( #3 ) }
+        \fp_to_dim:n { ( #4 ) * sind ( #5 ) }
     } ~
     \dim_to_decimal_in_bp:n {
-        \fp_to_dim:n { -1 * ( #5 ) * sind ( #3 ) }
+        \fp_to_dim:n { -1 * ( #3 ) * sind ( #5 ) }
     } ~
     \dim_to_decimal_in_bp:n {
-        \fp_to_dim:n { ( #5 ) * cosd ( #3 ) }
+        \fp_to_dim:n { ( #4 ) * cosd ( #5 ) }
     } ~
-    \dim_to_decimal_in_bp:n { \fp_to_dim:n {#1} } ~
-    \dim_to_decimal_in_bp:n { \fp_to_dim:n {#2} }
-  }
+    \dim_to_decimal_in_bp:n {
+        \fp_to_dim:n {
+            ( #1 ) * ( #3 ) * cosd ( #5 ) -
+            ( #2 ) * ( #3 ) * sind ( #5 ) +
+            ( #6 )
+        }
+    } ~
+    \dim_to_decimal_in_bp:n {
+        \fp_to_dim:n {
+            ( #1 ) * ( #4 ) * sind ( #5 ) +
+            ( #2 ) * ( #4 ) * cosd ( #5 ) +
+            ( #7 )
+        }
+    }
+}
 
 % ===
 
