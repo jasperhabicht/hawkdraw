@@ -232,7 +232,11 @@
                     \l__hawkdraw_shading_bbox_ymax_o_dim +
                     \l__hawkdraw_shading_bbox_ymin_o_dim
                 ) / 2 -
-                \l__hawkdraw_shading_bbox_ymin_o_dim
+                \l__hawkdraw_shading_bbox_ymin_o_dim +
+                \fp_if_nan:nF { \l_hawkdraw_picture_baseline_fp } {
+                    \l__hawkdraw_shading_bbox_ymin_o_dim -
+                    \l_hawkdraw_picture_baseline_fp
+                }
             } ~
         ] ~
     }
@@ -663,6 +667,8 @@
     }
 }
 
+\tl_new:N \l__hawkdraw_shading_conic_stream_tl
+
 \cs_new_protected:Npn \hawkdraw_shading_conic:n #1 {
     \tl_if_exist:cF {
         c__hawkdraw_shading_
@@ -674,7 +680,7 @@
         \hawkdraw_shading_conic_color_set_values:Nn
             \l__hawkdraw_shading_color_values_seq
             {#1}
-        \hawkdraw_shading_conic_stream:N \l_tmpa_tl
+        \hawkdraw_shading_conic_stream:N \l__hawkdraw_shading_conic_stream_tl
         \hawkdraw_shading_set:enn {
             conic
             . #1
@@ -708,7 +714,7 @@
                 }
             ] ~
         } {
-            \tl_use:N \l_tmpa_tl
+            \tl_use:N \l__hawkdraw_shading_conic_stream_tl
         }
     }
 }
