@@ -301,6 +301,9 @@
 
 % ===
 
+% Return a transormation matrix for a given center, scale, rotation and shift;
+% first execute a translation to normalize the origin of the following transformation,
+% then execute a scaling, then rotation, then another translation.
 % #1 : center x
 % #2 : center y
 % #3 : scale x
@@ -308,7 +311,7 @@
 % #5 : rotation
 % #6 : shift x
 % #7 : shift y
-\cs_new:Npn \hawkdraw_pdf_cm:nnnnnnn #1#2#3#4#5#6#7 {
+\cs_new:Npn \hawkdraw_pdf_transformation_matrix:nnnnnnn #1#2#3#4#5#6#7 {
     \dim_to_decimal_in_bp:n {
         \fp_to_dim:n { ( #3 ) * cosd ( #5 ) }
     } ~
