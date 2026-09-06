@@ -20,25 +20,21 @@
 
 % ===
 
-% PDF treats shadings as patterns and hence as fill (or stroke). But we want to ensure that shadings are
-% reusable for different sizes or rotations, thus we apply the approach of PGF/TikZ here.
+% PDF treats shadings as patterns and hence as fill (or stroke). Shadings are defined as rectangular PDF
+% Objects. There are various types of shadings, but we only define linear, radial and conic shaings here
+% which are type 2, 3 and 6 respectively. We define shadings as square with a size of 100bp times 100bp.
+% Type 2 and 3 shadings are defined by functions, type 6 shadings are defined by a binary stream.
 
-% Shadings are defined as rectangular PDF Objects. There are various types of shadings, but we only define
-% linear, radial and conic shaings here having type 2, 3 and 6 respectively. Following the PGF approach, ee
-% define shadings as square with a size of 100bp times 100bp. Type 2 and 3 shadings are defined by functions,
-% type 6 shadings are defined by a binary stream.
-
-% In order to allow for rotation of shadings, we use the PGF approach of defining the shadings twice the
-% size of the path they should fill. Thus, we need to use multiple functions to define the shading, because
-% the outer part of the shading object will be clipped away by the path. We do this by defining the
-% functions in a nested way. The outer function is a type 3 function, which defines the inner functions.
-% The inner functions depend on the type of the shading and the number of colors used.
+% In order to allow for rotation of shadings, we use the PGF approach of scalaing the shadings to twice
+% the size of the path they should fill. Thus, we need to use multiple functions to define linear 
+% shadings, because the outer part of the shading object will be clipped away by the path. We do this by
+% defining the functions in a nested way. The outer function is a type 3 function which defines the inner
+% functions. The inner functions depend on the type of the shading and the number of colors used.
 
 % Every shading defined by its type, the used colors and whether or not it has some offset (for radial or
-% conic shadings) is defined only once and a PDF Object is created for it. In the PDF, two onkjects are
-% created, one that defines the shading using functions and one that represents a scaled box referring to
-% the shading. Because the latter objects needs to be shifted to the current path, we need to record the
-% current position of the path which requires two compilation runs.
+% conic shadings) is defined only once and a PDF Object is created for it. In the PDF, two objects are
+% created, one that defines the shading using functions and one as that defines a pattern representing a
+% scaled box referring to the shading.
 
 % ===
 
@@ -147,7 +143,7 @@
     } {
         \hawkdraw_support_pdf_write_stream:nee {#1} {#2} {#3}
     }
-    \tl_const:cn {
+    \tl_const:ce {
         c__hawkdraw_shading_ #1 _tl
     } {
         \pdf_object_ref_last:
@@ -196,8 +192,7 @@
     \pdf_object_unnamed_write:ne { dict } {
         /Type ~ /Pattern ~
         /PatternType ~ 2 ~
-        /Shading ~ 
-        \tl_use:c {
+        /Shading ~ \tl_use:c {
             c__hawkdraw_shading_
             #1
             . \clist_use:N \l_hawkdraw_shading_colors_clist
