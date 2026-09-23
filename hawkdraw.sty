@@ -949,11 +949,11 @@
         #1 \s__hawkdraw_stop
     }
 }
-\cs_generate_variant:Nn \__hawkdraw_path_process:n { o }
+\cs_generate_variant:Nn \__hawkdraw_path_process:n { o , f }
 
 \cs_new_protected:Npn \__hawkdraw_path_process_continue:n #1 {
     \tl_if_blank:nF {#1} {
-        \__hawkdraw_path_process:n {#1}
+        \__hawkdraw_path_process:f {#1}
     }
 }
 
