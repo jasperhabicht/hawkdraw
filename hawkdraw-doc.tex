@@ -301,7 +301,7 @@
 \changes{v0.7.1}{2026/08/20}{Improving pattern module; fixing bug in tagging support; adding bidi support for LuaTeX.}
 \changes{v0.8.0}{2026/09/01}{Adding background to nodes; fixing bug in parser; fixing bug in bidi support.}
 \changes{v0.9.0}{2026/09/07}{Adding option to apply shadings to strokes; fixing bug in pattern module; fixing bug in setting miter limit; fixing bug in positioning of node contents.}
-\changes{v0.9.1}{Adding expansion to parsing mechanism.}
+\changes{v0.9.1}{2026/09/24}{Adding expansion to parsing mechanism.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -462,6 +462,22 @@ The option \macro{layer} sets the scope to be placed on the relevant layer. The 
 \end{codeexamplecolumns}
 
 \section{Path syntax}
+
+Paths are defined by a sequence of points and path construction operations. The following sections describe the syntax for defining paths and the available operations. Note that commands used in a path definition need to be expandable in order for the parser to work properly. This is especially true for parts of path definitions that are stored in user defined commands for later use.
+
+The following example shows how to store a (partial) path definition in an expandable command using \macro{\NewExpandableDocumentCommand}.
+\begin{codeexamplecolumns}
+\NewExpandableDocumentCommand{\drawcircle}{}{
+  circle[radius={0.5cm}]
+}
+
+\begin{hawkdraw}
+  \fill[color fill={blue}]
+    (0cm,0cm) \drawcircle ;
+  \fill[color fill={red}]
+    (0.5cm,0cm) \drawcircle ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
 
 \subsection{Path command and options}
 
