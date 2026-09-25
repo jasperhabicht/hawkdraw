@@ -495,7 +495,7 @@
     corner ~ arc            .initial:n      = { 0pt } ,
     % ===
     shift                   .code:n         = {
-        \draw_transform_shift:n {#1}
+        \draw_transform_shift:n { \hawkdraw_point_parse:n {#1} }
     } ,
     rotate                  .code:n         = {
         \draw_transform_rotate:n {#1}
@@ -783,27 +783,32 @@
             } { point }
         }
     } {
-        \__hawkdraw_tl_has_left_square_bracket:nTF {#1} {
+        \__hawkdraw_point_parse:f { \__hawkdraw_point_parse_trim:n {#1} }
+    }
+}
+
+\cs_new:Npn \__hawkdraw_point_parse:n #1 {
+    \__hawkdraw_tl_has_left_square_bracket:nTF {#1} {
+        \fp_eval:n {
+            \__hawkdraw_point_parse_node_anchor_degrees:w #1 \s__hawkdraw_stop
+        }
+    } {
+        \__hawkdraw_tl_has_greater_than_sign:nTF {#1} {
             \fp_eval:n {
-                \__hawkdraw_point_parse_node_anchor_degrees:w #1 \s__hawkdraw_stop
+                \__hawkdraw_point_parse_polar:w #1 \s__hawkdraw_stop
             }
         } {
-            \__hawkdraw_tl_has_greater_than_sign:nTF {#1} {
+            \__hawkdraw_tl_has_colon:nTF {#1} {
                 \fp_eval:n {
-                    \__hawkdraw_point_parse_polar:w #1 \s__hawkdraw_stop
+                    \__hawkdraw_point_parse_polar_compat:w #1 \s__hawkdraw_stop
                 }
             } {
-                \__hawkdraw_tl_has_colon:nTF {#1} {
-                    \fp_eval:n {
-                        \__hawkdraw_point_parse_polar_compat:w #1 \s__hawkdraw_stop
-                    }
-                } {
-                    \fp_eval:n {#1}
-                }
+                \fp_eval:n {#1}
             }
         }
     }
 }
+\cs_generate_variant:Nn \__hawkdraw_point_parse:n { f }
 
 \prg_new_conditional:Npne \__hawkdraw_tl_has_colon:n #1 { TF } {
     \exp_not:N \__hawkdraw_tl_has_colon:w
