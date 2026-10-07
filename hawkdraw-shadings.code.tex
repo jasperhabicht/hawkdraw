@@ -331,7 +331,7 @@
     \pdfmanagement_add:nee {
         Page / Resources / Pattern
     } {
-        hawkdraw Shading
+        hawkdrawShading
         \int_use:N \g__hawkdraw_shading_obj_int
     } {
         \pdf_object_ref_last:
@@ -339,14 +339,14 @@
 
     \clist_if_in:NnT \l_hawkdraw_shading_path_use_clist { fill } {
         \hawkdraw_support_pdfliteral_direct:n {
-            /Pattern ~ cs ~ /hawkdraw Shading
+            /Pattern ~ cs ~ /hawkdrawShading
             \int_use:N \g__hawkdraw_shading_obj_int
             \c_space_tl scn ~
         }
     }
     \clist_if_in:NnT \l_hawkdraw_shading_path_use_clist { stroke } {
         \hawkdraw_support_pdfliteral_direct:n {
-            /Pattern ~ CS ~ /hawkdraw Shading
+            /Pattern ~ CS ~ /hawkdrawShading
             \int_use:N \g__hawkdraw_shading_obj_int
             \c_space_tl SCN ~
         }
