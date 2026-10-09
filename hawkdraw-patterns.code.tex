@@ -87,17 +87,13 @@
         \draw_suspend_end:
     }
 
-    % We need to prevent including the page resources for /Pattern here
-    \pdfxform_new:nnnn {
+    % We need to prevent including the global resources for /Pattern here
+    \pdfxform_new:ennn {
         hawkdraw_pattern_obj_
         #1 . \str_mdfive_hash:n {#2}
     } { } {
         \box_use:N \l__hawkdraw_pattern_box
     } { pattern }
-    \pdfxform_use:n {
-        hawkdraw_pattern_obj_
-        #1 . \str_mdfive_hash:n {#2}
-    }
 
     \int_gincr:N \g__hawkdraw_pattern_id_int
     \int_const:cn {
@@ -146,9 +142,9 @@
                         c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
                     }
                     \c_space_tl
-                    \pdfxform_ref:n {
-                        hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2}
-                    }
+                    \pdfxform_ref:e {
+                        hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2}
+                    } ~
                 >> ~
             >>
         } {
@@ -181,7 +177,7 @@
             c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
         }
     } {
-        \pdf_object_ref:n {
+        \pdf_object_ref:e {
             hawkdraw_pattern_
             #1 . \str_mdfive_hash:n {#2}
         }
