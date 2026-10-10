@@ -28,6 +28,7 @@
 \prop_new:N \g_hawkdraw_pattern_default_keys_prop
 \clist_new:N \l_hawkdraw_pattern_keys_clist
 \fp_new:N \l_hawkdraw_pattern_tile_size_fp
+\int_new:N \g__hawkdraw_pattern_id_int
 \box_new:N \l__hawkdraw_pattern_box
 \clist_new:N \l_hawkdraw_pattern_path_use_clist
 
@@ -86,13 +87,19 @@
         \draw_suspend_end:
     }
 
-    % We need to prevent including the page resources for /Pattern here
-    \hawkdraw_support_pdfxform:nnN { } { }
-        \l__hawkdraw_pattern_box
+    % We need to prevent including the global resources for /Pattern here
+    \pdfxform_new:ennn {
+        hawkdraw_pattern_obj_
+        #1 . \str_mdfive_hash:n {#2}
+    } { } {
+        \box_use:N \l__hawkdraw_pattern_box
+    } { pattern }
+
+    \int_gincr:N \g__hawkdraw_pattern_id_int
     \int_const:cn {
         c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
     } {
-        \hawkdraw_support_pdfxform_last:
+        \g__hawkdraw_pattern_id_int
     }
 
     \pdf_object_new:n {
@@ -135,8 +142,8 @@
                         c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
                     }
                     \c_space_tl
-                    \hawkdraw_support_pdfxform_ref:c {
-                        c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
+                    \pdfxform_ref:e {
+                        hawkdraw_pattern_obj_ #1 . \str_mdfive_hash:n {#2}
                     } ~
                 >> ~
             >>
@@ -165,12 +172,12 @@
     \pdfmanagement_add:nee {
         Page / Resources / Pattern
     } {
-        hawkdraw Pattern
+        hawkdrawPattern
         \int_use:c {
             c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
         }
     } {
-        \pdf_object_ref:n {
+        \pdf_object_ref:e {
             hawkdraw_pattern_
             #1 . \str_mdfive_hash:n {#2}
         }
@@ -178,7 +185,7 @@
 
     \clist_if_in:NnT \l_hawkdraw_pattern_path_use_clist { fill } {
         \hawkdraw_support_pdfliteral_direct:n {
-            /Pattern ~ cs ~ /hawkdraw Pattern
+            /Pattern ~ cs ~ /hawkdrawPattern
             \int_use:c {
                 c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
             }
@@ -187,7 +194,7 @@
     }
     \clist_if_in:NnT \l_hawkdraw_pattern_path_use_clist { stroke } {
         \hawkdraw_support_pdfliteral_direct:n {
-            /Pattern ~ CS ~ /hawkdraw Pattern
+            /Pattern ~ CS ~ /hawkdrawPattern
             \int_use:c {
                 c__hawkdraw_pattern_ #1 . \str_mdfive_hash:n {#2} _int
             }

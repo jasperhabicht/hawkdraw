@@ -75,136 +75,6 @@
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdf_write_stream:nnn { nee }
 
-\int_new:N \g__hawkdraw_support_pdfxform_int
-\box_new:N \l__hawkdraw_support_pdfxform_tmp_box
-\cs_new_protected:Npn \hawkdraw_support_pdfxform:nnN #1#2#3 {
-    \bool_lazy_or:nnTF {
-        \sys_if_engine_luatex_p:
-    } {
-        \sys_if_engine_pdftex_p:
-    } {
-        % Copy to a temporary box in order to keep the original box
-        \box_set_eq:NN \l__hawkdraw_support_pdfxform_tmp_box #3
-        \tex_immediate:D \tex_pdfxform:D
-        \tl_if_empty:nF {#1} {
-            attr {#1}
-        }
-        resources {#2}
-        \l__hawkdraw_support_pdfxform_tmp_box
-    } {
-        \int_gincr:N \g__hawkdraw_support_pdfxform_int
-    }
-    \sys_if_engine_xetex:T {
-        \__hawkdraw_support_pdfxform_aux:VnnN
-            \g__hawkdraw_support_pdfxform_int
-            {#1} {#2} #3
-    }
-}
-
-\cs_new_protected:Npn \__hawkdraw_support_pdfxform_aux:nnnN #1#2#3#4 {
-    % Copy to a new temporary box in order to preserve the box contents
-    \box_new:c { g__hawkdraw_support_pdfxform_ #1 _box }
-    \box_gset_eq:cN { g__hawkdraw_support_pdfxform_ #1 _box } #4
-    \dim_const:cn {
-        c__hawkdraw_support_pdfxform_ #1 _wd_dim
-    } {
-        \box_wd:c { g__hawkdraw_support_pdfxform_ #1 _box }
-    }
-    \dim_const:cn {
-        c__hawkdraw_support_pdfxform_ #1 _ht_dim
-    } {
-        \box_ht:c { g__hawkdraw_support_pdfxform_ #1 _box }
-    }
-    \dim_const:cn {
-        c__hawkdraw_support_pdfxform_ #1 _dp_dim
-    } {
-        \box_dp:c { g__hawkdraw_support_pdfxform_ #1 _box }
-    }
-    \box_gset_wd:cn { g__hawkdraw_support_pdfxform_ #1 _box } { \c_zero_dim }
-    \box_gset_ht:cn { g__hawkdraw_support_pdfxform_ #1 _box } { \c_zero_dim }
-    \box_gset_dp:cn { g__hawkdraw_support_pdfxform_ #1 _box } { \c_zero_dim }
-    \hook_gput_next_code:nn { shipout / background } {
-        \tex_special:D {
-            pdf: bxobj ~
-                @hawkdraw.xobj #1 \c_space_tl
-            width  ~
-                \dim_use:c {
-                    c__hawkdraw_support_pdfxform_ #1 _wd_dim
-                } \c_space_tl
-            height ~
-                \dim_use:c {
-                    c__hawkdraw_support_pdfxform_ #1 _ht_dim
-                } \c_space_tl
-            depth  ~
-                \dim_use:c {
-                    c__hawkdraw_support_pdfxform_ #1 _dp_dim
-                }
-        }
-        \box_use_drop:c { g__hawkdraw_support_pdfxform_ #1 _box }
-        \tex_special:D { pdf: put ~ @resources ~ << #3 >> }
-        \tl_if_empty:nTF {#2} {
-            \tex_special:D { pdf: exobj }
-        } {
-            \tex_special:D { pdf: exobj ~ << #2 >> }
-        }
-    }
-}
-\cs_generate_variant:Nn \__hawkdraw_support_pdfxform_aux:nnnN { V }
-
-\cs_new:Npn \hawkdraw_support_pdfxform_last: {
-    \bool_lazy_or:nnTF {
-        \sys_if_engine_luatex_p:
-    } {
-        \sys_if_engine_pdftex_p:
-    } {
-        \tex_pdflastxform:D
-    } {
-        \int_use:N \g__hawkdraw_support_pdfxform_int
-    }
-}
-
-\cs_new_protected:Npn \hawkdraw_support_pdfxform_use:N #1 {
-    \bool_lazy_or:nnT {
-        \sys_if_engine_luatex_p:
-    } {
-        \sys_if_engine_pdftex_p:
-    } {
-        \tex_pdfrefxform:D \int_use:N #1 \scan_stop:
-    }
-    \sys_if_engine_xetex:T {
-        \hbox_set:Nn \l__hawkdraw_support_pdfxform_tmp_box {
-            \tex_special:D {
-                pdf: uxobj ~ @hawkdraw.xobj \int_use:N #1
-            }
-        }
-        \box_set_wd:Nn \l__hawkdraw_support_pdfxform_tmp_box {
-            \use:c { c__hawkdraw_support_pdfxform_ \int_use:N #1 _wd_dim }
-        }
-        \box_set_ht:Nn \l__hawkdraw_support_pdfxform_tmp_box {
-            \use:c { c__hawkdraw_support_pdfxform_ \int_use:N #1 _ht_dim }
-        }
-        \box_set_dp:Nn \l__hawkdraw_support_pdfxform_tmp_box {
-            \use:c { c__hawkdraw_support_pdfxform_ \int_use:N #1 _dp_dim }
-        }
-        \box_use_drop:N \l__hawkdraw_support_pdfxform_tmp_box
-    }
-}
-\cs_generate_variant:Nn \hawkdraw_support_pdfxform_use:N { c }
-
-\cs_new:Npn \hawkdraw_support_pdfxform_ref:N #1 {
-    \bool_lazy_or:nnT {
-        \sys_if_engine_luatex_p:
-    } {
-        \sys_if_engine_pdftex_p:
-    } {
-        \int_use:N #1 \c_space_tl 0 ~ R
-    }
-    \sys_if_engine_xetex:T {
-        @hawkdraw.xobj \int_use:N #1
-    }
-}
-\cs_generate_variant:Nn \hawkdraw_support_pdfxform_ref:N { c }
-
 % xetex support missing
 \cs_new_protected:Npn \hawkdraw_support_pdfcolorstack:n #1 {
     \sys_if_engine_luatex:T {
@@ -349,23 +219,17 @@
 
 \cs_new:Npn \hawkdraw_tuple_use_i:n #1 {
     \fp_to_dim:n {
-        \exp_last_unbraced:Ne
-        \__hawkdraw_tuple_use_i_aux:w { \fp_eval:n {#1} }
+        item ( (#1) , 1 )
     }
 }
 \cs_generate_variant:Nn \hawkdraw_tuple_use_i:n { e , V }
 
-\cs_new:Npn \__hawkdraw_tuple_use_i_aux:w ( #1 , #2 ) {#1}
-
 \cs_new:Npn \hawkdraw_tuple_use_ii:n #1 {
     \fp_to_dim:n {
-        \exp_last_unbraced:Ne
-        \__hawkdraw_tuple_use_ii_aux:w { \fp_eval:n {#1} }
+        item ( (#1) , 2 )
     }
 }
 \cs_generate_variant:Nn \hawkdraw_tuple_use_ii:n { e , V }
-
-\cs_new:Npn \__hawkdraw_tuple_use_ii_aux:w ( #1 , #2 ) {#2}
 
 \cs_new:Npn \__hawkdraw_cs_if_exist_use_secure:nnTF #1#2#3#4 {
     \exp_last_unbraced:Ne

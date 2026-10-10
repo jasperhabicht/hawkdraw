@@ -33,9 +33,6 @@
 \int_new:N \g__hawkdraw_opacity_group_int
 \box_new:N \l__hawkdraw_opacity_group_box
 
-\cs_generate_variant:Nn \pdfxform_new:nnn { e }
-\cs_generate_variant:Nn \pdfxform_use:n { e }
-
 \cs_new_protected:Npn \hawkdraw_opacity_group_set_use:n #1 {
     \pdfxform_new:enn {
         hawkdraw_opacity_group_ \int_use:N \g__hawkdraw_opacity_group_int
@@ -118,6 +115,7 @@
     Soft ~ mask ~ `#1` ~ undefined.
 }
 
+\int_new:N \g__hawkdraw_softmask_obj_id_int
 \int_new:N \g__hawkdraw_softmask_id_int
 
 \cs_generate_variant:Nn \draw_box_use:Nn { c }
@@ -128,8 +126,6 @@
     } {
         \msg_warning:nnn { hawkdraw } { softmask-defined } {#1}
     } {
-        \int_gincr:N \g__hawkdraw_softmask_id_int
-
         \box_new:c { g_hawkdraw_softmask_ #1 _box }
         \dim_new:c { g_hawkdraw_softmask_ #1 _bbox_xmin_dim }
         \dim_new:c { g_hawkdraw_softmask_ #1 _bbox_ymin_dim }
@@ -144,10 +140,11 @@
         \dim_gset_eq:cN { g_hawkdraw_softmask_ #1 _bbox_ymin_dim }
             \g_draw_bb_ymin_dim
 
+        \int_gincr:N \g__hawkdraw_softmask_obj_id_int
         \int_const:cn {
             c__hawkdraw_softmask_obj_ #1 _int
         } {
-            \g__hawkdraw_softmask_id_int
+            \g__hawkdraw_softmask_obj_id_int
         }
     }
 }
@@ -160,12 +157,8 @@
             \pdfxform_new:nnn { hawkdraw_softmask_ #1 } { } {
                 \box_use:c { g_hawkdraw_softmask_ #1 _box }
             }
-            \int_const:cn {
-                c__hawkdraw_softmask_ #1 _int
-            } {
-                \hawkdraw_support_pdfxform_last:
-            }
 
+            \int_gincr:N \g__hawkdraw_softmask_id_int
             \pdf_object_new:n {
                 hawkdraw_softmask_res_ #1
             }
@@ -173,8 +166,10 @@
                 hawkdraw_softmask_res_ #1
             } { dict } {
                 /XObject ~ << ~
-                    /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~
-                        \pdfxform_ref:n { hawkdraw_softmask_ #1 } ~
+                    /hawkdrawSoftmaskObj
+                    \int_use:N \g__hawkdraw_softmask_id_int
+                    \c_space_tl
+                    \pdfxform_ref:n { hawkdraw_softmask_ #1 } ~
                 >>
             }
 
@@ -204,7 +199,9 @@
                         hawkdraw_softmask_res_ #1
                     } ~
                 } {
-                    /Fm \int_use:c { c__hawkdraw_softmask_ #1 _int } ~ Do
+                    /hawkdrawSoftmaskObj
+                    \int_use:N \g__hawkdraw_softmask_id_int
+                    \c_space_tl Do
                 }
             }
             \tl_const:cn {
@@ -217,7 +214,7 @@
         \pdfmanagement_add:nee {
             Page / Resources / ExtGState
         } {
-            hawkdraw Softmask
+            hawkdrawSoftmask
             \int_use:c {
                 c__hawkdraw_softmask_obj_ #1 _int
             }
@@ -242,7 +239,7 @@
             } ~ cm
         }
         \hawkdraw_support_pdfliteral:n {
-            /hawkdraw Softmask
+            /hawkdrawSoftmask
             \int_use:c {
                 c__hawkdraw_softmask_obj_ #1 _int
             }

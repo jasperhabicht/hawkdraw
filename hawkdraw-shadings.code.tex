@@ -49,7 +49,7 @@
 }
 
 \int_new:N \g__hawkdraw_shading_id_int
-\int_new:N \g__hawkdraw_shading_obj_int
+\int_new:N \g__hawkdraw_shading_obj_id_int
 \box_new:N \l__hawkdraw_shading_box
 \clist_new:N \l_hawkdraw_shading_path_use_clist
 
@@ -277,7 +277,7 @@
             \l__hawkdraw_shading_bb_xmin_dim
     }
 
-    \int_gincr:N \g__hawkdraw_shading_obj_int
+    \int_gincr:N \g__hawkdraw_shading_obj_id_int
     \pdf_object_unnamed_write:ne { dict } {
         /Type ~ /Pattern ~
         /PatternType ~ 2 ~
@@ -331,23 +331,23 @@
     \pdfmanagement_add:nee {
         Page / Resources / Pattern
     } {
-        hawkdraw Shading
-        \int_use:N \g__hawkdraw_shading_obj_int
+        hawkdrawShading
+        \int_use:N \g__hawkdraw_shading_obj_id_int
     } {
         \pdf_object_ref_last:
     }
 
     \clist_if_in:NnT \l_hawkdraw_shading_path_use_clist { fill } {
         \hawkdraw_support_pdfliteral_direct:n {
-            /Pattern ~ cs ~ /hawkdraw Shading
-            \int_use:N \g__hawkdraw_shading_obj_int
+            /Pattern ~ cs ~ /hawkdrawShading
+            \int_use:N \g__hawkdraw_shading_obj_id_int
             \c_space_tl scn ~
         }
     }
     \clist_if_in:NnT \l_hawkdraw_shading_path_use_clist { stroke } {
         \hawkdraw_support_pdfliteral_direct:n {
-            /Pattern ~ CS ~ /hawkdraw Shading
-            \int_use:N \g__hawkdraw_shading_obj_int
+            /Pattern ~ CS ~ /hawkdrawShading
+            \int_use:N \g__hawkdraw_shading_obj_id_int
             \c_space_tl SCN ~
         }
     }
