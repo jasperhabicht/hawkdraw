@@ -853,6 +853,17 @@ The command \macro{\point} is a shortcut for \macro{\path (0pt,0pt) point}
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
+Note that named points are defined globally. It is therefore possible to refer to points defined in other \macro{hawkdraw} environments. This only works with the option \macro{bounding box} option of the relevant \macro{hawkdraw} environment set to \macro{zero} (or with using the shorthand option \macro{overlay}). A later defintion of the a point with the same name will overwrite the previous definition.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}[overlay]
+  \fill[color fill=red] (0cm,0cm)
+    circle[radius={2pt}] ;
+  \path[stroke, color stroke={blue}]
+    (0cm,0cm) -- (A) ;
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
 \begin{macrodef}[][key:atpart]
 !path/point/!|at|={<tuple>}
 !path/point/!|at part|={<float>}
