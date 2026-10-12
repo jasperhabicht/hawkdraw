@@ -22,27 +22,41 @@
 \clist_new:N \l_hawkdraw_arrow_start_keys_clist
 \clist_new:N \l_hawkdraw_arrow_end_keys_clist
 
+\cs_new_protected:Npn \__hawkdraw_arrow_start_path_append_postaction:nn #1#2 {
+    \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
+        \fp_if_nan:nF { \g_hawkdraw_path_slope_first_fp } {
+            \hawkdraw_arrow:nnnn
+                {#1}
+                { \g_hawkdraw_path_point_first_fp }
+                { \g_hawkdraw_path_slope_first_fp + 90 }
+                {#2}
+        }
+    }
+}
+\cs_generate_variant:Nn \__hawkdraw_arrow_start_path_append_postaction:nn { nV }
+
+\cs_new_protected:Npn \__hawkdraw_arrow_end_path_append_postaction:nn #1#2 {
+    \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
+        \fp_if_nan:nF { \g_hawkdraw_path_slope_last_fp } {
+            \hawkdraw_arrow:nnnn
+                {#1}
+                { \g_hawkdraw_path_point_last_fp }
+                { \g_hawkdraw_path_slope_last_fp - 90 }
+                {#2}
+        }
+    }
+}
+\cs_generate_variant:Nn \__hawkdraw_arrow_end_path_append_postaction:nn { nV }
+
 \keys_define:nn { hawkdraw / path } {
     arrow ~ start           .code:n         = {
-        \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
-            \fp_if_nan:nF { \g_hawkdraw_path_slope_first_fp } {
-                \hawkdraw_arrow:nnnV {#1}
-                    { \g_hawkdraw_path_point_first_fp }
-                    { \g_hawkdraw_path_slope_first_fp + 90 }
-                    \l_hawkdraw_arrow_start_keys_clist
-            }
-        }
+        \__hawkdraw_arrow_start_path_append_postaction:nV {#1}
+            \l_hawkdraw_arrow_start_keys_clist
     } ,
     arrow ~ start           .default:n      = { default } ,
     arrow ~ end             .code:n         = {
-        \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
-            \fp_if_nan:nF { \g_hawkdraw_path_slope_last_fp } {
-                \hawkdraw_arrow:nnnV {#1}
-                    { \g_hawkdraw_path_point_last_fp }
-                    { \g_hawkdraw_path_slope_last_fp - 90 }
-                    \l_hawkdraw_arrow_end_keys_clist
-            }
-        }
+        \__hawkdraw_arrow_end_path_append_postaction:nV {#1}
+            \l_hawkdraw_arrow_end_keys_clist
     } ,
     arrow ~ end             .default:n      = { default } ,
     arrow ~ start ~ style ~ set

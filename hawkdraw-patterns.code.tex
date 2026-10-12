@@ -32,17 +32,32 @@
 \box_new:N \l__hawkdraw_pattern_box
 \clist_new:N \l_hawkdraw_pattern_path_use_clist
 
+\cs_new_protected:Npn \__hawkdraw_pattern_path_append_postaction:nn #1#2 {
+    \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
+        \draw_scope_begin:
+            \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
+            \tl_use:N \g_hawkdraw_softpath_original_tl
+            \hawkdraw_pattern_use:nn {#1} {#2}
+            \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_pattern_path_use_clist }
+            \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
+        \draw_scope_end:
+    }
+}
+\cs_generate_variant:Nn \__hawkdraw_pattern_path_append_postaction:nn { nV }
+
+\cs_new_protected:Npn \__hawkdraw_pattern_node_append_postaction:nn #1#2 {
+    \tl_put_right:Nn \l_hawkdraw_node_postactions_tl {
+        \hawkdraw_pattern_use:nn {#1} {#2}
+        \draw_path_use:e { \clist_use:N \l_hawkdraw_pattern_path_use_clist }
+    }
+}
+\cs_generate_variant:Nn \__hawkdraw_pattern_node_append_postaction:nn { nV }
+
 \keys_define:nn { hawkdraw / path } {
     pattern                 .code:n         = {
-        \tl_put_right:Nn \l_hawkdraw_path_postactions_tl {
-            \draw_scope_begin:
-                \tl_trim_spaces_apply:nN { \g_hawkdraw_softpath_original_tl } \__hawkdraw_path_process:o
-                \tl_use:N \g_hawkdraw_softpath_original_tl
-                \hawkdraw_pattern_use:nV {#1} \l_hawkdraw_pattern_keys_clist
-                \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_pattern_path_use_clist }
-                \bool_gset_false:N \g__hawkdraw_path_use_clip_bool
-            \draw_scope_end:
-        }
+        \__hawkdraw_pattern_path_append_postaction:nV {#1}
+            \l_hawkdraw_pattern_keys_clist
+
     } ,
     pattern ~ style ~ set   .clist_set:N    = \l_hawkdraw_pattern_keys_clist ,
     pattern ~ style ~ add   .code:n         = {
@@ -60,10 +75,8 @@
 
 \keys_define:nn { hawkdraw / path / node } {
     pattern                 .code:n         = {
-        \tl_put_right:Nn \l_hawkdraw_node_postactions_tl {
-            \hawkdraw_pattern_use:nV {#1} \l_hawkdraw_pattern_keys_clist
-            \draw_path_use:e { \clist_use:N \l_hawkdraw_pattern_path_use_clist }
-        }
+        \__hawkdraw_pattern_node_append_postaction:nV {#1}
+            \l_hawkdraw_pattern_keys_clist
     } ,
 }
 

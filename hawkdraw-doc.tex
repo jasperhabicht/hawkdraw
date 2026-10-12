@@ -464,7 +464,7 @@ The option \macro{layer} sets the scope to be placed on the relevant layer. The 
 \begin{macrodef}
 !scope/!|position absolute|
 \end{macrodef}
-The option \macro{position absolute} shifts the scope so that its origin is at the lower left corner of the current page.
+The option \macro{position absolute} shifts the scope so that its origin is at the lower left corner of the current page. Positioning absolutely only works with the option \macro{bounding box} option of the \macro{hawkdraw} environment set to \macro{zero} (or with using the shorthand option \macro{overlay}).
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[overlay]
@@ -1754,11 +1754,13 @@ Arrows can be styled by adding the relevant path options to the options \macro{a
 
 The options \macro{arrow start style add}, \macro{arrow end style add} and \macro{arrow style add} append the relevant styles to the existing styles. All options that are available for paths are also available for arrow tips.
 
+Note that these options set the style of the following arrow tips. If multiple arrow tips with different styles should be applied to the same path, the options need to be set before setting each arrow tip respectively.
+
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \stroke[
-    arrow end,
-    arrow style set={fill, color fill=blue}
+    arrow style set={fill, color fill=blue},
+    arrow end
   ]
     (0cm,0cm) -- (2cm,1cm) ;
 \end{hawkdraw}
@@ -1841,11 +1843,15 @@ Patterns can be styled by passing the relevant path options to the options \macr
 
 Note that patterns in general inherit the style set to the original path. Therefore, if the option \macro{corner arc} is set to a non-zero value for the original path, the pattern will also be drawn with rounded corners. If this is not desired, the option \macro{corner arc} can be set to \qty{0}{\point} using the option \macro{pattern style set} or \macro{pattern style add}.
 
+Further note that thes options set the style of the following pattern. If multiple patterns with different styles should be applied to the same path, the options need to be set before setting each pattern respectively.
+
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \path[
+    pattern style set={color fill=blue},
     pattern={dots},
-    pattern style set={color fill=blue}
+    pattern style set={color fill=red},
+    pattern={check}
   ]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
