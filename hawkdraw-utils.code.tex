@@ -28,6 +28,11 @@
     \cs_generate_variant:cn { hawkdraw_set_ #1 dir:n } { V }
 }
 
+\hook_gput_code:nnn { begindocument } { . } {
+    \dim_set:Nn \l_hawkdraw_support_page_width_dim { \tex_pagewidth:D }
+    \dim_set:Nn \l_hawkdraw_support_page_height_dim { \tex_pageheight:D }
+}
+
 % ===
 
 \cs_new_protected:Npn \hawkdraw_support_pdfliteral:n #1 {

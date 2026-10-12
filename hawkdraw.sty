@@ -665,6 +665,9 @@
     }
 }
 
+\dim_new:N \l_hawkdraw_support_page_width_dim
+\dim_new:N \l_hawkdraw_support_page_height_dim
+
 \hawkdraw_modules_load:n { utils , softpath , nodes , arrows , plots }
 
 \IfPDFManagementActiveTF {
@@ -1585,6 +1588,12 @@
     \cs_set_protected:Npn \node { \path ( 0pt , 0pt ) node }
     \cs_set_protected:Npn \point { \path ( 0pt , 0pt ) point }
     \cs_set_protected:Npn \map { \path ( 0pt , 0pt ) map }
+    \NewExpandableDocumentCommand \getpagewidth { } {
+        \dim_use:N \l_hawkdraw_support_page_width_dim
+    }
+    \NewExpandableDocumentCommand \getpageheight { } {
+        \dim_use:N \l_hawkdraw_support_page_height_dim
+    }
     \NewExpandableDocumentCommand \getpointx { m } {
         \hawkdraw_tuple_use_i:n { \hawkdraw_point_parse:n {##1} }
     }

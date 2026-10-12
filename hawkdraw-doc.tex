@@ -304,7 +304,7 @@
 \changes{v0.8.0}{2026/09/01}{Adding background to nodes; fixing bug in parser; fixing bug in bidi support.}
 \changes{v0.9.0}{2026/09/07}{Adding option to apply shadings to strokes; fixing bug in pattern module; fixing bug in setting miter limit; fixing bug in positioning of node contents.}
 \changes{v0.9.1}{2026/10/12}{Adding option for absolute positioning; adding expansion to parsing mechanism; refactoring for recent LaTeX3 kernel updates.}
-\changes{v0.10.0}{2026/10/13}{Fixing bug in sloped nodes; improving pattern module; improving arrow tip module; adding support for cross-referencing nodes.}
+\changes{v0.10.0}{2026/10/13}{Fixing bug in sloped nodes; improving pattern module; improving arrow tip module; adding support for cross-referencing nodes; adding commands to retrieve page dimensions.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -1098,6 +1098,12 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getintersectioncircle
 |\getintersectionlinecircle|[<integer>]{<point>}{<point>}{<point>}{<dimension>}
 \end{macrodef}
 Inside a \macro{hawkdraw} environment, the command \macro{\getintersectionlinecircle} can be used to access the intersection points of a line and a circle. The line is given as two points in the first two mandatory arguments, and the circle is given as a point and radius in the next two mandatory arguments. The optional argument specifies the number of the intersection to return (root) and defaults to \num{1}. The command returns the coordinates of the intersection points as tuples of dimensions and can be used in subsequent calculations.
+
+\begin{macrodef}*
+|\getpagewidth|
+|\getpageheight|
+\end{macrodef}
+The commands \macro{\getpagewidth} and \macro{\getpageheight} can be used to access the width and height of the current page, respectively. The commands return dimensions and can be used in subsequent calculations.
 
 \subsubsection{Nodes and frames}
 
