@@ -301,7 +301,7 @@
 \changes{v0.7.1}{2026/08/20}{Improving pattern module; fixing bug in tagging support; adding bidi support for LuaTeX.}
 \changes{v0.8.0}{2026/09/01}{Adding background to nodes; fixing bug in parser; fixing bug in bidi support.}
 \changes{v0.9.0}{2026/09/07}{Adding option to apply shadings to strokes; fixing bug in pattern module; fixing bug in setting miter limit; fixing bug in positioning of node contents.}
-\changes{v0.9.1}{2026/10/12}{Adding expansion to parsing mechanism; refactoring for recent LaTeX3 kernel updates.}
+\changes{v0.9.1}{2026/10/12}{Adding option for absolute positioning; adding expansion to parsing mechanism; refactoring for recent LaTeX3 kernel updates.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -457,6 +457,19 @@ The option \macro{layer} sets the scope to be placed on the relevant layer. The 
     (0cm,0cm) circle[radius={0.5cm}] ;
   \begin{scope}[layer={background}]
     \fill (0.5cm,0cm) circle[radius={0.5cm}] ;
+  \end{scope}
+\end{hawkdraw}
+\end{codeexamplecolumns}
+
+\begin{macrodef}
+!scope/!|position absolute|
+\end{macrodef}
+The option \macro{position absolute} shifts the scope so that its origin is at the lower left corner of the current page.
+
+\begin{codeexamplecolumns}
+\begin{hawkdraw}[overlay]
+  \begin{scope}[position absolute]
+    \fill (0cm,0cm) circle[radius={0.5cm}] ;
   \end{scope}
 \end{hawkdraw}
 \end{codeexamplecolumns}
