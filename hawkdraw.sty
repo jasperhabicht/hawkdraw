@@ -289,6 +289,8 @@
 \clist_new:N \l_hawkdraw_picture_bb_clist
 \fp_new:N \l_hawkdraw_picture_baseline_fp
 
+\fp_new:N \l__hawkdraw_picture_origin_fp
+
 \tl_new:N \l_hawkdraw_path_preactions_tl
 \tl_new:N \l_hawkdraw_path_postactions_tl
 
@@ -762,6 +764,21 @@
                 g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
             }
         }
+        \fp_set:Nn \l__hawkdraw_picture_origin_fp {
+            (
+                \property_ref:ee {
+                    draw. \int_use:N \g_draw_id_int
+                } { xpos } sp
+            ,
+                \property_ref:ee {
+                    draw. \int_use:N \g_draw_id_int
+                } { ypos } sp
+            )
+        }
+        \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+            { picture } \g_draw_id_int
+        \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+            { origin } \l__hawkdraw_picture_origin_fp
         \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
             { point } \l_hawkdraw_point_at_fp
         \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
@@ -781,12 +798,42 @@
         \__hawkdraw_point_parse_trim:n {#1}
         _prop
     } {
-        \fp_eval:n {
+        \int_compare:nNnTF { \g_draw_id_int } = {
             \prop_item:cn {
                 g__hawkdraw_point_
                 \__hawkdraw_point_parse_trim:n {#1}
                 _prop
-            } { point }
+            } { picture }
+        } {
+            \fp_eval:n {
+                \prop_item:cn {
+                    g__hawkdraw_point_
+                    \__hawkdraw_point_parse_trim:n {#1}
+                    _prop
+                } { point }
+            }
+        } {
+            \fp_eval:n {
+                \prop_item:cn {
+                    g__hawkdraw_point_
+                    \__hawkdraw_point_parse_trim:n {#1}
+                    _prop
+                } { point } +
+                \prop_item:cn {
+                    g__hawkdraw_point_
+                    \__hawkdraw_point_parse_trim:n {#1}
+                    _prop
+                } { origin } -
+                (
+                    \property_ref:ee {
+                        draw. \int_use:N \g_draw_id_int
+                    } { xpos } sp
+                ,
+                    \property_ref:ee {
+                        draw. \int_use:N \g_draw_id_int
+                    } { ypos } sp
+                )
+            }
         }
     } {
         \__hawkdraw_point_parse:f { \__hawkdraw_point_parse_trim:n {#1} }
@@ -1471,13 +1518,13 @@
     position ~ absolute     .code:n         = {
         \draw_transform_shift:n {
             (
-                - \property_ref:een {
+                - \property_ref:ee {
                     draw. \int_use:N \g_draw_id_int
-                } { xpos } { 0 } sp
+                } { xpos } sp
             ,
-                - \property_ref:een {
+                - \property_ref:ee {
                     draw. \int_use:N \g_draw_id_int
-                } { ypos } { 0 } sp
+                } { ypos } sp
             )
         }
     } ,
