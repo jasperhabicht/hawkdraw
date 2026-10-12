@@ -12,8 +12,8 @@
 %
 \DocumentMetadata{}
 \documentclass[a4paper]{article}
-\def\hawkdrawfileversion{0.9.1}
-\def\hawkdrawfiledate{12 October 2026}
+\def\hawkdrawfileversion{0.10.0}
+\def\hawkdrawfiledate{13 October 2026}
 
     \errorcontextlines=100
 
@@ -304,6 +304,7 @@
 \changes{v0.8.0}{2026/09/01}{Adding background to nodes; fixing bug in parser; fixing bug in bidi support.}
 \changes{v0.9.0}{2026/09/07}{Adding option to apply shadings to strokes; fixing bug in pattern module; fixing bug in setting miter limit; fixing bug in positioning of node contents.}
 \changes{v0.9.1}{2026/10/12}{Adding option for absolute positioning; adding expansion to parsing mechanism; refactoring for recent LaTeX3 kernel updates.}
+\changes{v0.10.0}{2026/10/13}{Fixing bug in sloped nodes; improving pattern module; improving arrow tip module; adding support for cross-referencing nodes.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -1861,10 +1862,10 @@ Further note that thes options set the style of the following pattern. If multip
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \path[
-    pattern style set={color fill=blue},
-    pattern={dots},
     pattern style set={color fill=red},
-    pattern={check}
+    pattern={check},
+    pattern style set={color fill=blue},
+    pattern={dots}
   ]
     (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
 \end{hawkdraw}
