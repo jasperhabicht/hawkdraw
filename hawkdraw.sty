@@ -289,8 +289,6 @@
 \clist_new:N \l_hawkdraw_picture_bb_clist
 \fp_new:N \l_hawkdraw_picture_baseline_fp
 
-\fp_new:N \l__hawkdraw_picture_origin_fp
-
 \tl_new:N \l_hawkdraw_path_preactions_tl
 \tl_new:N \l_hawkdraw_path_postactions_tl
 
@@ -730,6 +728,26 @@
 
 \hawkdraw_operator_construct_i:nN { point } \hawkdraw_path_point:n
 
+\cs_new_protected:Npn \__hawkdraw_path_point_record:nnn #1#2#3 {
+    \prop_gput:cnV {#1} { picture } \g_draw_id_int
+    \prop_gput:cne {#1} { origin } {
+            (
+                \property_ref:ee {
+                    draw. \int_use:N \g_draw_id_int
+                } { xpos } sp
+            ,
+                \property_ref:ee {
+                    draw. \int_use:N \g_draw_id_int
+                } { ypos } sp
+            )
+        }
+    \prop_gput:cnn {#1} { point } {#2}
+    \tl_if_empty:nF {#3} {
+        \prop_gput:cnn {#1} { slope } {#3}
+    }
+}
+\cs_generate_variant:Nn \__hawkdraw_path_point_record:nnn { nVV , ne }
+
 \cs_new_protected:Npn \hawkdraw_path_point:n #1 {
     \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_point_last_fp
     \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_slope_last_fp
@@ -764,25 +782,10 @@
                 g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
             }
         }
-        \fp_set:Nn \l__hawkdraw_picture_origin_fp {
-            (
-                \property_ref:ee {
-                    draw. \int_use:N \g_draw_id_int
-                } { xpos } sp
-            ,
-                \property_ref:ee {
-                    draw. \int_use:N \g_draw_id_int
-                } { ypos } sp
-            )
-        }
-        \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
-            { picture } \g_draw_id_int
-        \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
-            { origin } \l__hawkdraw_picture_origin_fp
-        \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
-            { point } \l_hawkdraw_point_at_fp
-        \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
-            { slope } \l_hawkdraw_point_slope_fp
+        \__hawkdraw_path_point_record:nVV
+            { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+            \l_hawkdraw_point_at_fp
+            \l_hawkdraw_point_slope_fp
     }
 }
 
@@ -829,7 +832,7 @@
                         draw. \int_use:N \g_draw_id_int
                     } { xpos } sp
                 ,
-                    \property_ref:ee {
+                    \property_ref:en {
                         draw. \int_use:N \g_draw_id_int
                     } { ypos } sp
                 )

@@ -241,7 +241,7 @@
         \fp_if_nan:nF { \l_hawkdraw_point_at_part_fp } {
             \fp_set:Nn \l_hawkdraw_point_at_fp {
                 \cs_if_exist_use:cTF {
-                    __hawkdraw_point_part_ \l__hawkdraw_path_type_tl :V
+                    __hawkdraw_point_part_ \l__hawkdraw_path_type_tl :n
                 } {
                     \l_hawkdraw_point_at_part_fp
                 } {
@@ -250,7 +250,7 @@
             }
             \fp_set:Nn \l_hawkdraw_point_slope_fp {
                 \cs_if_exist_use:cTF {
-                    __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_tl :V
+                    __hawkdraw_point_part_slope_ \l__hawkdraw_path_type_tl :n
                 } {
                     \l_hawkdraw_point_at_part_fp
                 } {
@@ -277,10 +277,10 @@
                     g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
                 }
             }
-            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
-                { point } \l_hawkdraw_point_at_fp
-            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
-                { slope } \l_hawkdraw_point_slope_fp
+            \__hawkdraw_path_point_record:nVV
+                { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+                \l_hawkdraw_point_at_fp
+                \l_hawkdraw_point_slope_fp
         }
         \keys_set_known:nVN { hawkdraw / tag }
             \l__hawkdraw_keys_unprocessed_clist
@@ -432,10 +432,10 @@
                     g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop
                 }
             }
-            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
-                { point } \l_hawkdraw_point_at_fp
-            \prop_gput:cnV { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
-                { slope } \l_hawkdraw_point_slope_fp
+            \__hawkdraw_path_point_record:nVV
+                { g__hawkdraw_point_ \l_hawkdraw_point_name_tl _prop }
+                \l_hawkdraw_point_at_fp
+                \l_hawkdraw_point_slope_fp
         }
         \draw_coffin_use:NeeV \l_hawkdraw_node_frame_coffin {
             \clist_item:Nn \l_hawkdraw_node_anchor_poles_clist { 1 }
@@ -449,54 +449,36 @@
 % ===
 
 \cs_new_protected:Npn \__hawkdraw_node_anchors_gset:NnnnnN #1#2#3#4#5#6 {
-    \prop_if_exist:cF {
-        g__hawkdraw_point_ #2 [ #3 , #4 ] _prop
+    \clist_map_inline:nn {
+        { #3 , #4 } , { #4 , #3 }
     } {
-        \prop_new_linked:c {
-            g__hawkdraw_point_ #2 [ #3 , #4 ] _prop
-        }
-    }
-    \prop_if_exist:cF {
-        g__hawkdraw_point_ #2 [ #4 , #3 ] _prop
-    } {
-        \prop_new_linked:c {
-            g__hawkdraw_point_ #2 [ #4 , #3 ] _prop
-        }
-    }
-    \prop_gput:cne { g__hawkdraw_point_ #2 [ #3 , #4 ] _prop }
-        { point } {
-            \fp_eval:n {
-                ( #5 ) +
-                (
-                    \exp_last_unbraced:Ne \use_i:nnnn {
-                        \coffin_pole:Nn #1 { #3 }
-                    }
-                ,
-                    \exp_last_unbraced:Ne \use_ii:nnnn {
-                        \coffin_pole:Nn #1 { #4 }
-                    }
-                ) -
-                \__hawkdraw_node_point_normalized:NN
-                    #1 #6
+        \prop_if_exist:cF {
+            g__hawkdraw_point_ #2 [ ##1 ] _prop
+        } {
+            \prop_new_linked:c {
+                g__hawkdraw_point_ #2 [ ##1 ] _prop
             }
         }
-    \prop_gput:cne { g__hawkdraw_point_ #2 [ #4 , #3 ] _prop }
-        { point } {
-            \fp_eval:n {
-                ( #5 ) +
-                (
-                    \exp_last_unbraced:Ne \use_i:nnnn {
-                        \coffin_pole:Nn #1 { #3 }
-                    }
-                ,
-                    \exp_last_unbraced:Ne \use_ii:nnnn {
-                        \coffin_pole:Nn #1 { #4 }
-                    }
-                ) -
-                \__hawkdraw_node_point_normalized:NN
-                    #1 #6
+        \__hawkdraw_path_point_record:nen
+            { g__hawkdraw_point_ #2 [ ##1 ] _prop }
+            {
+                \fp_eval:n {
+                    ( #5 ) +
+                    (
+                        \exp_last_unbraced:Ne \use_i:nnnn {
+                            \coffin_pole:Nn #1 { #3 }
+                        }
+                    ,
+                        \exp_last_unbraced:Ne \use_ii:nnnn {
+                            \coffin_pole:Nn #1 { #4 }
+                        }
+                    ) -
+                    \__hawkdraw_node_point_normalized:NN
+                        #1 #6
+                }
             }
-        }
+            { }
+    }
 }
 \cs_generate_variant:Nn \__hawkdraw_node_anchors_gset:NnnnnN { NV }
 
