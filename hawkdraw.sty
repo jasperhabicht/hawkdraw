@@ -32,6 +32,10 @@
     Option ~ `#1` ~ only ~ supported ~ with ~ LuaTeX.
 }
 
+\msg_new:nnn { hawkdraw } { point-on-different-page } {
+    Referenced ~ point ~ on ~ different ~ page.
+}
+
 \cs_new_protected:Npn \__hawkdraw_warning_unsupported:nn #1#2 {
     \bool_lazy_or:nnF {
         \sys_if_engine_luatex_p:
@@ -283,6 +287,7 @@
 % ===
 
 \clist_new:N \l__hawkdraw_keys_unprocessed_clist
+\flag_new:N \g__hawkdraw_point_page_warning_flag
 
 \int_new:N \g_hawkdraw_picture_id_int
 
@@ -733,17 +738,22 @@
 
 \cs_new_protected:Npn \__hawkdraw_path_point_record:nnn #1#2#3 {
     \prop_gput:cnV {#1} { picture } \g_draw_id_int
+    \prop_gput:cne {#1} { page } {
+        \property_ref:een {
+            draw. \int_use:N \g_draw_id_int
+        } { abspage } { 0 }
+    }
     \prop_gput:cne {#1} { origin } {
-            (
-                \property_ref:ee {
-                    draw. \int_use:N \g_draw_id_int
-                } { xpos } sp
-            ,
-                \property_ref:ee {
-                    draw. \int_use:N \g_draw_id_int
-                } { ypos } sp
-            )
-        }
+        (
+            \property_ref:een {
+                draw. \int_use:N \g_draw_id_int
+            } { xpos } { 0 } sp
+        ,
+            \property_ref:een {
+                draw. \int_use:N \g_draw_id_int
+            } { ypos } { 0 } sp
+        )
+    }
     \prop_gput:cnn {#1} { point } {#2}
     \tl_if_empty:nF {#3} {
         \prop_gput:cnn {#1} { slope } {#3}
@@ -819,6 +829,19 @@
                 } { point }
             }
         } {
+            \int_compare:nNnF {
+                \prop_item:cn {
+                    g__hawkdraw_point_
+                    \__hawkdraw_point_parse_trim:n {#1}
+                    _prop
+                } { page }
+            } = {
+                \property_ref:een {
+                    draw. \int_use:N \g_draw_id_int
+                } { abspage } { 0 }
+            } {
+                \flag_raise:N \g__hawkdraw_point_page_warning_flag
+            }
             \fp_eval:n {
                 \prop_item:cn {
                     g__hawkdraw_point_
@@ -831,13 +854,13 @@
                     _prop
                 } { origin } -
                 (
-                    \property_ref:ee {
+                    \property_ref:een {
                         draw. \int_use:N \g_draw_id_int
-                    } { xpos } sp
+                    } { xpos } { 0 } sp
                 ,
-                    \property_ref:en {
+                    \property_ref:een {
                         draw. \int_use:N \g_draw_id_int
-                    } { ypos } sp
+                    } { ypos } { 0 } sp
                 )
             }
         }
@@ -986,6 +1009,7 @@
     \fp_gzero:N \g_hawkdraw_path_length_fp
     \draw_scope_begin:
         \hook_use:n { hawkdraw / path / begin }
+        \flag_clear:N \g__hawkdraw_point_page_warning_flag
         \tl_build_gbegin:N \g_hawkdraw_softpath_original_tl
         \tl_trim_spaces_apply:nN { #1 \s__hawkdraw_path_end } \__hawkdraw_path_process:n
         \tl_build_gput_right:Nn \g_hawkdraw_softpath_original_tl { \s__hawkdraw_softpath_end }
@@ -998,6 +1022,9 @@
         \draw_path_use_clear:e { \clist_use:N \l_hawkdraw_path_use_clist }
         \tl_use:N \l_hawkdraw_path_postactions_tl
         \hook_use:n { hawkdraw / path / end }
+        \flag_if_raised:NT \g__hawkdraw_point_page_warning_flag {
+            \msg_warning:nn { hawkdraw } { point-on-different-page }
+        }
     \draw_scope_end:
     \bool_if:NT \g__hawkdraw_path_use_clip_bool {
         \tl_use:N \g_hawkdraw_softpath_original_tl
@@ -1524,13 +1551,13 @@
     position ~ absolute     .code:n         = {
         \draw_transform_shift:n {
             (
-                - \property_ref:ee {
+                - \property_ref:een {
                     draw. \int_use:N \g_draw_id_int
-                } { xpos } sp
+                } { xpos } { 0 } sp
             ,
-                - \property_ref:ee {
+                - \property_ref:een {
                     draw. \int_use:N \g_draw_id_int
-                } { ypos } sp
+                } { ypos } { 0 } sp
             )
         }
     } ,
