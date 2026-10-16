@@ -335,6 +335,8 @@
 \fp_new:N \l__hawkdraw_point_b_fp
 \fp_new:N \l__hawkdraw_point_c_fp
 
+\tl_new:N \l_hawkdraw_point_name_tl
+
 \tl_new:N \l_hawkdraw_scope_layer_tl
 
 \cs_generate_variant:Nn \color_select:n { e }
@@ -712,7 +714,6 @@
 
 \fp_new:N \l_hawkdraw_point_at_fp
 \tl_new:N \l_hawkdraw_point_at_name_tl
-\tl_new:N \l_hawkdraw_point_name_tl
 \fp_new:N \l_hawkdraw_point_at_part_fp
 \fp_new:N \l_hawkdraw_point_slope_fp
 
@@ -721,7 +722,6 @@
         \hawkdraw_point_parse_set:Nn \l_hawkdraw_point_at_fp {#1}
         \tl_set:Nn \l_hawkdraw_point_at_name_tl {#1}
     } ,
-    name                    .tl_set:N       = \l_hawkdraw_point_name_tl ,
     at ~ part               .fp_set:N       = \l_hawkdraw_point_at_part_fp ,
     at ~ distance           .code:n         = {
         \hawkdraw_path_get_length:
@@ -734,7 +734,7 @@
 % point , plot
 \hawkdraw_operator_prepare_i:n { p }
 
-\hawkdraw_operator_construct_i:nN { point } \hawkdraw_path_point:n
+\hawkdraw_operator_construct_i_arg:nN { point } \hawkdraw_path_point:nn
 
 \cs_new_protected:Npn \__hawkdraw_path_point_record:nnn #1#2#3 {
     \prop_gput:cnV {#1} { picture } \g_draw_id_int
@@ -761,12 +761,13 @@
 }
 \cs_generate_variant:Nn \__hawkdraw_path_point_record:nnn { nVV , ne }
 
-\cs_new_protected:Npn \hawkdraw_path_point:n #1 {
+\cs_new_protected:Npn \hawkdraw_path_point:nn #1#2 {
     \fp_set_eq:NN \l_hawkdraw_point_at_fp \g_hawkdraw_path_point_last_fp
     \fp_set_eq:NN \l_hawkdraw_point_slope_fp \g_hawkdraw_path_slope_last_fp
     \fp_set:Nn \l_hawkdraw_point_at_part_fp { nan }
     \tl_clear:N \l_hawkdraw_point_at_name_tl
     \keys_set:nn { hawkdraw / path / point } {#1}
+    \tl_set:Nn \l_hawkdraw_point_name_tl {#2}
     \fp_if_nan:nF { \l_hawkdraw_point_at_part_fp } {
         \fp_set:Nn \l_hawkdraw_point_at_fp {
             \cs_if_exist_use:cTF {

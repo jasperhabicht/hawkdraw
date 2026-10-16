@@ -535,7 +535,7 @@ Points on the path can also be defined using radius and angle parts as floating-
 \begin{macrodef}[][macro:point]
 |(|<string>|)|
 \end{macrodef}
-Points on the path can finally be referenced using names as strings. Points on the path can be named by either using the \macro{point} or the \macro{node} operation with the given name set via the \macro{nname} option (see \hyperlink{operation:point}{below}).
+Points on the path can finally be referenced using names as strings. Points on the path can be named by either using the \macro{point} operation with the name given as argument or using the \macro{node} operation with the given name set via the \macro{name} option (see \hyperlink{operation:point}{below}).
 
 \subsection{Straight lines}
 
@@ -835,21 +835,16 @@ Nodes are boxes (coffins to be more exact) that can contain arbitrary contents. 
 \subsubsection{Points}
 
 \begin{macrodef}[][operation:point]
-|point|[<options>]
+|point|[<options>]{<string>}
 \end{macrodef}
-Using the \macro{point} operation, a point at the current position is defined and named with the given name. As for options, the \macro{point} operator only accepts the \macro{path/point/} subset.
-
-\begin{macrodef}
-!path/point/!|name|={<string>}
-\end{macrodef}
-The point can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}).
+Using the \macro{point} operation, a point at the current position is defined and named using the value given in the mandatory argument. As for options, the \macro{point} operator only accepts the \macro{path/point/} subset. The point can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}).
 
 The command \macro{\point} is a shortcut for \macro{\path (0pt,0pt) point}
 
 \vbox{\vspace*{\parskip}%
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path (2cm,0.5cm) point[name={A}] ;
+  \path (2cm,0.5cm) point {A} ;
   \path[stroke] (0cm,0cm) -- (A) -- (0cm,1cm) ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -878,7 +873,7 @@ The position of a point can also be adjusted using the \macro{at part} option wh
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \stroke (0cm,0cm) -- (2cm,1cm)
-    point[name={A}, at part={0.25}] ;
+    point[at part={0.25}] {A} ;
   \fill[color fill=red] (A) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -888,7 +883,7 @@ Finally, the position of a point can be adjusted using the \macro{at distance} o
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \stroke (0cm,0cm) -- (2cm,1cm)
-    point[name={A}, at distance={30pt}] ;
+    point[at distance={30pt}] {A} ;
   \fill[color fill=red] (A) circle[radius={2pt}] ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -899,9 +894,9 @@ The position on a path using these options depend on the type of the path. For s
 \begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     -- (2cm,1cm)
-    point[name={A}, at part={0}]
-    point[name={B}, at part={0.5}]
-    point[name={C}, at part={0.9}] ;
+    point[at part={0}] {A}
+    point[at part={0.5}] {B}
+    point[at part={0.9}] {C} ;
   \fill[color fill=red] (A) circle[radius={2pt}] ;
   \fill[color fill=blue] (B) circle[radius={2pt}] ;
   \fill[color fill=green] (C) circle[radius={2pt}] ;
@@ -912,9 +907,9 @@ The position on a path using these options depend on the type of the path. For s
 \begin{hawkdraw}
   \path[stroke] (0cm,0cm)
     -| (2cm,1cm)
-    point[name={A}, at part={0}]
-    point[name={B}, at part={0.5}]
-    point[name={C}, at part={0.9}] ;
+    point[at part={0}] {A}
+    point[at part={0.5}] {B}
+    point[at part={0.9}] {C} ;
   \fill[color fill=red] (A) circle[radius={2pt}] ;
   \fill[color fill=blue] (B) circle[radius={2pt}] ;
   \fill[color fill=green] (C) circle[radius={2pt}] ;
@@ -926,9 +921,9 @@ The position on a path using these options depend on the type of the path. For s
   \path[stroke] (0cm,0cm)
     .. (1cm,1cm)
     .. (2cm,1cm)
-    point[name={A}, at part={0}]
-    point[name={B}, at part={0.5}]
-    point[name={C}, at part={0.9}] ;
+    point[at part={0}] {A}
+    point[at part={0.5}] {B}
+    point[at part={0.9}] {C} ;
   \fill[color fill=red] (A) circle[radius={2pt}] ;
   \fill[color fill=blue] (B) circle[radius={2pt}] ;
   \fill[color fill=green] (C) circle[radius={2pt}] ;
@@ -940,9 +935,9 @@ The position on a path using these options depend on the type of the path. For s
   \path[stroke] (0cm,0cm)
     .. (0cm,0.5cm) & (1cm,1cm)
     .. (2cm,1cm)
-    point[name={A}, at part={0}]
-    point[name={B}, at part={0.5}]
-    point[name={C}, at part={0.9}] ;
+    point[at part={0}] {A}
+    point[at part={0.5}] {B}
+    point[at part={0.9}] {C} ;
   \fill[color fill=red] (A) circle[radius={2pt}] ;
   \fill[color fill=blue] (B) circle[radius={2pt}] ;
   \fill[color fill=green] (C) circle[radius={2pt}] ;
@@ -957,9 +952,9 @@ The position on a path using these options depend on the type of the path. For s
       angle start={45},
       angle end={135}
     ]
-    point[name={A}, at part={0}]
-    point[name={B}, at part={0.5}]
-    point[name={C}, at part={0.9}] ;
+    point[at part={0}] {A}
+    point[at part={0.5}] {B}
+    point[at part={0.9}] {C} ;
   \fill[color fill=red] (A) circle[radius={2pt}] ;
   \fill[color fill=blue] (B) circle[radius={2pt}] ;
   \fill[color fill=green] (C) circle[radius={2pt}] ;
@@ -975,9 +970,9 @@ The position on a path using these options depend on the type of the path. For s
       angle start={45},
       angle end={135}
     ]
-    point[name={A}, at part={0}]
-    point[name={B}, at part={0.5}]
-    point[name={C}, at part={0.9}] ;
+    point[at part={0}] {A}
+    point[at part={0.5}] {B}
+    point[at part={0.9}] {C} ;
   \fill[color fill=red] (A) circle[radius={2pt}] ;
   \fill[color fill=blue] (B) circle[radius={2pt}] ;
   \fill[color fill=green] (C) circle[radius={2pt}] ;
@@ -990,9 +985,9 @@ The position on a path using these options depend on the type of the path. For s
     circle[
       radius={1cm}
     ]
-    point[name={A}, at part={0}]
-    point[name={B}, at part={0.5}]
-    point[name={C}, at part={0.9}] ;
+    point[at part={0}] {A}
+    point[at part={0.5}] {B}
+    point[at part={0.9}] {C} ;
   \fill[color fill=red] (A) circle[radius={2pt}] ;
   \fill[color fill=blue] (B) circle[radius={2pt}] ;
   \fill[color fill=green] (C) circle[radius={2pt}] ;
@@ -1006,9 +1001,9 @@ The position on a path using these options depend on the type of the path. For s
       vector a={(0.5cm,1cm)},
       vector b={(0.75cm,0cm)}
     ]
-    point[name={A}, at part={0}]
-    point[name={B}, at part={0.5}]
-    point[name={C}, at part={0.9}] ;
+    point[at part={0}] {A}
+    point[at part={0.5}] {B}
+    point[at part={0.9}] {C} ;
   \fill[color fill=red] (A) circle[radius={2pt}] ;
   \fill[color fill=blue] (B) circle[radius={2pt}] ;
   \fill[color fill=green] (C) circle[radius={2pt}] ;
@@ -1021,9 +1016,9 @@ The position on a path using these options depend on the type of the path. For s
     rectangle[
       corner={(2cm,1cm)}
     ]
-    point[name={A}, at part={0}]
-    point[name={B}, at part={0.5}]
-    point[name={C}, at part={0.9}] ;
+    point[at part={0}] {A}
+    point[at part={0.5}] {B}
+    point[at part={0.9}] {C} ;
   \fill[color fill=red] (A) circle[radius={2pt}] ;
   \fill[color fill=blue] (B) circle[radius={2pt}] ;
   \fill[color fill=green] (C) circle[radius={2pt}] ;
@@ -1037,7 +1032,7 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \point[name={A}, at={(1cm,1cm)}] ;
+  \point[at={(1cm,1cm)}] {A} ;
   \stroke[color stroke={blue}]
      (0cm,0cm) rectangle[corner={(A)}] ;
   \stroke (0cm,0cm)
@@ -1047,7 +1042,7 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \point[name={A}, at={(1cm,0.5cm)}] ;
+  \point[at={(1cm,0.5cm)}] {A} ;
   \stroke[color stroke={blue}]
      (0cm,0cm) rectangle[corner={(A)}] ;
   \stroke (0cm,0cm)
@@ -1421,9 +1416,8 @@ The command \macro{\hawkdrawarrayitem} can be used to reference items in an arra
     -- (2cm,1cm)
     map[list={A,B,C}] {
       point[
-        name={#1},
         at part={\hawkdrawarrayitem{myparts}{#2}}
-      ]
+      ] {#1}
     } ;
   \hawkdrawmap[list={A,B,C}] {
     \fill[
@@ -1509,7 +1503,7 @@ Sets the line width for the path. The default line width is \qty{0.4}{\point}.
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \stroke
-    (0cm,0cm) -- (2cm,1cm);
+    (0cm,0cm) -- (2cm,1cm) ;
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
