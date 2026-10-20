@@ -153,21 +153,30 @@
 }
 
 \NewDocumentCommand{\warning}{}{%
-  \begin{tikzpicture}[overlay, baseline={(w.base)}]
-    \node[circle, fill, black!25!red!10, text=black!25!red, outer sep=0pt]
-      (w) at (-3em,0pt) {\bfseries !};
-    \fill[black!25!red!10]
-      (w.east) |- (w.south) -- cycle;
-  \end{tikzpicture}%
+  \begin{hawkdraw}[overlay, baseline={0pt}]
+    \node[
+        anchor={B,hc},
+        frame={circle},
+        fill,
+        color fill={black!25!red!10},
+        color text={black!25!red},
+        name={w},
+        at={(-3em,0pt)}
+    ]{\bfseries !}
+    \fill[color fill={black!25!red!10}]{
+      (w[r,vc]) |- (w[b,hc]) !
+    }
+  \end{hawkdraw}%
 }
 
 \NewDocumentCommand{\breaking}{}{%
-  \begin{tikzpicture}[baseline=-0.25em]
-    \fill[black!25!red, rounded corners=2pt]
-      (90:0.75em) -- (-150:0.75em) -- (-30:0.75em) -- cycle;
-    \node[circle, text=white, outer sep=0pt]
-      (w) at (0pt,0.75pt) {\bfseries\footnotesize !};
-  \end{tikzpicture}
+  \begin{hawkdraw}[baseline={-0.25em}]
+    \fill[color fill={black!25!red}, corner arc={2pt}]{
+      (0.75em>90) -- (0.75em>-150) -- (0.75em>-30) !
+    }
+    \node[frame={circle}, color text={white}, at={(0pt,0.75pt)}]
+      {\bfseries\footnotesize !}
+  \end{hawkdraw}
   \textbf{Breaking change:}
 }
 
@@ -313,7 +322,7 @@
 \changes{v0.9.0}{2026/09/07}{Adding option to apply shadings to strokes; fixing bug in pattern module; fixing bug in setting miter limit; fixing bug in positioning of node contents.}
 \changes{v0.9.1}{2026/10/12}{Adding option for absolute positioning; adding expansion to parsing mechanism; refactoring for recent LaTeX3 kernel updates.}
 \changes{v0.10.0}{2026/10/13}{Fixing bug in sloped nodes; improving pattern module; improving arrow tip module; adding support for cross-referencing nodes; adding commands to retrieve page dimensions.}
-\changes{v0.11.0}{2026/10/20}{\breaking Removing semicolon as terminal mark from the path syntax; changing syntax for points.}
+\changes{v0.11.0}{2026/10/20}{\breaking Removing semicolon as terminal mark from the path syntax; changing syntax for points; fixing bug that prevents use of em units.}
 
 \begin{document}
 \vspace*{-1cm}
