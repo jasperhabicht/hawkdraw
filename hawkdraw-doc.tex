@@ -460,7 +460,9 @@ The option \macro{layer} sets the scope to be placed on the relevant layer. The 
     (0cm,0cm) circle[radius={0.5cm}]
   }
   \begin{scope}[layer={background}]
-    \fill{ (0.5cm,0cm) circle[radius={0.5cm}] }
+    \fill{
+      (0.5cm,0cm) circle[radius={0.5cm}]
+    }
   \end{scope}
 \end{hawkdraw}
 \end{codeexamplecolumns}
