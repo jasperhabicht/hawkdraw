@@ -21,7 +21,7 @@
 \tl_new:N \g__hawkdraw_font_current_tl
 
 \cs_new_protected:Npn \hawkdraw_font_unset: {
-    \tl_set:Ne \g__hawkdraw_font_current_tl { \tex_the:D \tex_font:D }
+    \tl_gset:Ne \g__hawkdraw_font_current_tl { \tex_the:D \tex_font:D }
     \tex_nullfont:D
 }
 
