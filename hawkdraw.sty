@@ -1010,7 +1010,7 @@
     \fp_gset:Nn \g_hawkdraw_path_slope_last_fp { nan }
     \fp_gzero:N \g_hawkdraw_path_length_fp
     \draw_scope_begin:
-        \normalfont
+        \hawkdraw_font_restore:
         \hook_use:n { hawkdraw / path / begin }
         \flag_clear:N \g__hawkdraw_point_page_warning_flag
         \tl_build_gbegin:N \g_hawkdraw_softpath_original_tl
@@ -1733,7 +1733,7 @@
             \draw_path_replace_bb:
             \bool_set_false:N \l_draw_bb_update_bool
         }
-        \nullfont
+        \hawkdraw_font_unset:
 } {
     \draw_end:
     \tag_resume:n { hawkdraw / picture }

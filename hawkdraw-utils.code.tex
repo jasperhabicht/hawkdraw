@@ -18,6 +18,17 @@
     \dim_set:Nn \tex_parindent:D {#1}
 }
 
+\tl_new:N \g__hawkdraw_font_current_tl
+
+\cs_new_protected:Npn \hawkdraw_font_unset: {
+    \tl_set:Ne \g__hawkdraw_font_current_tl { \tex_the:D \tex_font:D }
+    \tex_nullfont:D
+}
+
+\cs_new_protected:Npn \hawkdraw_font_restore: {
+    \tl_use:N \g__hawkdraw_font_current_tl
+}
+
 \clist_map_inline:nn { body , par , text } {
     \cs_new_protected:cpn { hawkdraw_get_ #1 dir:N } ##1 {
         \tl_gset_eq:Nc ##1 { tex_ #1 direction:D }
