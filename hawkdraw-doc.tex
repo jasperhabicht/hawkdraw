@@ -374,7 +374,7 @@ The command \macro{\hawkdrawset} is used to set options. It can be used inside o
 The package has only very few main user commands that can be used almost everywhere in the document body. Among these, the \macro{hawkdraw} environment is the most important as it is used to define a drawing and most other commands are only defined inside this environment.
 
 \begin{macrodef}[][env:hawkdraw]
-\\\begin{|hawkdraw|}[<options>]
+\begin{|hawkdraw|}[<options>]
 \end{|hawkdraw|}
 \end{macrodef}
 The \macro{hawkdraw} environment is the main environment for drawing. It defines most other commands described in the following sections. It can take an optional argument for options to the environment, which are explained in the following, or to paths which then apply to all paths inside the environment. As for options, the \macro{hawkdraw} environment accepts the \macro{picture/} set, the \macro{path/} set and the \macro{tag/} set.
@@ -389,7 +389,7 @@ The option \macro{baseline} sets the baseline for the environment as dimension. 
 \begin{codeexamplecolumns}
 foo
 \begin{hawkdraw}[baseline={0pt}]
-  \node[stroke, anchor={H,l}] {bar} ;
+  \node[stroke, anchor={H,l}]{bar}
 \end{hawkdraw}
 baz
 \end{codeexamplecolumns}
@@ -414,8 +414,10 @@ foo
 \begin{hawkdraw}[
   bounding box={zero},
   baseline={0pt}
-] \stroke[color stroke={blue}]
-    (0cm,0cm) circle[radius={0.5cm}] ;
+]
+  \stroke[color stroke={blue}]{
+    (0cm,0cm) circle[radius={0.5cm}]
+  }
 \end{hawkdraw}
 bar
 \end{codeexamplecolumns}
@@ -439,11 +441,11 @@ The \macro{scope} environment is only available inside the \macro{hawkdraw} envi
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[color fill={blue}]
-  \fill (0cm,0cm) circle[radius={5pt}] ;
+  \fill{ (0cm,0cm) circle[radius={5pt}] }
   \begin{scope}[color fill={black}]
-    \fill (1cm,0cm) circle[radius={5pt}] ;
+    \fill{ (1cm,0cm) circle[radius={5pt}] }
   \end{scope}
-  \fill (2cm,0cm) circle[radius={5pt}] ;
+  \fill{ (2cm,0cm) circle[radius={5pt}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -454,10 +456,11 @@ The option \macro{layer} sets the scope to be placed on the relevant layer. The 
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[layers={background,main}]
-  \fill[color fill={blue}]
-    (0cm,0cm) circle[radius={0.5cm}] ;
+  \fill[color fill={blue}]{
+    (0cm,0cm) circle[radius={0.5cm}]
+  }
   \begin{scope}[layer={background}]
-    \fill (0.5cm,0cm) circle[radius={0.5cm}] ;
+    \fill{ (0.5cm,0cm) circle[radius={0.5cm}] }
   \end{scope}
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -470,8 +473,9 @@ The option \macro{position absolute} shifts the scope so that its origin is at t
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[overlay]
   \begin{scope}[position absolute]
-    \fill[color fill={blue}]
-      (0cm,0cm) circle[radius={2cm}] ;
+    \fill[color fill={blue}]{
+      (0cm,0cm) circle[radius={2cm}]
+    }
   \end{scope}
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -487,19 +491,21 @@ The following example shows how to store a (partial) path definition in an expan
 }
 
 \begin{hawkdraw}
-  \fill[color fill={blue}]
-    (0cm,0cm) \drawcircle ;
-  \fill[color fill={red}]
-    (0.5cm,0cm) \drawcircle ;
+  \fill[color fill={blue}]{
+    (0cm,0cm) \drawcircle
+  }
+  \fill[color fill={red}]{
+    (0.5cm,0cm) \drawcircle
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \subsection{Path command and options}
 
 \begin{macrodef}
-|\path| <path operations> ;
+|\path|[<options>]{<path operations>}
 \end{macrodef}
-The command \macro{\path} is used to to draw a path inside the \macro{hawkdraw} environment. The path is defined by a sequence of points and path construction operations. Each \macro{\path} command must end with a semicolon. The following operations can be used to construct the path:
+The command \macro{\path} is used to to draw a path inside the \macro{hawkdraw} environment. The path is defined by a sequence of points and path construction operations. The optional argument just prepends the relevant options to the path and has the same effect as if the options were specified in the mandatory argument. The following operations can be used to construct the path:
 
 \begin{macrodef}
 |[|<options>|]|
@@ -546,8 +552,10 @@ Using \macro{--} a line to the next point is drawn.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
-    -- (2cm,1cm) ;
+  \path[stroke]{
+    (0cm,0cm)
+    -- (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -559,15 +567,19 @@ Using \macro{|-} a vertical, then horizontal line to the next point is drawn. Us
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
-    |- (2cm,1cm) ;
+  \path[stroke]{
+    (0cm,0cm)
+    |- (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
-    -| (2cm,1cm) ;
+  \path[stroke]{
+    (0cm,0cm)
+    -| (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -581,17 +593,21 @@ The above syntax draws a Bézier curve to the next point with a single control p
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     .. (1cm,1cm)
-    .. (2cm,1cm) ;
+    .. (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     .. (0cm,0.5cm) & (1cm,1cm)
-    .. (2cm,1cm) ;
+    .. (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -604,9 +620,12 @@ Using \macro{!} the path is closed by drawing a line from the last point to the 
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     -- (2cm,1cm)
-    -- (0cm,1cm) ! ;
+    -- (0cm,1cm)
+    !
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -626,8 +645,10 @@ The radius is specified as a dimension with the \macro{radius} option.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
-    circle[radius={1cm}] ;
+  \path[stroke]{
+    (0cm,0cm)
+    circle[radius={1cm}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -646,21 +667,25 @@ The vectors of the ellipse are specified as tuples of dimensions and can be set 
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     ellipse[
       radius x={0.5cm},
       radius y={1cm}
-    ] ;
+    ]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     ellipse[
       vector a={(0.5cm,1cm)},
       vector b={(0.75cm,0cm)}
-    ] ;
+    ]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -683,36 +708,42 @@ The vectors of the arc are specified as tuples of dimensions and can be set with
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     arc[
       radius={1cm},
       angle start={45},
       angle end={135}
-    ] ;
+    ]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     arc[
       radius x={0.5cm},
       radius y={1cm},
       angle start={45},
       angle delta={90}
-    ] ;
+    ]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     arc[
       vector a={(0.5cm,1cm)},
       vector b={(0.75cm,0cm)},
       angle start={45},
       angle end={135}
-    ] ;
+    ]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -729,8 +760,10 @@ The other corner of the rectangle is specified as a point (a tuple) with the \ma
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
-    rectangle[corner={(2cm,1cm)}] ;
+  \path[stroke]{
+    (0cm,0cm)
+    rectangle[corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -749,15 +782,19 @@ The step is specified as a comma-separated list of at most two dimensions with t
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
-    grid[step={10pt}, corner={(2cm,1cm)}] ;
+  \path[stroke]{
+    (0cm,0cm)
+    grid[step={10pt}, corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
-    grid[step={5pt,10pt}, corner={(2cm,1cm)}] ;
+  \path[stroke]{
+    (0cm,0cm)
+    grid[step={5pt,10pt}, corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -778,13 +815,15 @@ It is possible to use the \macro{map} operator inside the argument to the \macro
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke, plot/function={smooth}] (0cm,0cm)
+  \path[stroke, plot/function={smooth}]{
+    (0cm,0cm)
     plot {
       map[end=7] {
         ({#1 * 0.25cm},{sin(#1) * 0.25cm})
       }
     }
-  -- (1cm,1.5cm);
+    -- (1cm,1.5cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -794,8 +833,10 @@ The \macro{sharp} plot function results in an output equivalent to the \macro{--
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[plot/function={sharp}] (0cm,0cm)
-    plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) } ;
+  \stroke[plot/function={sharp}]{
+    (0cm,0cm)
+    plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) }
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -811,8 +852,10 @@ The factor by which the slope vector is scaled is set to \num{0.15} by default a
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[plot/function={smooth}] (0cm,0cm)
-    plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) } ;
+  \stroke[plot/function={smooth}]{
+    (0cm,0cm)
+    plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) }
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -821,8 +864,10 @@ The factor by which the slope vector is scaled is set to \num{0.15} by default a
   \stroke[
     plot/function={smooth},
     plot/smooth/tension={0.25}
-  ] (0cm,0cm)
-    plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) } ;
+  ]{
+    (0cm,0cm)
+    plot { (0.75cm,1cm) (1.5cm,.5cm) (2.25cm,.5cm) }
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -832,6 +877,8 @@ Points are defined as tuple of two dimensions where the first represents the dim
 
 Nodes are boxes (coffins to be more exact) that can contain arbitrary contents. Nodes also have frames that act as boxes surrounding these contents. Since such contents typically have some width and height, it is possible to refer to the corners and other points on the border of nodes via anchors.
 
+Note that nodes typically cannot directly contain verbatim contents. They can, however, contain boxes that contain verbatim contents.
+
 \subsubsection{Points}
 
 \begin{macrodef}[][operation:point]
@@ -839,13 +886,13 @@ Nodes are boxes (coffins to be more exact) that can contain arbitrary contents. 
 \end{macrodef}
 Using the \macro{point} operation, a point at the current position is defined and named using the value given in the mandatory argument. As for options, the \macro{point} operator only accepts the \macro{path/point/} subset. The point can be referenced later by using the name in parentheses (see \hyperlink{macro:point}{above}).
 
-The command \macro{\point} is a shortcut for \macro{\path (0pt,0pt) point}
+The command \macro{\point} is a shorthand for \macro{\path{ (0pt,0pt) point ... }}
 
 \vbox{\vspace*{\parskip}%
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path (2cm,0.5cm) point {A} ;
-  \path[stroke] (0cm,0cm) -- (A) -- (0cm,1cm) ;
+  \path{ (2cm,0.5cm) point {A} }
+  \stroke{ (0cm,0cm) -- (A) -- (0cm,1cm) }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -853,10 +900,13 @@ The command \macro{\point} is a shortcut for \macro{\path (0pt,0pt) point}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[overlay]
-  \fill[color fill=red] (0cm,0cm)
-    circle[radius={2pt}] ;
-  \path[stroke, color stroke={blue}]
-    (0cm,0cm) -- (A) ;
+  \fill[color fill=red]{
+    (0cm,0cm)
+    circle[radius={2pt}]
+  }
+  \path[stroke, color stroke={blue}]{
+    (0cm,0cm) -- (A)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}%
 }
@@ -872,9 +922,13 @@ The position of a point can also be adjusted using the \macro{at part} option wh
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm) -- (2cm,1cm)
-    point[at part={0.25}] {A} ;
-  \fill[color fill=red] (A) circle[radius={2pt}] ;
+  \stroke{
+    (0cm,0cm) -- (2cm,1cm)
+    point[at part={0.25}] {A}
+  }
+  \fill[color fill=red]{
+    (A) circle[radius={2pt}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -882,9 +936,13 @@ Finally, the position of a point can be adjusted using the \macro{at distance} o
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm) -- (2cm,1cm)
-    point[at distance={30pt}] {A} ;
-  \fill[color fill=red] (A) circle[radius={2pt}] ;
+  \stroke{
+    (0cm,0cm) -- (2cm,1cm)
+    point[at distance={30pt}] {A}
+  }
+  \fill[color fill=red]{
+    (A) circle[radius={2pt}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -892,61 +950,70 @@ The position on a path using these options depend on the type of the path. For s
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     -- (2cm,1cm)
     point[at part={0}] {A}
     point[at part={0.5}] {B}
-    point[at part={0.9}] {C} ;
-  \fill[color fill=red] (A) circle[radius={2pt}] ;
-  \fill[color fill=blue] (B) circle[radius={2pt}] ;
-  \fill[color fill=green] (C) circle[radius={2pt}] ;
+    point[at part={0.9}] {C}
+  }
+  \fill[color fill=red]{ (A) circle[radius={2pt}] }
+  \fill[color fill=blue]{ (B) circle[radius={2pt}] }
+  \fill[color fill=green]{ (C) circle[radius={2pt}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     -| (2cm,1cm)
     point[at part={0}] {A}
     point[at part={0.5}] {B}
-    point[at part={0.9}] {C} ;
-  \fill[color fill=red] (A) circle[radius={2pt}] ;
-  \fill[color fill=blue] (B) circle[radius={2pt}] ;
-  \fill[color fill=green] (C) circle[radius={2pt}] ;
+    point[at part={0.9}] {C}
+  }
+  \fill[color fill=red]{ (A) circle[radius={2pt}] }
+  \fill[color fill=blue]{ (B) circle[radius={2pt}] }
+  \fill[color fill=green]{ (C) circle[radius={2pt}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     .. (1cm,1cm)
     .. (2cm,1cm)
     point[at part={0}] {A}
     point[at part={0.5}] {B}
-    point[at part={0.9}] {C} ;
-  \fill[color fill=red] (A) circle[radius={2pt}] ;
-  \fill[color fill=blue] (B) circle[radius={2pt}] ;
-  \fill[color fill=green] (C) circle[radius={2pt}] ;
+    point[at part={0.9}] {C}
+  }
+  \fill[color fill=red]{ (A) circle[radius={2pt}] }
+  \fill[color fill=blue]{ (B) circle[radius={2pt}] }
+  \fill[color fill=green]{ (C) circle[radius={2pt}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     .. (0cm,0.5cm) & (1cm,1cm)
     .. (2cm,1cm)
     point[at part={0}] {A}
     point[at part={0.5}] {B}
-    point[at part={0.9}] {C} ;
-  \fill[color fill=red] (A) circle[radius={2pt}] ;
-  \fill[color fill=blue] (B) circle[radius={2pt}] ;
-  \fill[color fill=green] (C) circle[radius={2pt}] ;
+    point[at part={0.9}] {C}
+  }
+  \fill[color fill=red]{ (A) circle[radius={2pt}] }
+  \fill[color fill=blue]{ (B) circle[radius={2pt}] }
+  \fill[color fill=green]{ (C) circle[radius={2pt}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     arc[
       radius={1cm},
       angle start={45},
@@ -954,16 +1021,18 @@ The position on a path using these options depend on the type of the path. For s
     ]
     point[at part={0}] {A}
     point[at part={0.5}] {B}
-    point[at part={0.9}] {C} ;
-  \fill[color fill=red] (A) circle[radius={2pt}] ;
-  \fill[color fill=blue] (B) circle[radius={2pt}] ;
-  \fill[color fill=green] (C) circle[radius={2pt}] ;
+    point[at part={0.9}] {C}
+  }
+  \fill[color fill=red]{ (A) circle[radius={2pt}] }
+  \fill[color fill=blue]{ (B) circle[radius={2pt}] }
+  \fill[color fill=green]{ (C) circle[radius={2pt}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     arc[
       vector a={(0.5cm,1cm)},
       vector b={(0.75cm,0cm)},
@@ -972,56 +1041,63 @@ The position on a path using these options depend on the type of the path. For s
     ]
     point[at part={0}] {A}
     point[at part={0.5}] {B}
-    point[at part={0.9}] {C} ;
-  \fill[color fill=red] (A) circle[radius={2pt}] ;
-  \fill[color fill=blue] (B) circle[radius={2pt}] ;
-  \fill[color fill=green] (C) circle[radius={2pt}] ;
+    point[at part={0.9}] {C}
+  }
+  \fill[color fill=red]{ (A) circle[radius={2pt}] }
+  \fill[color fill=blue]{ (B) circle[radius={2pt}] }
+  \fill[color fill=green]{ (C) circle[radius={2pt}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     circle[
       radius={1cm}
     ]
     point[at part={0}] {A}
     point[at part={0.5}] {B}
-    point[at part={0.9}] {C} ;
-  \fill[color fill=red] (A) circle[radius={2pt}] ;
-  \fill[color fill=blue] (B) circle[radius={2pt}] ;
-  \fill[color fill=green] (C) circle[radius={2pt}] ;
+    point[at part={0.9}] {C}
+  }
+  \fill[color fill=red]{ (A) circle[radius={2pt}] }
+  \fill[color fill=blue]{ (B) circle[radius={2pt}] }
+  \fill[color fill=green]{ (C) circle[radius={2pt}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     ellipse[
       vector a={(0.5cm,1cm)},
       vector b={(0.75cm,0cm)}
     ]
     point[at part={0}] {A}
     point[at part={0.5}] {B}
-    point[at part={0.9}] {C} ;
-  \fill[color fill=red] (A) circle[radius={2pt}] ;
-  \fill[color fill=blue] (B) circle[radius={2pt}] ;
-  \fill[color fill=green] (C) circle[radius={2pt}] ;
+    point[at part={0.9}] {C}
+  }
+  \fill[color fill=red]{ (A) circle[radius={2pt}] }
+  \fill[color fill=blue]{ (B) circle[radius={2pt}] }
+  \fill[color fill=green]{ (C) circle[radius={2pt}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \path[stroke]{
+    (0cm,0cm)
     rectangle[
       corner={(2cm,1cm)}
     ]
     point[at part={0}] {A}
     point[at part={0.5}] {B}
-    point[at part={0.9}] {C} ;
-  \fill[color fill=red] (A) circle[radius={2pt}] ;
-  \fill[color fill=blue] (B) circle[radius={2pt}] ;
-  \fill[color fill=green] (C) circle[radius={2pt}] ;
+    point[at part={0.9}] {C}
+  }
+  \fill[color fill=red]{ (A) circle[radius={2pt}] }
+  \fill[color fill=blue]{ (B) circle[radius={2pt}] }
+  \fill[color fill=green]{ (C) circle[radius={2pt}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1032,28 +1108,36 @@ Inside a \macro{hawkdraw} environment, the command \macro{\getpoint} can be used
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \point[at={(1cm,1cm)}] {A} ;
-  \stroke[color stroke={blue}]
-     (0cm,0cm) rectangle[corner={(A)}] ;
-  \stroke (0cm,0cm)
-    -- ({\getpoint{A} + (1cm,0cm)}) ;
+  \point[at={(1cm,1cm)}]{A}
+  \stroke[color stroke={blue}]{
+    (0cm,0cm) rectangle[corner={(A)}]
+  }
+  \stroke{
+    (0cm,0cm)
+    -- ({\getpoint{A} + (1cm,0cm)})
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \point[at={(1cm,0.5cm)}] {A} ;
-  \stroke[color stroke={blue}]
-     (0cm,0cm) rectangle[corner={(A)}] ;
-  \stroke (0cm,0cm)
-    -- ({\getpoint{A} * 2}) ;
+  \point[at={(1cm,0.5cm)}]{A}
+  \stroke[color stroke={blue}]{
+    (0cm,0cm) rectangle[corner={(A)}]
+  }
+  \stroke{
+    (0cm,0cm)
+    -- ({\getpoint{A} * 2})
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm)
-    -- ({\getpoint{2cm>30}}) ;
+  \stroke{
+    (0cm,0cm)
+    -- ({\getpoint{2cm>30}})
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1135,41 +1219,48 @@ It is also possible to reference such an anchor point. For example, if a node is
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \node {foo} ;
+  \node{foo}
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \node[stroke, name={A}] {foo} ;
-  \fill[color fill={red}] (A[b,l])
-    circle[radius={2pt}] ;
-  \fill[color fill={red}] (A[t,r])
-    circle[radius={2pt}] ;
+  \node[stroke, name={A}]{foo}
+  \fill[color fill={red}]{
+    (A[b,l]) circle[radius={2pt}]
+  }
+  \fill[color fill={red}]{
+    (A[t,r]) circle[radius={2pt}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \node[stroke, name={B}] {foo} ;
-  \fill[color fill={red}] (B[30])
-    circle[radius={2pt}] ;
-  \fill[color fill={red}] (B[270])
-    circle[radius={2pt}] ;
+  \node[stroke, name={B}]{foo}
+  \fill[color fill={red}]{
+    (B[30]) circle[radius={2pt}] }
+  \fill[color fill={red}]{
+    (B[270]) circle[radius={2pt}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm) -- (1cm,0.5cm)
-    node[anchor={t,l}, stroke] {foo} ;
+  \stroke{
+    (0cm,0cm) -- (1cm,0.5cm)
+    node[anchor={t,l}, stroke] {foo}
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm) -- (1cm,0.5cm)
-    node[anchor={210}, stroke] {foo} ;
+  \stroke{
+    (0cm,0cm) -- (1cm,0.5cm)
+    node[anchor={210}, stroke] {foo}
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1180,8 +1271,10 @@ The width of the node can be set with the \macro{width} option.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm) -- (1cm,0.5cm)
-    node[stroke, width={1cm}] {foo} ;
+  \stroke{
+    (0cm,0cm) -- (1cm,0.5cm)
+    node[stroke, width={1cm}] {foo}
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1192,12 +1285,14 @@ Using the \macro{sloped} option, the node can be rotated to follow the direction
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm) -- (2cm,1cm)
+  \stroke{
+    (0cm,0cm) -- (2cm,1cm)
     node[
       stroke,
       at part={0.25},
       sloped
-    ] {foo} ;
+    ] {foo}
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1217,22 +1312,22 @@ Using the \macro{padding} option, the padding between the border of the node and
     stroke,
     at={(0cm,2cm)},
     padding={10pt}
-  ] {foo} ;
+  ]{foo}
   \node[
     stroke,
     at={(1.5cm,2cm)},
     padding={5pt,10pt}
-  ] {foo} ;
+  ]{foo}
   \node[
     stroke,
     at={(0cm,0cm)},
     padding={5pt,10pt,15pt}
-  ] {foo} ;
+  ]{foo}
   \node[
     stroke,
     at={(1.5cm,0cm)},
     padding={5pt,10pt,15pt,0pt}
-  ] {foo} ;
+  ]{foo}
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1269,7 +1364,7 @@ The option \macro{background} can be used to set a background to the node. The c
           example-image-duck
         }
       }
-    ] {\Huge foo} ;
+    ]{\Huge foo}
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1286,7 +1381,7 @@ The option \macro{text rendering} sets the text rendering mode of the node conte
       color text fill={yellow},
       color text stroke={red},
       text rendering={fill, stroke, clip}
-    ] {\Huge foo} ;
+    ]{\Huge foo}
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1299,24 +1394,26 @@ Using the \macro{frame} command, the frame surrounding the node text can be sele
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm) -- (1cm,0.5cm)
+  \stroke{
+    (0cm,0cm) -- (1cm,0.5cm)
     node[
       fill,
       color fill={yellow},
       color text={blue},
       frame={ellipse}
-    ] {foo} ;
+    ] {foo}
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-The command \macro{\node} is a shortcut for \macro{\path (0pt,0pt) node}
+The command \macro{\node} is a shorthand for \macro{\path{ (0pt,0pt) node ... }}
 
 The following node frames are available, the frame \macro{none} is special as it removes the bounding box from the node altogether:
 
 \NewDocumentCommand{\nodeframe}{ O{0.5ex} m }{%
   \begin{hawkdraw}[baseline={#1}]
-    \path (-0.5cm,-0.25cm) rectangle[corner={(1cm,0.5cm)}] ;
-    \node[frame={#2}, stroke] {foo} ;
+    \path{ (-0.5cm,-0.25cm) rectangle[corner={(1cm,0.5cm)}] }
+    \node[frame={#2}, stroke]{foo}
   \end{hawkdraw}%
 }
 
@@ -1349,46 +1446,50 @@ The option \macro{list} sets the command to map over a comma-separated list of i
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \fill
+  \fill{
     map[list={30,150,270}] {
       (0.75cm>#1) circle[radius={5pt}]
-    } ;
+    }
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 The option \macro{start} sets the start of the range for mapping over a range of numbers as a floating-point number. The default start is \num{1}. The option \macro{end} sets the end of the range for mapping over a range of numbers as a floating-point number. The default end is \num{1}. The option \macro{step} sets the step for the range for mapping over a range of numbers as a floating-point number. The default step is \num{1}.
 
-The command \macro{\map} is a shortcut for \macro{\path (0pt,0pt) map}
+The command \macro{\map} is a shorthand for \macro{\path{ (0pt,0pt) map ... }}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
   \map[start={30}, step={120}, end={270}] {
     [fill] (0.75cm>#1) circle[radius={5pt}]
-  } ;
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke]
+  \stroke{
     map[list={A,B}] {
       map[list={x,y}] {
         (#2 cm,##2 cm) node {#1,##1}
       }
-    } ;
+    }
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
+  \stroke{
+    (0cm,0cm)
     .. (7mm,-10mm) & (14mm,8mm) .. (20mm,-5mm)
     map[end={10}] {
         tip[
           at part={0.095 * #1},
           color fill=blue! #1 0!red
         ] {stealth}
-    } ;
+    }
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1412,17 +1513,18 @@ The command \macro{\hawkdrawarrayitem} can be used to reference items in an arra
 \hawkdrawarrayset{mycolors}{red,blue,green}
 
 \begin{hawkdraw}
-  \path[stroke] (0cm,0cm)
-    -- (2cm,1cm)
+  \stroke{
+    (0cm,0cm) -- (2cm,1cm)
     map[list={A,B,C}] {
       point[
         at part={\hawkdrawarrayitem{myparts}{#2}}
       ] {#1}
-    } ;
-  \hawkdrawmap[list={A,B,C}] {
+    }
+  }
+  \hawkdrawmap[list={A,B,C}]{
     \fill[
       color fill={\hawkdrawarrayitem{mycolors}{#2}}
-    ] (#1) circle[radius={2pt}] ;
+    ]{ (#1) circle[radius={2pt}] }
   }
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -1441,23 +1543,27 @@ The following options can be set for the path:
 \end{macrodef}
 These options add a stroke to the path or fill the path respectively. They do not require a value. Setting the value to \macro{false} resets a prior setting and removes the path stroke or fill.
 
-The command \macro{\stroke} is a shortcut for \macro{\path [stroke]}.
+The command \macro{\stroke} is a shorthand for \macro{\path[stroke]}.
 
-The command \macro{\fill} is a shortcut for \macro{\path [fill]}.
+The command \macro{\fill} is a shorthand for \macro{\path[fill]}.
 
 \begin{macrodef}
 !path/!|clip|={<boolean>}
 \end{macrodef}
 The option \macro{clip} sets the current path as a clipping region for subsequent paths. The option does not require a value but can be set explicitly to \macro{true} or \macro{false}. The option \macro{clip} can be used in combination with the options \macro{stroke} and \macro{fill}. As the clipping region affects all following paths, it is often useful to use it in combination with scopes (see \hyperlink{sec:scopes}{above}).
 
-The command \macro{\clip} is a shortcut for \macro{\path [clip]}.
+The command \macro{\clip} is a shorthand for \macro{\path[clip]}.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \path[stroke, clip] (0cm,0cm)
-    rectangle[corner={(2cm,1cm)}] ;
-  \fill (1cm,0.5cm)
-    circle[radius={0.6cm}] ;
+  \path[stroke, clip]{
+    (0cm,0cm)
+    rectangle[corner={(2cm,1cm)}]
+  }
+  \fill{
+    (1cm,0.5cm)
+    circle[radius={0.6cm}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1474,8 +1580,10 @@ The options \macro{color stroke} and \macro{color fill} set the color stroke and
   \path[
     fill, color fill={yellow},
     stroke, color stroke={blue}
-  ] (0cm,0cm)
-    rectangle[corner={(2cm,1cm)}] ;
+  ]{
+    (0cm,0cm)
+    rectangle[corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1484,8 +1592,10 @@ The options \macro{color stroke} and \macro{color fill} set the color stroke and
   \path[
     fill, opacity fill={0.25},
     stroke, opacity stroke={0.5}
-  ] (0cm,0cm)
-    rectangle[corner={(2cm,1cm)}] ;
+  ]{
+    (0cm,0cm)
+    rectangle[corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1502,15 +1612,17 @@ Sets the line width for the path. The default line width is \qty{0.4}{\point}.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke
-    (0cm,0cm) -- (2cm,1cm) ;
+  \stroke{
+    (0cm,0cm) -- (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[line width={5pt}]
-    (0cm,0cm) -- (2cm,1cm) ;
+  \stroke[line width={5pt}]{
+    (0cm,0cm) -- (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1523,8 +1635,9 @@ The option \macro{line cap} sets the line cap for the path. The possible values 
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[line width={5pt}]
-  \stroke[line cap={round}]
-    (0cm,0cm) -- (2cm,1cm) ;
+  \stroke[line cap={round}]{
+    (0cm,0cm) -- (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1534,9 +1647,10 @@ The option \macro{miter limit} sets the miter limit for the path. The default mi
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[line width={5pt}]
-  \stroke[line join={bevel}]
+  \stroke[line join={bevel}]{
     (0cm,0cm) -- (2cm,0.5cm)
-    -- (0cm,1cm) ;
+    -- (0cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1553,7 +1667,9 @@ The option \macro{dash phase} sets the dash phase for the path as a dimension. T
   \stroke[
     dash pattern={10pt,5pt},
     dash phase={2.5pt}
-  ] (0cm,0cm) -- (2cm,1cm) ;
+  ]{
+    (0cm,0cm) -- (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1566,8 +1682,10 @@ The option \macro{corner arc} the corner arc for the path as a comma-separated l
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[corner arc={5pt}] (0cm,0cm)
-    rectangle[corner={(2cm,1cm)}] ;
+  \stroke[corner arc={5pt}]{
+    (0cm,0cm)
+    rectangle[corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1578,10 +1696,12 @@ This option sets the fill rule for the path. The possible values are \macro{non-
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[fill rule={even-odd}]
-  \fill (0cm,0cm)
+  \fill{
+    (0cm,0cm)
     rectangle[corner={(2cm,1cm)}]
     (1cm,0.5cm)
-    circle[radius={0.6cm}] ;
+    circle[radius={0.6cm}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1597,10 +1717,12 @@ The option \macro{shift} sets the shift for the path as a tuple of dimensions. T
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[color stroke={blue}]
-    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
-  \stroke[shift={(5pt,10pt)}]
-    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  \stroke[color stroke={blue}]{
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+  }
+  \stroke[shift={(5pt,10pt)}]{
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1608,10 +1730,12 @@ The option \macro{rotate} sets the rotation for the path as a floating-point num
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[color stroke={blue}]
-    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
-  \stroke[scale={0.25,0.5}]
-    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  \stroke[color stroke={blue}]{
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+  }
+  \stroke[rotate={20}]{
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1619,10 +1743,12 @@ The option \macro{scale} sets the scale for the path as a comma-separated list o
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[color stroke={blue}]
-    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
-  \stroke[rotate={20}]
-    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  \stroke[color stroke={blue}]{
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+  }
+  \stroke[scale={0.25,0.5}]{
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1630,10 +1756,12 @@ The option \macro{slant} sets the slant for the path as a comma-separated list o
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[color stroke={blue}]
-    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
-  \stroke[slant={0.25,0.5}]
-    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  \stroke[color stroke={blue}]{
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+  }
+  \stroke[slant={0.25,0.5}]{
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1660,12 +1788,12 @@ Shortening is not executed on circles, ellipses rectangles and grids.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm) -- (2cm,1cm) ;
+  \stroke{ (0cm,0cm) -- (2cm,1cm) }
   \stroke[
     shorten start={10pt},
     color stroke={red},
     line width={2pt}
-  ] (0cm,0cm) -- (2cm,1cm) ;
+  ]{ (0cm,0cm) -- (2cm,1cm) }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1680,11 +1808,11 @@ Note that the offset paths for curves, ellipses and arcs are approximated mostly
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm) -- (2cm,1cm) ;
+  \stroke{ (0cm,0cm) -- (2cm,1cm) }
   \stroke[
     offset={2pt,-2pt},
     color stroke={red}
-  ] (0cm,0cm) -- (2cm,1cm) ;
+  ]{ (0cm,0cm) -- (2cm,1cm) }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1719,8 +1847,9 @@ The option \macro{style set} defines custom options and sets their values. The o
     }
   }
 ]
-  \path[mystyle]
-    (0cm,0cm) -- (2cm,1cm) ;
+  \path[mystyle]{
+    (0cm,0cm) -- (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1736,7 +1865,7 @@ The command \macro{\hawkdrawsetcolor} is used to define colors using the \macro{
   \path[
     stroke, color stroke={colorA},
     fill, color fill={colorB}
-  ] (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  ]{ (0cm,0cm) rectangle[corner={(2cm,1cm)}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1752,8 +1881,9 @@ The options \macro{arrow start} and \macro{arrow end} set an arrow tip to the st
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke[arrow start, arrow end]
-    (0cm,0cm) -- (2cm,1cm) ;
+  \stroke[arrow start, arrow end]{
+    (0cm,0cm) -- (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1776,8 +1906,9 @@ Note that these options set the style of the following arrow tips. If multiple a
   \stroke[
     arrow style set={fill, color fill=blue},
     arrow end
-  ]
-    (0cm,0cm) -- (2cm,1cm) ;
+  ]{
+    (0cm,0cm) -- (2cm,1cm)
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1785,8 +1916,9 @@ The following arrow tips are available:
 
 \NewDocumentCommand{\arrowexample}{ m }{%
   \begin{hawkdraw}[baseline={0.5ex}]
-    \stroke[arrow end={#1}]
-      (0cm,0cm) -- (1cm,0cm) ;
+    \stroke[arrow end={#1}]{
+      (0cm,0cm) -- (1cm,0cm)
+    }
   \end{hawkdraw}%
 }
 
@@ -1824,8 +1956,10 @@ The position of the arrow head can be adjusted with the \macro{at part} option w
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm) -- (2cm,1cm)
-    tip[at part={0.25}] {straight} ;
+  \stroke{
+    (0cm,0cm) -- (2cm,1cm)
+    tip[at part={0.25}] {straight}
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1836,8 +1970,10 @@ If the boolean option \macro{flipped} is set, the arrow head is rotated to the o
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
-  \stroke (0cm,0cm) -- (2cm,1cm)
-    tip[at part={0.25}, flipped] {straight} ;
+  \stroke{
+    (0cm,0cm) -- (2cm,1cm)
+    tip[at part={0.25}, flipped] {straight}
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1867,8 +2003,9 @@ Further note that these options set the style of the following pattern. If multi
     pattern={check},
     pattern style set={color fill=blue},
     pattern={dots}
-  ]
-    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  ]{
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1888,8 +2025,9 @@ The option \macro{pattern type} accepts a comma-separated list of strings repres
     pattern={dots},
     line width={10pt},
     pattern type={stroke}
-  ]
-    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  ]{
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -1897,8 +2035,9 @@ The following patterns are available:
 
 \NewDocumentCommand{\patternexample}{ m }{%
   \begin{hawkdraw}[baseline={0.5ex}]
-    \path[pattern={#1}]
-      (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+    \path[pattern={#1}]{
+      (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+    }
   \end{hawkdraw}%
 }
 
@@ -1938,10 +2077,14 @@ The option \macro{opacity group} sets the current scope to an opacity group. The
   \begin{scope}[
     opacity fill=0.5
   ]
-    \fill (0cm,0cm)
-      circle[radius={0.5cm}] ;
-    \fill (-1cm,-0.25cm)
-      rectangle[corner={1cm,0.25cm}] ;
+    \fill{
+      (0cm,0cm)
+      circle[radius={0.5cm}]
+    }
+    \fill{
+      (-1cm,-0.25cm)
+      rectangle[corner={1cm,0.25cm}]
+    }
   \end{scope}
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -1952,10 +2095,14 @@ The option \macro{opacity group} sets the current scope to an opacity group. The
     opacity fill=0.5,
     opacity group
   ]
-    \fill (0cm,0cm)
-      circle[radius={0.5cm}] ;
-    \fill (-1cm,-0.25cm)
-      rectangle[corner={1cm,0.25cm}] ;
+    \fill{
+      (0cm,0cm)
+      circle[radius={0.5cm}]
+    }
+    \fill{
+      (-1cm,-0.25cm)
+      rectangle[corner={1cm,0.25cm}]
+    }
   \end{scope}
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -1977,12 +2124,14 @@ The option \macro{soft mask use} applies a soft mask of the current scope. The o
 
 \begin{codeexamplecolumns}
 \begin{hawkdrawsoftmask}{custom}
-  \fill[color fill={black!50}]
+  \fill[color fill={black!50}]{
     (0cm,0cm)
-      circle[radius={0.5cm}] ;
-  \fill[color fill={black!25}]
+    circle[radius={0.5cm}]
+  }
+  \fill[color fill={black!25}]{
     (-1cm,-0.25cm)
-      rectangle[corner={(1cm,0.25cm)}] ;
+    rectangle[corner={(1cm,0.25cm)}]
+  }
 \end{hawkdrawsoftmask}
 \begin{hawkdraw}
   \begin{scope}[
@@ -1991,7 +2140,7 @@ The option \macro{soft mask use} applies a soft mask of the current scope. The o
     \path[
       shading={radial},
       shading colors={red,blue,green}
-    ] (0cm,0cm) circle[radius={0.75cm}] ;
+    ]{ (0cm,0cm) circle[radius={0.75cm}] }
   \end{scope}
 \end{hawkdraw}
 \end{codeexamplecolumns}
@@ -2011,12 +2160,18 @@ The option \macro{blend mode} sets the blend mode of the current scope. The key 
     \begin{scope}[
       blend mode={screen}
     ]
-      \fill[color fill={red}] (-0.25cm,0cm)
-        circle[radius={0.5cm}] ;
-      \fill[color fill={green}] (0.25cm,0cm)
-        circle[radius={0.5cm}] ;
-      \fill[color fill={blue}] (-1cm,-0.25cm)
-        rectangle[corner={1cm,0.25cm}] ;
+      \fill[color fill={red}]{
+        (-0.25cm,0cm)
+        circle[radius={0.5cm}]
+      }
+      \fill[color fill={green}]{
+        (0.25cm,0cm)
+        circle[radius={0.5cm}]
+      }
+      \fill[color fill={blue}]{
+        (-1cm,-0.25cm)
+        rectangle[corner={1cm,0.25cm}]
+      }
     \end{scope}
   \end{scope}
 \end{hawkdraw}
@@ -2028,12 +2183,18 @@ The following blend modes are available:
   \begin{hawkdraw}[baseline={0.5ex}]
     \begin{scope}[opacity group]
       \begin{scope}[blend mode={#1}]
-        \fill[color fill={red}] (-0.25cm,0cm)
-         circle[radius={0.5cm}] ;
-        \fill[color fill={green}] (0.25cm,0cm)
-          circle[radius={0.5cm}] ;
-        \fill[color fill={blue}] (-1cm,-0.25cm)
-          rectangle[corner={1cm,0.25cm}] ;
+        \fill[color fill={red}]{
+          (-0.25cm,0cm)
+          circle[radius={0.5cm}]
+        }
+        \fill[color fill={green}]{
+          (0.25cm,0cm)
+          circle[radius={0.5cm}]
+        }
+        \fill[color fill={blue}]{
+          (-1cm,-0.25cm)
+          rectangle[corner={1cm,0.25cm}]
+        }
       \end{scope}
     \end{scope}
   \end{hawkdraw}%
@@ -2091,7 +2252,7 @@ The option \macro{shading offset} accepts a unit-less floating-point number rang
     shading colors={white,blue},
     shading offset={0.5},
     shading rotate={135}
-  ] (0cm,0cm) circle[radius={1cm}] ;
+  ]{ (0cm,0cm) circle[radius={1cm}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -2106,7 +2267,7 @@ The option \macro{shading circular} sets radial shadings to be circular instead 
     shading={radial},
     shading colors={red,blue,green},
     shading circular
-  ] (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  ]{ (0cm,0cm) rectangle[corner={(2cm,1cm)}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -2121,7 +2282,7 @@ The option \macro{shading angle delta} sets conic shadings to only extend to the
     shading={conic},
     shading colors={red,blue,green},
     shading angle delta={135}
-  ] (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  ]{ (0cm,0cm) rectangle[corner={(2cm,1cm)}] }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -2137,8 +2298,9 @@ The option \macro{shading type} accepts a comma-separated list of strings repres
     shading colors={red,blue,green},
     line width={10pt},
     shading type={stroke}
-  ]
-    (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+  ] {
+    (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+  }
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
@@ -2146,8 +2308,9 @@ The following shadings are available:
 
 \NewDocumentCommand{\shadingexample}{ m }{%
   \begin{hawkdraw}[baseline={0.5ex}]
-    \path[shading={#1}, shading colors={red,blue,green}]
-      (0cm,0cm) rectangle[corner={(2cm,1cm)}] ;
+    \path[shading={#1}, shading colors={red,blue,green}]{
+      (0cm,0cm) rectangle[corner={(2cm,1cm)}]
+    }
   \end{hawkdraw}%
 }
 
@@ -2223,7 +2386,7 @@ The drawing code is placed between the commands \macro{\starthawkdraw} and \macr
 
 \starttext
   \starthawkdraw
-    \path[stroke] (0cm,0cm) -- (2cm,1cm) ;
+    \path[stroke]{ (0cm,0cm) -- (2cm,1cm) }
   \stophawkdraw
 \stoptext
 \end{codeexample}
@@ -2232,10 +2395,13 @@ The \macro{\starthawkdraw} command can take options as argument. All options tha
 
 \begin{codeexample}
 \starthawkdraw[options={layers={background,main}}]
-  \fill[color fill={blue}]
-    (0cm,0cm) circle[radius={0.5cm}] ;
+  \fill[color fill={blue}]{
+    (0cm,0cm) circle[radius={0.5cm}]
+  }
   \begin{scope}[layer={background}]
-    \fill (0.5cm,0cm) circle[radius={0.5cm}] ;
+    \fill{
+      (0.5cm,0cm) circle[radius={0.5cm}]
+    }
   \end{scope}
 \stophawkdraw
 \end{codeexample}

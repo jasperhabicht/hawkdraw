@@ -998,7 +998,7 @@
 \hook_new_pair:nn { hawkdraw / path / begin } { hawkdraw / path / end }
 \hook_new_pair:nn { hawkdraw / scope / begin } { hawkdraw / scope / end }
 
-\cs_new_protected:Npn \hawkdraw_path:w #1 ; {
+\cs_new_protected:Npn \hawkdraw_path:n #1 {
     \fp_set:Nn \l__hawkdraw_point_o_fp { ( 0pt , 0pt ) }
     \fp_set:Nn \l__hawkdraw_point_a_fp { ( 0pt , 0pt ) }
     \fp_set:Nn \l__hawkdraw_point_b_fp { ( 0pt , 0pt ) }
@@ -1608,14 +1608,28 @@
     }
     \cctab_select:N \c_hawkdraw_environment_cctab
     \int_gincr:N \g_hawkdraw_picture_id_int
-    \cs_set_eq:NN \path \hawkdraw_path:w
     \cs_set_eq:NN \getpoint \hawkdraw_point_parse:n
-    \cs_set_protected:Npn \stroke { \path [ stroke ] }
-    \cs_set_protected:Npn \fill { \path [ fill ] }
-    \cs_set_protected:Npn \clip { \path [ clip ] }
-    \cs_set_protected:Npn \node { \path ( 0pt , 0pt ) node }
-    \cs_set_protected:Npn \point { \path ( 0pt , 0pt ) point }
-    \cs_set_protected:Npn \map { \path ( 0pt , 0pt ) map }
+    \DeclareDocumentCommand \path { O{} m } {
+        \hawkdraw_path:n { [ ##1 ] ##2 }
+    }
+    \DeclareDocumentCommand \stroke { O{} m } {
+        \path [ stroke , ##1 ] {##2}
+    }
+    \DeclareDocumentCommand \fill { O{} m } {
+        \path [ fill , ##1 ] {##2}
+    }
+    \DeclareDocumentCommand \clip { O{} m } {
+        \path [ clip , ##1 ] {##2}
+    }
+    \DeclareDocumentCommand \node { O{} m } {
+        \path { ( 0pt , 0pt ) node [ ##1 ] {##2} }
+    }
+    \DeclareDocumentCommand \point { O{} m } {
+        \path { ( 0pt , 0pt ) point [ ##1 ] {##2} }
+    }
+    \DeclareDocumentCommand \map { O{} m } {
+        \path { ( 0pt , 0pt ) map [ ##1 ] {##2} }
+    }
     \NewExpandableDocumentCommand \getpagewidth { } {
         \dim_use:N \l_hawkdraw_support_page_width_dim
     }
