@@ -32,10 +32,6 @@
     Option ~ `#1` ~ only ~ supported ~ with ~ LuaTeX.
 }
 
-\msg_new:nnn { hawkdraw } { path-incomplete } {
-    Path ~ incomplete ~ (probably ~ a ~ missing ~ semicolon).
-}
-
 \msg_new:nnn { hawkdraw } { point-on-different-page } {
     Referenced ~ point ~ on ~ different ~ page.
 }
@@ -1048,10 +1044,6 @@
 \cs_generate_variant:Nn \__hawkdraw_path_process:n { o , f }
 
 \cs_new_protected:Npn \__hawkdraw_path_process_continue:n #1 {
-    \exp_last_unbraced:Ne
-    \token_if_protected_long_macro:NT { \tl_head:n {#1} } {
-        \msg_error:nn { hawkdraw } { path-incomplete }
-    }
     \tl_if_blank:nF {#1} {
         \__hawkdraw_path_process:f {#1}
     }
