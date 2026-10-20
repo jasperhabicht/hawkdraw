@@ -1609,25 +1609,25 @@
     \cctab_select:N \c_hawkdraw_environment_cctab
     \int_gincr:N \g_hawkdraw_picture_id_int
     \cs_set_eq:NN \getpoint \hawkdraw_point_parse:n
-    \DeclareDocumentCommand \path { O{} m } {
+    \DeclareDocumentCommand \path { O { } m } {
         \hawkdraw_path:n { [ ##1 ] ##2 }
     }
-    \DeclareDocumentCommand \stroke { O{} m } {
+    \DeclareDocumentCommand \stroke { O { } m } {
         \path [ stroke , ##1 ] {##2}
     }
-    \DeclareDocumentCommand \fill { O{} m } {
+    \DeclareDocumentCommand \fill { O { } m } {
         \path [ fill , ##1 ] {##2}
     }
-    \DeclareDocumentCommand \clip { O{} m } {
+    \DeclareDocumentCommand \clip { O { } m } {
         \path [ clip , ##1 ] {##2}
     }
-    \DeclareDocumentCommand \node { O{} m } {
+    \DeclareDocumentCommand \node { O { } m } {
         \path { ( 0pt , 0pt ) node [ ##1 ] {##2} }
     }
-    \DeclareDocumentCommand \point { O{} m } {
+    \DeclareDocumentCommand \point { O { } m } {
         \path { ( 0pt , 0pt ) point [ ##1 ] {##2} }
     }
-    \DeclareDocumentCommand \map { O{} m } {
+    \DeclareDocumentCommand \map { O { } m } {
         \path { ( 0pt , 0pt ) map [ ##1 ] {##2} }
     }
     \NewExpandableDocumentCommand \getpagewidth { } {
