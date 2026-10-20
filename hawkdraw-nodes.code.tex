@@ -141,7 +141,6 @@
 }
 
 \keys_define:nn { hawkdraw / path / node } {
-    name                    .tl_set:N       = \l_hawkdraw_point_name_tl ,
     anchor                  .code:n         = {
         \int_compare:nNnTF { \clist_count:n {#1} } > { \c_one_int } {
             \clist_set:Nn \l_hawkdraw_node_anchor_poles_clist {#1}
