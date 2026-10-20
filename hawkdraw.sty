@@ -1704,7 +1704,6 @@
     \tag_socket_use:nn { hawkdraw / picture / init } {#1}
     \tag_socket_use:n { hawkdraw / picture / begin }
     \tag_suspend:n { hawkdraw / picture }
-    \nullfont
     \draw_begin:
         \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
         \keys_set_known:nnN { hawkdraw / picture } {#1}
@@ -1733,6 +1732,7 @@
             \draw_path_replace_bb:
             \bool_set_false:N \l_draw_bb_update_bool
         }
+        \nullfont
 } {
     \draw_end:
     \tag_resume:n { hawkdraw / picture }
