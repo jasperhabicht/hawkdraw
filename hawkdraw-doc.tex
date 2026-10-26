@@ -906,7 +906,7 @@ Note that nodes typically cannot directly contain verbatim contents. They can, h
 \end{macrodef}
 Using the \macro{point} operation, a point at the current position is defined and named using the value given in the mandatory argument. As for options, the \macro{point} operator only accepts the \macro{path/point/} subset. The point can be referenced later by using the name in parentheses (see \hyperref[macro:point]{above}).
 
-The command \macro{\point} is a shorthand for \macro{\path{ (0pt,0pt) point ... }}
+The command \macro{\point{#1}} is a shorthand for \macro{\path{ (0pt,0pt) point {#1} }} where \macro{#1} is the name of the point.
 
 \vbox{\vspace*{\parskip}
 \begin{codeexamplecolumns}
@@ -1426,7 +1426,7 @@ Using the \macro{frame} command, the frame surrounding the node text can be sele
 \end{hawkdraw}
 \end{codeexamplecolumns}
 
-The command \macro{\node} is a shorthand for \macro{\path{ (0pt,0pt) node ... }}
+The command \macro{\node{#1}} is a shorthand for \macro{\path{ (0pt,0pt) node {#1} }} where \macro{#1} is the contents of the node.
 
 The following node frames are available, the frame \macro{none} is special as it removes the bounding box from the node altogether:
 
@@ -1476,7 +1476,7 @@ The option \macro{list} sets the command to map over a comma-separated list of i
 
 The option \macro{start} sets the start of the range for mapping over a range of numbers as a floating-point number. The default start is \num{1}. The option \macro{end} sets the end of the range for mapping over a range of numbers as a floating-point number. The default end is \num{1}. The option \macro{step} sets the step for the range for mapping over a range of numbers as a floating-point number. The default step is \num{1}.
 
-The command \macro{\map} is a shorthand for \macro{\path{ (0pt,0pt) map ... }}
+The command \macro{\map{#1}} is a shorthand for \macro{\path{ (0pt,0pt) map {#1} }} where \macro{#1} is the code to be mapped over.
 
 \begin{codeexamplecolumns}
 \begin{hawkdraw}
