@@ -99,6 +99,7 @@
 \bool_new:N \l_hawkdraw_node_flipped_bool
 
 \bool_new:N \l_hawkdraw_node_rescan_bool
+\bool_new:N \l_hawkdraw_node_detokenize_bool
 
 \cs_generate_variant:Nn \keys_set_known:nnN { nV }
 \cs_generate_variant:Nn \draw_coffin_use:Nnnn { NeeV }
@@ -182,6 +183,8 @@
     flipped                 .default:n      = { true } ,
     rescan                  .bool_set:N     = \l_hawkdraw_node_rescan_bool ,
     rescan                  .default:n      = { true } ,
+    detokenize              .bool_set:N     = \l_hawkdraw_node_detokenize_bool ,
+    detokenize              .default:n      = { true } ,
     background              .code:n         = {
         \bool_set_true:N \l__hawkdraw_node_background_bool
         \hcoffin_set:Nn \l_hawkdraw_node_background_coffin {#1}
@@ -219,7 +222,11 @@
     \bool_if:NTF \l_hawkdraw_node_rescan_bool {
         \tl_rescan:nn { } {#1}
     } {
-        #1
+        \bool_if:NTF \l_hawkdraw_node_detokenize_bool {
+            \tl_to_str:n {#1}
+        } {
+            #1
+        }
     }
     \hook_use:n { hawkdraw / node / end }
     \skip_horizontal:n { 0pt plus 1fil minus 1fil }

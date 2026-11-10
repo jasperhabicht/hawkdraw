@@ -112,7 +112,7 @@
         /O /Layout /BBox ~ [
             \dim_to_decimal_in_bp:n {
                 \property_ref:een {
-                    draw. \int_use:N \g_draw_id_int
+                    draw. \int_use:N \g_hawkdraw_picture_id_int
                 } { xpos } { 0 } sp
                 +
                 \g_draw_bb_xmin_dim
@@ -120,7 +120,7 @@
             \c_space_tl
             \dim_to_decimal_in_bp:n {
                 \property_ref:een {
-                    draw. \int_use:N \g_draw_id_int
+                    draw. \int_use:N \g_hawkdraw_picture_id_int
                 } { ypos } { 0 } sp
                 +
                 \g_draw_bb_ymin_dim
@@ -128,7 +128,7 @@
             \c_space_tl
             \dim_to_decimal_in_bp:n {
                 \property_ref:een {
-                    draw. \int_use:N \g_draw_id_int
+                    draw. \int_use:N \g_hawkdraw_picture_id_int
                 } { xpos } { 0 } sp
                 +
                 \g_draw_bb_xmax_dim
@@ -136,7 +136,7 @@
             \c_space_tl
             \dim_to_decimal_in_bp:n {
                 \property_ref:een {
-                    draw. \int_use:N \g_draw_id_int
+                    draw. \int_use:N \g_hawkdraw_picture_id_int
                 } { ypos } { 0 } sp
                 +
                 \g_draw_bb_ymax_dim
@@ -738,20 +738,20 @@
 \hawkdraw_operator_construct_i_arg:nN { point } \hawkdraw_path_point:nn
 
 \cs_new_protected:Npn \__hawkdraw_path_point_record:nnn #1#2#3 {
-    \prop_gput:cnV {#1} { picture } \g_draw_id_int
+    \prop_gput:cnV {#1} { picture } \g_hawkdraw_picture_id_int
     \prop_gput:cne {#1} { page } {
         \property_ref:een {
-            draw. \int_use:N \g_draw_id_int
+            draw. \int_use:N \g_hawkdraw_picture_id_int
         } { abspage } { 0 }
     }
     \prop_gput:cne {#1} { origin } {
         (
             \property_ref:een {
-                draw. \int_use:N \g_draw_id_int
+                draw. \int_use:N \g_hawkdraw_picture_id_int
             } { xpos } { 0 } sp
         ,
             \property_ref:een {
-                draw. \int_use:N \g_draw_id_int
+                draw. \int_use:N \g_hawkdraw_picture_id_int
             } { ypos } { 0 } sp
         )
     }
@@ -816,7 +816,7 @@
         \__hawkdraw_point_parse_trim:n {#1}
         _prop
     } {
-        \int_compare:nNnTF { \g_draw_id_int } = {
+        \int_compare:nNnTF { \g_hawkdraw_picture_id_int } = {
             \prop_item:cn {
                 g__hawkdraw_point_
                 \__hawkdraw_point_parse_trim:n {#1}
@@ -839,7 +839,7 @@
                 } { page }
             } = {
                 \property_ref:een {
-                    draw. \int_use:N \g_draw_id_int
+                    draw. \int_use:N \g_hawkdraw_picture_id_int
                 } { abspage } { 0 }
             } {
                 \flag_raise:N \g__hawkdraw_point_page_warning_flag
@@ -857,11 +857,11 @@
                 } { origin } -
                 (
                     \property_ref:een {
-                        draw. \int_use:N \g_draw_id_int
+                        draw. \int_use:N \g_hawkdraw_picture_id_int
                     } { xpos } { 0 } sp
                 ,
                     \property_ref:een {
-                        draw. \int_use:N \g_draw_id_int
+                        draw. \int_use:N \g_hawkdraw_picture_id_int
                     } { ypos } { 0 } sp
                 )
             }
@@ -1555,11 +1555,11 @@
         \draw_transform_shift:n {
             (
                 - \property_ref:een {
-                    draw. \int_use:N \g_draw_id_int
+                    draw. \int_use:N \g_hawkdraw_picture_id_int
                 } { xpos } { 0 } sp
             ,
                 - \property_ref:een {
-                    draw. \int_use:N \g_draw_id_int
+                    draw. \int_use:N \g_hawkdraw_picture_id_int
                 } { ypos } { 0 } sp
             )
         }
@@ -1609,7 +1609,6 @@
         \keys_set:nn { hawkdraw / path / node } { rescan }
     }
     \cctab_select:N \c_hawkdraw_environment_cctab
-    \int_gincr:N \g_hawkdraw_picture_id_int
     \cs_set_eq:NN \getpoint \hawkdraw_point_parse:n
     \DeclareDocumentCommand \path { O { } m } {
         \hawkdraw_path:n { [ ##1 ] ##2 }
@@ -1706,6 +1705,7 @@
     \tag_socket_use:n { hawkdraw / picture / begin }
     \tag_suspend:n { hawkdraw / picture }
     \draw_begin:
+        \int_set_eq:NN \g_hawkdraw_picture_id_int \g_draw_id_int
         \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
         \keys_set_known:nnN { hawkdraw / picture } {#1}
             \l__hawkdraw_keys_unprocessed_clist
