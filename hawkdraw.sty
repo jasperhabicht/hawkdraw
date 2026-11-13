@@ -1705,7 +1705,7 @@
     \tag_socket_use:n { hawkdraw / picture / begin }
     \tag_suspend:n { hawkdraw / picture }
     \draw_begin:
-        \int_set_eq:NN \g_hawkdraw_picture_id_int \g_draw_id_int
+        \int_gset_eq:NN \g_hawkdraw_picture_id_int \g_draw_id_int
         \clist_clear:N \l__hawkdraw_keys_unprocessed_clist
         \keys_set_known:nnN { hawkdraw / picture } {#1}
             \l__hawkdraw_keys_unprocessed_clist
