@@ -334,11 +334,11 @@
 
 \keys_define:nn { hawkdraw / path } {
     keep ~ original ~ path ~ info
-                            .bool_set:N = \l_hawkdraw_softpath_keep_original_path_info_bool ,
+                            .bool_set:N     = \l_hawkdraw_softpath_keep_original_path_info_bool ,
     keep ~ original ~ path ~ info
-                            .default:n  = { true } ,
+                            .default:n      = { true } ,
     keep ~ original ~ path ~ info
-                            .initial:n  = { false } ,
+                            .initial:n      = { false } ,
 }
 
 \cs_new_protected:Npn \hawkdraw_softpath_update:Nn #1#2 {
@@ -493,12 +493,12 @@
 \fp_new:N \l_hawkdraw_softpath_shorten_point_last_fp
 
 \keys_define:nn { hawkdraw / path } {
-    shorten ~ start         .code:n     = {
+    shorten ~ start         .code:n         = {
         \clist_put_right:Nn \l_hawkdraw_softpath_update_clist { shorten }
         \clist_remove_duplicates:N \l_hawkdraw_softpath_update_clist
         \dim_set:Nn \l_hawkdraw_softpath_shorten_start_dim {#1}
     } ,
-    shorten ~ end           .code:n     = {
+    shorten ~ end           .code:n         = {
         \clist_put_right:Nn \l_hawkdraw_softpath_update_clist { shorten }
         \clist_remove_duplicates:N \l_hawkdraw_softpath_update_clist
         \dim_set:Nn \l_hawkdraw_softpath_shorten_end_dim {#1}
@@ -1311,7 +1311,7 @@
 \fp_new:N \l_hawkdraw_softpath_offset_slope_next_fp
 
 \keys_define:nn { hawkdraw / path } {
-    offset                 .code:n     = {
+    offset                  .code:n         = {
         \clist_put_right:Nn \l_hawkdraw_softpath_update_clist { offset }
         \clist_remove_duplicates:N \l_hawkdraw_softpath_update_clist
         \clist_set:Nn \l_hawkdraw_softpath_offset_clist {#1}
@@ -1742,8 +1742,8 @@
 \int_new:N \l_hawkdraw_softpath_bisection_count_int
 
 \keys_define:nn { hawkdraw / settings } {
-    bisection ~ count       .int_set:N  = \l_hawkdraw_softpath_bisection_count_int ,
-    bisection ~ count       .initial:n  = { 3 } ,
+    bisection ~ count       .int_set:N      = \l_hawkdraw_softpath_bisection_count_int ,
+    bisection ~ count       .initial:n      = { 3 } ,
 }
 
 \cs_new_protected:Npn \__hawkdraw_softpath_offset_curve_quadratic:nnn #1#2#3 {

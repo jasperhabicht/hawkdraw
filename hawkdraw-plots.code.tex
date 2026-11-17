@@ -22,8 +22,8 @@
 \tl_new:N \l_hawkdraw_path_plot_tl
 
 \keys_define:nn { hawkdraw / path / plot } {
-    function                .tl_set:N         = \l_hawkdraw_path_plot_tl ,
-    function                .initial:n        = { debug } ,
+    function                .tl_set:N       = \l_hawkdraw_path_plot_tl ,
+    function                .initial:n      = { debug } ,
 }
 
 % ===
@@ -74,8 +74,8 @@
 \seq_new:N \l__hawkdraw_plot_key_value_seq
 
 \cs_new:Npn \__hawkdraw_plot_keys_process:nnn #1#2#3 {
-    #2                      .fp_set:c         = { l_hawkdraw_plot_ #1 _ #2 _fp } ,
-    #2                      .initial:n        = {#3} ,
+    #2                      .fp_set:c       = { l_hawkdraw_plot_ #1 _ #2 _fp } ,
+    #2                      .initial:n      = {#3} ,
 }
 
 \cs_new_protected:Npn \hawkdraw_plot_create:nn #1#2#3 {
