@@ -6,8 +6,13 @@
     } ,
     {
         "pattern_file" : "%.code%.tex$" ,
-        "pattern_version" : "(% v)%d+%.%d+%.%d+( %d%d%d%d%-%d%d%-%d%d\n)" ,
-        "pattern_date" : "(% v%d+%.%d+%.%d+ )%d%d%d%d%-%d%d%-%d%d(\n)"
+        "pattern_version" : "(%% v)%d+%.%d+%.%d+( %d%d%d%d%-%d%d%-%d%d\n)" ,
+        "pattern_date" : "(%% v%d+%.%d+%.%d+ )%d%d%d%d%-%d%d%-%d%d(\n)"
+    } ,
+    {
+        "pattern_file" : "%.lua$" ,
+        "pattern_version" : "(%-%- v)%d+%.%d+%.%d+( %d%d%d%d%-%d%d%-%d%d\n)" ,
+        "pattern_date" : "(%-%- v%d+%.%d+%.%d+ )%d%d%d%d%-%d%d%-%d%d(\n)"
     } ,
     {
         "pattern_file" : "%.mkxl$" ,

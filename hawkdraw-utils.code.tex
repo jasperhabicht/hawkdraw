@@ -12,7 +12,13 @@
 %
 % BOF
 
-% v0.11.2 2026-11-13
+% v0.11.3 2026-11-22
+
+\sys_if_engine_luatex:T {
+    \lua_load_module:n { hawkdraw-utils }
+}
+
+% ===
 
 \cs_new_protected:Npn \hawkdraw_set_parindent:n #1 {
     \dim_set:Nn \tex_parindent:D {#1}
@@ -168,14 +174,8 @@
 
 \cs_new:Npn \__hawkdraw_hex_to_stream_aux:NNw #1#2#3 \q_stop {
     \sys_if_engine_luatex:T {
-        \lua_now:e {
-            token.put_next (
-                token.new (
-                    0x110000 + \int_eval:n { " #1#2 } ,
-                    12
-                )
-            )
-        }
+        \exp_last_unbraced:Nf
+        \__hawkdraw_hex_to_stream_auxi:w \int_eval:n { " #1#2 } \exp_stop_f:
     }
     \sys_if_engine_pdftex:T {
         \char_generate:nn { " #1#2 } { 12 }
