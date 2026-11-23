@@ -323,7 +323,7 @@
 \changes{v0.11.0}{2026/10/20}{\breaking Removing semicolon as terminal mark from the path syntax; changing syntax for points; fixing bug that prevents use of em units.}
 \changes{v0.11.1}{2026/11/10}{Fixing bug in cross-referencing nodes; preparing for next release.}
 \changes{v0.11.2}{2026/11/13}{Fixing bug in bounding box for tagging.}
-\changes{v0.11.3}{2026/11/22}{Improving Lua code.}
+\changes{v0.11.3}{2026/11/22}{Adding option to detokenize node contents; improving Lua code.}
 
 \begin{document}
 \vspace*{-1cm}
@@ -1185,7 +1185,7 @@ Inside a \macro{hawkdraw} environment, the commands \macro{\getpointx} and \macr
 \begin{macrodef}
 |\getpathlength|{<token list>}
 \end{macrodef}
-Inside a \macro{hawkdraw} environment, the command \macro{\getpathlength} retrieves the length of the current path (up to this point) and rstores this length as dimension in the token list given as argument.
+Inside a \macro{hawkdraw} environment, the command \macro{\getpathlength} retrieves the length of the current path (up to this point) and stores this length as dimension in the token list given as argument.
 
 \begin{macrodef}*
 |\getintersectionlines|{<point>}{<point>}{<point>}{<point>}
@@ -1219,6 +1219,11 @@ Using the \macro{node} operation, a node at the current position is defined and 
 !path/node/!|rescan|={<boolean>}
 \end{macrodef}
 Using the \macro{rescan} option, the node's contents are rescanned using the current category codes. The default value is \macro{false}, but rescanning is activated automatically if active characters with character code between \num{32} and \num{127} are found before the relevant \macro{hawkdraw} environment.
+
+\begin{macrodef}
+!path/node/!|detokenize|={<boolean>}
+\end{macrodef}
+Using the \macro{detokenize} option, the node's contents are read verbatim with category codes 12 (other) or 10 (space). The default value is \macro{false}. This option only has an effect if the \macro{rescan} option is set to \macro{false}.
 
 \begin{macrodef}
 !path/node/!|name|={<string>}
