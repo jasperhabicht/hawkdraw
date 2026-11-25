@@ -118,11 +118,7 @@
                         }
                         \sys_if_engine_xetex:T {
                             \draw_transform_shift:n {
-                                (
-                                    \tex_the:D \tex_hoffset:D - 1in
-                                ,
-                                    1in - \tex_the:D \tex_voffset:D
-                                )
+                                \c__hawkdraw_support_xetex_origin_fp
                             }
                         }
                         \tl_use:N \g_hawkdraw_softpath_original_tl
