@@ -116,6 +116,15 @@
                                 - \l__hawkdraw_shading_yoffset_dim
                             )
                         }
+                        \sys_if_engine_xetex:T {
+                            \draw_transform_shift:n {
+                                (
+                                    \tex_the:D \tex_hoffset:D - 1in
+                                ,
+                                    1in - \tex_the:D \tex_voffset:D
+                                )
+                            }
+                        }
                         \tl_use:N \g_hawkdraw_softpath_original_tl
                         \dim_set_eq:NN \l__hawkdraw_shading_bb_xmin_dim \g_draw_bb_xmin_dim
                         \dim_set_eq:NN \l__hawkdraw_shading_bb_xmax_dim \g_draw_bb_xmax_dim
@@ -180,7 +189,11 @@
                         \hawkdraw_path_set_options:
                         \draw_transform_shift:n {
                             (
-                                0.5 * \l_hawkdraw_node_natural_width_dim
+                                \sys_if_engine_xetex:TF {
+                                    0pt
+                                } {
+                                    0.5 * \l_hawkdraw_node_natural_width_dim
+                                }
                             ,
                                 0.5 * \l_hawkdraw_node_natural_height_dim
                             )
@@ -188,8 +201,18 @@
                         \tl_use:N \l__hawkdraw_node_frame_path_tl
                         \dim_set_eq:NN \l__hawkdraw_shading_bb_xmin_dim \g_draw_bb_xmin_dim
                         \dim_set_eq:NN \l__hawkdraw_shading_bb_xmax_dim \g_draw_bb_xmax_dim
-                        \dim_set_eq:NN \l__hawkdraw_shading_bb_ymin_dim \g_draw_bb_ymin_dim
-                        \dim_set_eq:NN \l__hawkdraw_shading_bb_ymax_dim \g_draw_bb_ymax_dim
+                        \dim_set:Nn \l__hawkdraw_shading_bb_ymin_dim {
+                            \g_draw_bb_ymin_dim
+                            \sys_if_engine_xetex:T {
+                                + 0.5 \l_hawkdraw_node_natural_height_dim
+                            }
+                        }
+                        \dim_set:Nn \l__hawkdraw_shading_bb_ymax_dim {
+                            \g_draw_bb_ymax_dim
+                            \sys_if_engine_xetex:T {
+                                + 0.5 \l_hawkdraw_node_natural_height_dim
+                            }
+                        }
                         \hawkdraw_shading_use:n {#1}
                         \draw_path_use:e { \clist_use:N \l_hawkdraw_shading_path_use_clist }
                     \draw_end:
