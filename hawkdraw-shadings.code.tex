@@ -217,14 +217,14 @@
 
 \cs_generate_variant:Nn \color_export:nnN { e }
 
-\cs_new_protected:Npn \hawkdraw_shading_set:nnn #1#2#3 {
+\cs_new_protected:Npn \hawkdraw_shading_set:nnN #1#2#3 {
     \pdf_object_new:n { hawkdraw_shading_ #1 }
-    \tl_if_empty:nTF {#3} {
+    \tl_if_empty:NTF #3 {
         \pdf_object_write:nne { hawkdraw_shading_ #1 } { dict } {#2}
     } {
-        \hawkdraw_support_pdf_write_stream:nee {
+        \hawkdraw_support_pdf_write_object_stream:neN {
             hawkdraw_shading_ #1
-        } {#2} {#3}
+        } {#2} #3
     }
     \tl_const:ce {
         c__hawkdraw_shading_ #1 _tl
@@ -232,7 +232,7 @@
         \pdf_object_ref:n { hawkdraw_shading_ #1 }
     }
 }
-\cs_generate_variant:Nn \hawkdraw_shading_set:nnn { e }
+\cs_generate_variant:Nn \hawkdraw_shading_set:nnN { e }
 
 \cs_new_protected:Npn \hawkdraw_shading_use:n #1 {
     \hawkdraw_shading_create:nV {#1} \l_hawkdraw_shading_colors_clist
@@ -455,7 +455,7 @@
         \hawkdraw_shading_color_set_values:Nn
             \l__hawkdraw_shading_color_values_seq
             {#1}
-        \hawkdraw_shading_set:nnn {
+        \hawkdraw_shading_set:nnN {
             linear
             . #1
         } {
@@ -486,7 +486,7 @@
                     }
                 ] ~
             >> ~
-        } { }
+        } \c_empty_tl
     }
 }
 
@@ -548,7 +548,7 @@
         \hawkdraw_shading_color_set_values:Nn
             \l__hawkdraw_shading_color_values_seq
             {#1}
-        \hawkdraw_shading_set:enn {
+        \hawkdraw_shading_set:enN {
             radial
             . #1
             . \fp_to_decimal:n { \l_hawkdraw_shading_offset_fp }
@@ -585,7 +585,7 @@
                     }
                 ] ~
             >> ~
-        } { }
+        } \c_empty_tl
     }
 }
 
@@ -606,96 +606,95 @@
 % We need different approaches to output such a stream for PDFTeX and LuaTeX. Since dvipdfmx requires a hex
 % stream which it converts to a binary stream, we first create a hex stream.
 
-\cs_new_protected:Npn \hawkdraw_shading_conic_stream:N #1 {
-    \tl_set:Ne #1 {
-        \seq_map_indexed_function:NN
-            \l__hawkdraw_shading_color_values_seq
-            \__hawkdraw_shading_conic_stream_aux:nn
+\cs_new_protected:Npn \hawkdraw_shading_conic_set_stream:NN #1#2 {
+    \seq_clear:N #1
+    \seq_map_indexed_inline:Nn #2 {
+        \__hawkdraw_shading_conic_set_stream_aux:NNnn #1 #2 {##1} {##2}
     }
 }
 
-\cs_new:Npn \__hawkdraw_shading_conic_stream_aux:nn #1#2 {
+\cs_new_protected:Npn \__hawkdraw_shading_conic_set_stream_aux:NNnn #1#2#3#4 {
     % skip first entry in seq which is the start color
-    \int_compare:nNnF {#1} = { \c_one_int } {
-        % flag (4 bits)
-        \hawkdraw_hex_to_stream:n { 00 }
+    \int_compare:nNnF {#3} = { \c_one_int } {
+        % flag (8 bits)
+        \hawkdraw_support_pdf_put_object_stream:Nn #1 { 00 }
         % patch is pie segment going from 0 deg to 360 / ( n * 4 ) deg
         % points (12 points, 2 * 16 bits each)
         \prg_replicate:nn { 2 } {
-            \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
+            \__hawkdraw_shading_conic_stream_put_point_polar:Nnn #1 { 0 } {
                 \l_hawkdraw_shading_angle_delta_fp /
-                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
+                ( \seq_count:N #2 - 1 ) * ( #3 - 2 )
             }
         }
         \prg_replicate:nn { 2 } {
-            \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
+            \__hawkdraw_shading_conic_stream_put_point_polar:Nnn #1 { 1 } {
                 \l_hawkdraw_shading_angle_delta_fp /
-                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
+                ( \seq_count:N #2 - 1 ) * ( #3 - 2 )
             }
         }
-        \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
+        \__hawkdraw_shading_conic_stream_put_point_polar:Nnn #1 { 1 } {
             \l_hawkdraw_shading_angle_delta_fp /
-            ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1.75 )
+            ( \seq_count:N #2 - 1 ) * ( #3 - 1.75 )
         }
-        \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
+        \__hawkdraw_shading_conic_stream_put_point_polar:Nnn #1 { 1 } {
             \l_hawkdraw_shading_angle_delta_fp /
-            ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1.25 )
+            ( \seq_count:N #2 - 1 ) * ( #3 - 1.25 )
         }
         \prg_replicate:nn { 2 } {
-            \__hawkdraw_shading_conic_stream_point_polar:nn { 1 } {
+            \__hawkdraw_shading_conic_stream_put_point_polar:Nnn #1 { 1 } {
                 \l_hawkdraw_shading_angle_delta_fp /
-                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1 )
+                ( \seq_count:N #2 - 1 ) * ( #3 - 1 )
             }
         }
         \prg_replicate:nn { 3 } {
-            \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
+            \__hawkdraw_shading_conic_stream_put_point_polar:Nnn #1 { 0 } {
                 \l_hawkdraw_shading_angle_delta_fp /
-                ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 1 )
+                ( \seq_count:N #2 - 1 ) * ( #3 - 1 )
             }
         }
-        \__hawkdraw_shading_conic_stream_point_polar:nn { 0 } {
+        \__hawkdraw_shading_conic_stream_put_point_polar:Nnn #1 { 0 } {
             \l_hawkdraw_shading_angle_delta_fp /
-            ( \seq_count:N \l__hawkdraw_shading_color_values_seq - 1 ) * ( #1 - 2 )
+            ( \seq_count:N #2 - 1 ) * ( #3 - 2 )
         }
         % colors (4 colors, 3 * 8 bits each for RGB)
-        \hawkdraw_hex_to_stream:e {
+        \hawkdraw_support_pdf_put_object_stream:Ne #1 {
             \hawkdraw_color_pdf_to_hex:e {
-                \seq_item:Nn \l__hawkdraw_shading_color_values_seq { #1 - 1 }
+                \seq_item:Nn #2 { #3 - 1 }
             }
         }
-        \hawkdraw_hex_to_stream:e {
+        \hawkdraw_support_pdf_put_object_stream:Ne #1 {
             \hawkdraw_color_pdf_to_hex:e {
-                \seq_item:Nn \l__hawkdraw_shading_color_values_seq { #1 - 1 }
+                \seq_item:Nn #2 { #3 - 1 }
             }
         }
-        \hawkdraw_hex_to_stream:e {
-            \hawkdraw_color_pdf_to_hex:n {#2}
+        \hawkdraw_support_pdf_put_object_stream:Ne #1 {
+            \hawkdraw_color_pdf_to_hex:n {#4}
         }
-        \hawkdraw_hex_to_stream:e {
-            \hawkdraw_color_pdf_to_hex:n {#2}
+        \hawkdraw_support_pdf_put_object_stream:Ne #1 {
+            \hawkdraw_color_pdf_to_hex:n {#4}
         }
     }
 }
 
-\cs_new:Npn \__hawkdraw_shading_conic_stream_point_polar:nn #1#2 {
+\cs_new_protected:Npn \__hawkdraw_shading_conic_stream_put_point_polar:Nnn #1#2#3 {
     % get coordinates from shifted point polar and normalize to FFFF
-    \hawkdraw_hex_to_stream:e {
+    \hawkdraw_support_pdf_put_object_stream:Ne #1 {
         \int_format:nn {
             \fp_to_int:n {
                 \hawkdraw_tuple_use_i:n {
                     ( 50bp , 50bp ) + (
-                        \draw_point_polar:nn { ( #1 ) * 50bp } {#2}
+                        \draw_point_polar:nn { ( #2 ) * 50bp } {#3}
                     )
                 } / 100bp * 65535
             }
         } { 0>4X }
     }
-    \hawkdraw_hex_to_stream:e {
+    \hawkdraw_support_pdf_put_object_stream:Ne #1 {
         \int_format:nn {
             \fp_to_int:n {
                 \hawkdraw_tuple_use_ii:n {
                     ( 50bp , 50bp ) + (
-                        \draw_point_polar:nn { ( #1 ) * 50bp } {#2}
+                        \draw_point_polar:nn { ( #2 ) * 50bp } {#3}
                     )
                 } / 100bp * 65535
             }
@@ -754,7 +753,7 @@
     }
 }
 
-\tl_new:N \l__hawkdraw_shading_conic_stream_tl
+\seq_new:N \l__hawkdraw_shading_conic_stream_seq
 
 \cs_new_protected:Npn \hawkdraw_shading_conic:n #1 {
     \tl_if_exist:cF {
@@ -767,8 +766,10 @@
         \hawkdraw_shading_conic_color_set_values:Nn
             \l__hawkdraw_shading_color_values_seq
             {#1}
-        \hawkdraw_shading_conic_stream:N \l__hawkdraw_shading_conic_stream_tl
-        \hawkdraw_shading_set:enn {
+        \hawkdraw_shading_conic_set_stream:NN
+            \l__hawkdraw_shading_conic_stream_seq
+            \l__hawkdraw_shading_color_values_seq
+        \hawkdraw_shading_set:enN {
             conic
             . #1
             . \fp_to_decimal:n { \l_hawkdraw_shading_angle_delta_fp }
@@ -800,9 +801,7 @@
                     0 ~ 1 ~
                 }
             ] ~
-        } {
-            \tl_use:N \l__hawkdraw_shading_conic_stream_tl
-        }
+        } \l__hawkdraw_shading_conic_stream_seq
     }
 }
 
