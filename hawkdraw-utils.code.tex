@@ -105,14 +105,14 @@
 }
 
 \cs_new_protected:Npn \hawkdraw_support_pdf_put_object_stream:Nn #1#2 {
-    \hawkdraw_support_pdf_put_object_stream:Nw #1#2 \q_stop
+    \__hawkdraw_support_pdf_put_object_stream:Nw #1#2 \q_stop
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdf_put_object_stream:Nn { Ne }
 
-\cs_new_protected:Npn \hawkdraw_support_pdf_put_object_stream:Nw #1#2#3#4 \q_stop {
+\cs_new_protected:Npn \__hawkdraw_support_pdf_put_object_stream:Nw #1#2#3#4 \q_stop {
     \seq_put_right:Nn #1 { " #2#3 }
     \tl_if_empty:nF {#4} {
-        \hawkdraw_support_pdf_put_object_stream:Nw #1#4 \q_stop
+        \__hawkdraw_support_pdf_put_object_stream:Nw #1#4 \q_stop
     }
 }
 
