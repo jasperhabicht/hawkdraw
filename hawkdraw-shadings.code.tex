@@ -91,14 +91,14 @@
                 \dim_min:nn {
                     \hawkdraw_tuple_use_i:n { \g_hawkdraw_path_point_first_fp }
                 } {
-                    \hawkdraw_path_bb_xmin:
+                    \draw_path_xmin:
                 }
             }
             \dim_set:Nn \l__hawkdraw_shading_yoffset_dim {
                 \dim_min:nn {
                     \hawkdraw_tuple_use_ii:n { \g_hawkdraw_path_point_first_fp }
                 } {
-                    \hawkdraw_path_bb_ymin:
+                    \draw_path_ymin:
                 }
             }
             \pdfxform_new:enn {
@@ -241,9 +241,9 @@
     \tl_if_empty:NTF #3 {
         \pdf_object_write:nne { hawkdraw_shading_ #1 } { dict } {#2}
     } {
-        \hawkdraw_support_pdf_write_object_stream:neN {
-            hawkdraw_shading_ #1
-        } {#2} #3
+        \pdf_object_write:nne { hawkdraw_shading_ #1 } { bstream } {
+            {#2} \exp_not:N #3
+        }
     }
     \tl_const:ce {
         c__hawkdraw_shading_ #1 _tl

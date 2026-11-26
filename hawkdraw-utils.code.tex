@@ -86,24 +86,6 @@
 }
 \cs_generate_variant:Nn \hawkdraw_support_pdfliteral_direct:n { e }
 
-\cs_new:Npn \hawkdraw_support_pdf_write_stream:N #1 {
-    \seq_map_tokens:Nn #1 {
-        \__hawkdraw_support_pdf_write_stream_aux:n
-    }
-}
-
-\cs_new:Npn \__hawkdraw_support_pdf_write_stream_aux:n #1 {
-    \sys_if_engine_luatex:T {
-        \__hawkdraw_hex_to_stream_auxi:w #1 \exp_stop_f:
-    }
-    \sys_if_engine_pdftex:T {
-        \char_generate:nn {#1} { 12 }
-    }
-    \sys_if_engine_xetex:T {
-        \int_format:nn {#1} { 0>2X }
-    }
-}
-
 \cs_new_protected:Npn \hawkdraw_support_pdf_put_object_stream:Nn #1#2 {
     \hawkdraw_support_pdf_put_object_stream:Nw #1#2 \q_stop
 }
@@ -115,28 +97,6 @@
         \hawkdraw_support_pdf_put_object_stream:Nw #1#4 \q_stop
     }
 }
-
-\cs_new_protected:Npn \hawkdraw_support_pdf_write_object_stream:nnN #1#2#3 {
-    \sys_if_engine_xetex:TF {
-        % We need the hex-encoded stream here to be placed between < and >
-        \exp_args:Ne
-        \tex_special:D {
-            pdf: stream ~
-            \pdf_object_ref:n {#1} ~
-            < \hawkdraw_support_pdf_write_stream:N #3 > ~
-            << ~ #2 ~ >>
-        }
-    } {
-        \pdf_object_write:nne {
-            #1
-        } { stream } {
-            {#2} {
-                \hawkdraw_support_pdf_write_stream:N #3
-            }
-        }
-    }
-}
-\cs_generate_variant:Nn \hawkdraw_support_pdf_write_object_stream:nnN { ne }
 
 % xetex support missing
 \cs_new_protected:Npn \hawkdraw_support_pdfcolorstack:n #1 {
@@ -236,11 +196,6 @@
         }
     }
 }
-
-% ===
-
-\cs_set:Npn \hawkdraw_path_bb_xmin: { \g__draw_path_xmin_dim }
-\cs_set:Npn \hawkdraw_path_bb_ymin: { \g__draw_path_ymin_dim }
 
 % ===
 
