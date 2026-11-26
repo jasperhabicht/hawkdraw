@@ -50,6 +50,14 @@
     \dim_set:Nn \l_hawkdraw_support_page_height_dim { \tex_pageheight:D }
 }
 
+\fp_const:Nn \c__hawkdraw_support_xetex_origin_fp {
+    (
+        \tex_the:D \tex_hoffset:D - 1in
+    ,
+        1in - \tex_the:D \tex_voffset:D
+    )
+}
+
 % ===
 
 \cs_new_protected:Npn \hawkdraw_support_pdfliteral:n #1 {
@@ -230,14 +238,6 @@
 }
 
 % ===
-
-\fp_const:Nn \c__hawkdraw_support_xetex_origin_fp {
-    (
-        \tex_the:D \tex_hoffset:D - 1in
-    ,
-        1in - \tex_the:D \tex_voffset:D
-    )
-}
 
 \cs_set:Npn \hawkdraw_path_bb_xmin: { \g__draw_path_xmin_dim }
 \cs_set:Npn \hawkdraw_path_bb_ymin: { \g__draw_path_ymin_dim }
