@@ -493,6 +493,8 @@ The option \macro{layer} sets the scope to be placed on the relevant layer. The 
 \end{macrodef}
 The option \macro{position absolute} shifts the scope so that its origin is at the lower left corner of the current page. Positioning absolutely only works with the option \macro{bounding box} option of the \macro{hawkdraw} environment set to \macro{zero} (or with using the shorthand option \macro{overlay}).
 
+\warning Note that using \macro{\DocumentMetadata} is required to ensure correct positioning with XeLaTeX.
+
 \begin{codeexamplecolumns}
 \begin{hawkdraw}[overlay]
   \begin{scope}[position absolute]
